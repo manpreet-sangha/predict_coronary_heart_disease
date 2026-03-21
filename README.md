@@ -111,16 +111,16 @@ Upload a different CSV (same format) via the sidebar — all charts update autom
 
 ## EDA Techniques
 
-The following techniques are implemented, each justified by peer-reviewed literature (see `report/references.bib`):
+The following techniques are implemented, each justified by peer-reviewed literature:
 
-| Module | Technique | Key References |
-|---|---|---|
-| `eda_descriptive` | Summary statistics, missing values, crosstab | Hassan (2022), Rehman (2025) |
-| `eda_correlation` | Pearson correlation heatmap | Hassan (2022), El-Sofany (2024) |
-| `eda_distribution` | Histograms, boxplots, KDE by class | El-Sofany (2024), Bhatt (2023) |
-| `eda_pca` | PCA scree plot, 2D projection, loadings | Banerjee (2025), Kumar (2025) |
-| `eda_feature_importance` | Mutual Information, ANOVA F-test, Chi-square | El-Sofany (2024), Ullah (2024) |
-| `eda_class_imbalance` | Class counts, feature means, outlier audit | Rehman (2025), Ganie (2025) |
+| Module | Technique |
+|---|---|
+| `eda_descriptive` | Summary statistics, missing values, crosstab |
+| `eda_correlation` | Pearson correlation heatmap |
+| `eda_distribution` | Histograms, boxplots, KDE by class |
+| `eda_pca` | PCA scree plot, 2D projection, loadings |
+| `eda_feature_importance` | Mutual Information, ANOVA F-test, Chi-square |
+| `eda_class_imbalance` | Class counts, feature means, outlier audit |
 
 ---
 
@@ -138,6 +138,16 @@ The following techniques are implemented, each justified by peer-reviewed litera
 
 ---
 
-## References
+## AI Usage Disclaimer
 
-Full BibTeX citations for all 10 peer-reviewed papers used to justify EDA technique selection are in [`report/references.bib`](report/references.bib).
+Parts of this codebase were developed with the assistance of Claude (Anthropic), an AI coding assistant. AI assistance was used for code structure, module design, and implementation guidance. All code has been reviewed, tested, and is understood by the author.
+
+---
+
+## Academic Integrity Notice
+
+> **This repository is shared for reference and transparency purposes only.**
+>
+> Copying, replicating, or submitting any part of this code or analysis as your own individual coursework, assignment, or examination constitutes **academic misconduct**. This includes but is not limited to plagiarism, collusion, and contract cheating, which are serious violations of university academic integrity policies and may result in disciplinary action.
+>
+> If you are a student working on a similar assignment, you must produce your own independent work.
