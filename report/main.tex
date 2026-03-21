@@ -1,0 +1,238 @@
+% ============================================================
+% main.tex — Coronary Heart Disease Prediction Report
+% Individual Coursework — Machine Learning
+%
+% Requirements:
+%   - Max 1000 words, 5 pages
+%   - Font size >= 12pt, margins >= 1 inch, 1.5 line spacing
+%   - Compiled from the report/ directory:
+%       pdflatex main.tex
+%       bibtex main
+%       pdflatex main.tex (x2)
+% ============================================================
+
+\documentclass[12pt,a4paper]{article}
+
+% ── Page layout ───────────────────────────────────────────────────────────────
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+
+% ── Line spacing ──────────────────────────────────────────────────────────────
+\usepackage{setspace}
+\onehalfspacing
+
+% ── PDF inclusion (submission form) ───────────────────────────────────────────
+\usepackage{pdfpages}
+
+% ── Typography & encoding ─────────────────────────────────────────────────────
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}
+
+% ── Tables & figures ──────────────────────────────────────────────────────────
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{float}
+
+% ── Hyperlinks ────────────────────────────────────────────────────────────────
+\usepackage[colorlinks=true, linkcolor=black, citecolor=blue, urlcolor=blue]{hyperref}
+
+% ── References ────────────────────────────────────────────────────────────────
+\usepackage[numbers,sort&compress]{natbib}
+
+% ── ToC depth ─────────────────────────────────────────────────────────────────
+\setcounter{tocdepth}{2}
+
+% ── Appendix ──────────────────────────────────────────────────────────────────
+\usepackage[title]{appendix}
+
+% =============================================================================
+\begin{document}
+
+% ── Page 1: Coursework Submission Form ───────────────────────────────────────
+\includepdf[pages=1]{Group Coursework Submission Form.pdf}
+
+% ── Table of Contents ─────────────────────────────────────────────────────────
+\tableofcontents
+\newpage
+
+% =============================================================================
+\section{Exploratory Data Analysis}
+% =============================================================================
+
+\subsection{Dataset Overview}
+
+The \texttt{heart-disease.csv} dataset comprises 462 male patients from a
+heart-disease high-risk region of the Western Cape, South Africa. Each patient
+is described by nine clinical features --- systolic blood pressure (\texttt{sbp}),
+cumulative tobacco consumption, LDL cholesterol, adiposity, family history of heart
+disease (\texttt{famhist}), type-A behaviour score, obesity, alcohol consumption,
+and age --- with a binary target variable \texttt{chd} indicating the presence (1)
+or absence (0) of coronary heart disease. No missing values were detected across
+any feature.
+
+\subsection{Class Distribution and Imbalance}
+
+Of the 462 patients, 160 (34.6\%) are CHD-positive and 302 (65.4\%) are
+CHD-negative, yielding a majority-to-minority ratio of 1.89:1. This moderate
+class imbalance is consistent with findings in similar clinical datasets
+\cite{rehman2025predicting} and has implications for model evaluation: accuracy
+alone is a misleading metric, and techniques such as SMOTE or class-weighted
+loss should be considered at the modelling stage \cite{banerjee2025systematic}.
+
+\subsection{Correlation Analysis}
+
+Pearson correlation coefficients between each feature and the CHD target reveal
+that \texttt{age} ($r = 0.373$) is the strongest linear predictor, followed by
+\texttt{tobacco} ($r = 0.300$), \texttt{famhist} ($r = 0.272$), and \texttt{ldl}
+($r = 0.263$). In contrast, \texttt{alcohol} ($r = 0.063$) and \texttt{obesity}
+($r = 0.100$) exhibit the weakest linear association with the target. Correlation
+heatmaps are widely used in clinical ML pipelines to guide feature selection
+and identify multicollinearity prior to modelling \cite{hassan2022effectively,
+ogunpola2024machine}.
+
+\subsection{Feature Distributions}
+
+Skewness analysis identified three strongly right-skewed features: \texttt{alcohol}
+(skewness $= 2.31$), \texttt{tobacco} ($= 2.08$), and \texttt{ldl} ($= 1.31$),
+which may benefit from log-transformation before classification. Boxplots stratified
+by CHD class confirm that CHD patients exhibit consistently higher values across
+\texttt{age}, \texttt{tobacco}, \texttt{ldl}, and \texttt{adiposity}, providing
+visual evidence of class-conditional separation \cite{elsofany2024proposed}.
+
+\subsection{Principal Component Analysis}
+
+PCA was applied to the standardised feature matrix. The first principal component
+(PC1) explains 32.05\% of the total variance and loads positively on
+\texttt{adiposity}, \texttt{age}, and \texttt{obesity}, indicating a general
+\emph{metabolic risk} axis. Seven components are required to reach 90\% cumulative
+explained variance, suggesting a moderately high intrinsic dimensionality. The 2-D
+PCA projection shows partial but incomplete separation between CHD classes,
+consistent with the expectation that linear projections cannot fully resolve a
+non-linearly separable problem \cite{banerjee2025systematic}.
+
+\subsection{Feature Importance}
+
+Feature importance was assessed using two complementary criteria: mutual
+information (MI) and the ANOVA F-test. Both criteria rank \texttt{age} as the
+most informative feature (normalised score 1.000), followed by \texttt{tobacco},
+\texttt{famhist}, and \texttt{sbp}. \texttt{obesity} and \texttt{typea} score
+lowest on both metrics, suggesting they contribute the least marginal predictive
+information. Using multiple criteria reduces the risk of misleading rankings
+caused by linear assumptions in any single test \cite{elsofany2024proposed,
+ullah2024machine}.
+
+% =============================================================================
+\section{Logistic Regression with Ridge Penalty}
+% =============================================================================
+
+% TODO: Complete this section after implementing lrrp.py
+%
+% Suggested structure:
+%   2.1 Model Specification
+%       - Ridge (L2) penalty motivation: addresses multicollinearity,
+%         shrinks coefficients without hard zeroing
+%       - Hyperparameter C (inverse regularisation strength) selection via CV
+%   2.2 Results
+%       - Coefficient table (feature, sign, magnitude)
+%       - Classification report (precision, recall, F1, AUC)
+%       - ROC curve figure
+%       - Confusion matrix
+%   2.3 Interpretation
+%       - Which features drive the model most?
+%       - How does regularisation affect coefficients?
+
+\noindent\textit{This section will be completed upon implementation of the
+ridge logistic regression module (\texttt{logistic\_regression\_ridge\_penalty/lrrp.py}).}
+
+% =============================================================================
+\section{Alternative Classifiers}
+% =============================================================================
+
+% TODO: Complete this section after implementing oc.py
+%
+% Suggested structure:
+%   3.1 Classifier Selection Motivation
+%       - Why these classifiers? (tree-based, kernel-based, ensemble)
+%       - Cross-validation strategy
+%   3.2 Comparison Table
+%       - Accuracy, AUC, F1, Recall for each classifier
+%   3.3 Best Classifier
+%       - Identify best model and justify choice
+%       - Hyperparameter tuning procedure
+%       - Final results and discussion
+
+\noindent\textit{This section will be completed upon implementation of the
+alternative classifiers module (\texttt{other\_classifiers/oc.py}).}
+
+% =============================================================================
+% References
+% Only entries actually cited above are included via BibTeX.
+% =============================================================================
+\newpage
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+% =============================================================================
+% Appendix
+% =============================================================================
+\newpage
+\begin{appendices}
+
+\section{Code Replication Instructions}
+
+The full source code for this project is publicly available on GitHub:
+
+\begin{center}
+\url{https://github.com/manpreet-sangha/predict_coronary_heart_disease}
+\end{center}
+
+\noindent An interactive live dashboard is deployed and accessible at:
+
+\begin{center}
+\url{https://predict-coronary-heart-disease.streamlit.app/}
+\end{center}
+
+\subsection*{Local Setup}
+
+\begin{enumerate}
+    \item Clone the repository:
+    \begin{verbatim}
+git clone https://github.com/manpreet-sangha/predict_coronary_heart_disease.git
+cd predict_coronary_heart_disease
+    \end{verbatim}
+
+    \item Create and activate a virtual environment:
+    \begin{verbatim}
+python -m venv .venv
+.venv\Scripts\activate        # Windows
+source .venv/bin/activate     # macOS / Linux
+    \end{verbatim}
+
+    \item Install dependencies:
+    \begin{verbatim}
+pip install -r requirements.txt
+    \end{verbatim}
+
+    \item Run the full analysis pipeline:
+    \begin{verbatim}
+python chd_main.py
+    \end{verbatim}
+    Output figures and tables are saved to
+    \texttt{exploratory\_data\_analysis/eda\_output/}.
+
+    \item Launch the interactive dashboard locally:
+    \begin{verbatim}
+streamlit run app.py
+    \end{verbatim}
+\end{enumerate}
+
+\subsection*{Requirements}
+
+Python 3.10 or later is required. All package versions are pinned in
+\texttt{requirements.txt}. Key dependencies: \texttt{pandas $\geq$ 2.0},
+\texttt{scikit-learn $\geq$ 1.4}, \texttt{streamlit $\geq$ 1.35},
+\texttt{plotly $\geq$ 5.20}.
+
+\end{appendices}
+
+\end{document}

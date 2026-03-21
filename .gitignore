@@ -8,8 +8,6 @@ __pycache__/
 *.py[cod]
 *.pyo
 
-# Report folder (excluded from repo)
-report/
 
 # OS
 .DS_Store
