@@ -65,9 +65,10 @@
 The \texttt{heart-disease.csv} dataset contains 462 male patients from the
 Western Cape, South Africa, described by nine clinical features and a binary
 target \texttt{chd} (1\,=\,CHD present). No missing values were detected.
-Table~\ref{tab:desc} summarises the key descriptive statistics. Notable
-right-skew in \texttt{alcohol} ($\gamma_{1}=2.31$), \texttt{tobacco}
-($\gamma_{1}=2.08$), and \texttt{ldl} ($\gamma_{1}=1.31$) indicates that
+Table~\ref{tab:desc} summarises the key descriptive statistics. Four features
+exceed the $|\gamma_{1}|>1$ skewness threshold: \texttt{alcohol}
+($\gamma_{1}=2.31$), \texttt{tobacco} ($\gamma_{1}=2.08$), \texttt{ldl}
+($\gamma_{1}=1.31$), and \texttt{sbp} ($\gamma_{1}=1.18$), suggesting
 log-transformation may improve classifier performance.
 
 \vspace{4pt}
@@ -76,7 +77,8 @@ log-transformation may improve classifier performance.
 \vspace{0pt}
 Of the 462 patients, 160 (34.6\%) are CHD-positive and 302 (65.4\%)
 CHD-negative, giving an imbalance ratio of 1.89:1. This means raw accuracy
-will be a misleading evaluation metric \cite{rehman2025predicting, banerjee2025systematic}
+will be a misleading evaluation metric
+\cite{rehman2025predicting, banerjee2025systematic, dutta2019efficient, borges2025logistic}
 and alternative measures such as AUC and F1-score are used throughout.
 \end{minipage}%
 \hfill
@@ -130,6 +132,32 @@ multicollinearity, motivating ridge regularisation in Section~\ref{sec:lrrp}
 
 \vspace{8pt}
 
+% ── Distribution analysis + log-transform ────────────────────────────────────
+\noindent
+\begin{minipage}[t]{0.52\linewidth}
+\vspace{0pt}
+Violin plots stratified by CHD class confirm that \texttt{age}, \texttt{tobacco},
+and \texttt{ldl} show the clearest class-conditional separation, while
+\texttt{obesity} and \texttt{typea} distributions overlap substantially.
+Log\,\textsubscript{1p}-transformation of the four dynamically identified
+skewed features reduces their skewness markedly (Figure~\ref{fig:logtr}):
+\texttt{alcohol} from 2.31 to 0.44, \texttt{tobacco} from 2.08 to 0.53,
+\texttt{ldl} from 1.31 to 0.50, and \texttt{sbp} from 1.18 to 0.48.
+These transformations are applied as a preprocessing option in the
+modelling stages (Sections~\ref{sec:lrrp}--\ref{sec:oc}).
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.44\linewidth}
+\vspace{0pt}
+\centering
+\includegraphics[width=\linewidth]{../exploratory_data_analysis/eda_output/fig_log_transformed_features.png}
+\captionof{figure}{\footnotesize Log\textsubscript{1p}-transformation of the
+four dynamically identified skewed features.}
+\label{fig:logtr}
+\end{minipage}
+
+\vspace{8pt}
+
 % ── Feature importance table + figure ────────────────────────────────────────
 \noindent
 \begin{minipage}[t]{0.52\linewidth}
@@ -175,12 +203,15 @@ obesity    & 0.00 & 0.04  & 0.02 \\
 \vspace{0pt}
 PCA was applied to the standardised feature matrix
 \cite{banerjee2025systematic}. PC1 explains 32.1\% of variance and loads
-positively on \texttt{adiposity}, \texttt{age}, and \texttt{obesity} --- a
-latent \emph{metabolic risk} axis. Seven components are needed to reach 90\%
-cumulative variance, indicating moderate intrinsic dimensionality. The 2-D
+positively on \texttt{adiposity} (0.52), \texttt{age} (0.46), and
+\texttt{obesity} (0.40) --- a latent \emph{metabolic risk} axis. PC2 is
+driven by \texttt{alcohol} (0.54) and \texttt{tobacco} (0.46), reflecting a
+\emph{lifestyle} axis. Seven components are needed to reach 90\% cumulative
+variance, indicating moderate intrinsic dimensionality. The 2-D
 projection (Figure~\ref{fig:pca}) shows partial but incomplete class
-separation, confirming that linear decision boundaries will be insufficient
-and motivating the exploration of non-linear classifiers in Section~\ref{sec:oc}.
+separation; the loadings heatmap (Figure~\ref{fig:pcaload}) confirms PC1
+captures metabolic risk while PC2 captures lifestyle behaviours, motivating
+non-linear classifiers in Section~\ref{sec:oc}.
 \end{minipage}%
 \hfill
 \begin{minipage}[t]{0.44\linewidth}
@@ -189,6 +220,10 @@ and motivating the exploration of non-linear classifiers in Section~\ref{sec:oc}
 \includegraphics[width=\linewidth]{../exploratory_data_analysis/eda_output/fig_pca_scatter.png}
 \captionof{figure}{\footnotesize PCA 2-D projection coloured by CHD class.}
 \label{fig:pca}
+\vspace{4pt}
+\includegraphics[width=0.72\linewidth]{../exploratory_data_analysis/eda_output/fig_pca_loadings_heatmap.png}
+\captionof{figure}{\footnotesize PCA feature loadings (PC1 \& PC2).}
+\label{fig:pcaload}
 \end{minipage}
 
 % =============================================================================
@@ -207,6 +242,7 @@ and motivating the exploration of non-linear classifiers in Section~\ref{sec:oc}
 
 \noindent\textit{This section will be completed upon implementation of
 \texttt{logistic\_regression\_ridge\_penalty/lrrp.py}.}
+% Key reference for this section: \cite{borges2025logistic}
 
 % =============================================================================
 \section{Alternative Classifiers}
