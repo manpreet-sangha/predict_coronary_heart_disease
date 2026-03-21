@@ -75,11 +75,9 @@ log-transformation may improve classifier performance.
 \begin{minipage}[t]{0.52\linewidth}
 \vspace{0pt}
 Of the 462 patients, 160 (34.6\%) are CHD-positive and 302 (65.4\%)
-CHD-negative, giving an imbalance ratio of 1.89:1. As documented in the
-literature \cite{rehman2025predicting, banerjee2025systematic}, raw accuracy
-is a misleading metric under such imbalance; SMOTE or class-weighted loss
-functions should be applied at the modelling stage to avoid the model
-defaulting to the majority class.
+CHD-negative, giving an imbalance ratio of 1.89:1. This means raw accuracy
+will be a misleading evaluation metric \cite{rehman2025predicting, banerjee2025systematic}
+and alternative measures such as AUC and F1-score are used throughout.
 \end{minipage}%
 \hfill
 \begin{minipage}[t]{0.44\linewidth}
