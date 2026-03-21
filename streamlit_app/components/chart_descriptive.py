@@ -6,11 +6,14 @@ the family history cross-tabulation for the loaded dataset.
 All outputs update reactively when a new file is uploaded.
 """
 
+import os
+import sys
+
 import pandas as pd
 import streamlit as st
 
-FEATURES = ["sbp", "tobacco", "ldl", "adiposity",
-            "famhist", "typea", "obesity", "alcohol", "age"]
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from config import ALL_FEATURES, TARGET
 
 
 def render(df: pd.DataFrame) -> None:
@@ -36,8 +39,8 @@ def render(df: pd.DataFrame) -> None:
 
     # ── Descriptive statistics table ───────────────────────────────────────
     st.markdown("#### Descriptive Statistics")
-    stats = df[FEATURES].describe().T.round(3)
-    stats["skewness"] = df[FEATURES].skew().round(3)
+    stats = df[ALL_FEATURES].describe().T.round(3)
+    stats["skewness"] = df[ALL_FEATURES].skew().round(3)
     st.dataframe(stats, use_container_width=True)
 
     # ── Family history × CHD cross-tabulation ─────────────────────────────

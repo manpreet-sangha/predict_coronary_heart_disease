@@ -10,6 +10,9 @@ Literature basis: Banerjee & Pacal (2025), Kumar et al. (2025),
 Ullah et al. (2024).
 """
 
+import os
+import sys
+
 import numpy as np
 import pandas as pd
 import plotly.express as px
@@ -19,8 +22,8 @@ import streamlit as st
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
-FEATURES = ["sbp", "tobacco", "ldl", "adiposity",
-            "famhist", "typea", "obesity", "alcohol", "age"]
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from config import ALL_FEATURES, TARGET
 
 
 def render(df: pd.DataFrame) -> None:
@@ -28,8 +31,8 @@ def render(df: pd.DataFrame) -> None:
 
     st.subheader("Principal Component Analysis (PCA)")
 
-    X = df[FEATURES].values
-    y = df["chd"].values
+    X = df[ALL_FEATURES].values
+    y = df[TARGET].values
 
     # Standardise: PCA is scale-sensitive
     X_scaled = StandardScaler().fit_transform(X)
@@ -77,10 +80,13 @@ def render(df: pd.DataFrame) -> None:
     st.plotly_chart(fig_scree, use_container_width=True)
 
     # ── 2. 2-D scatter coloured by CHD class ──────────────────────────────
+    chd_classes = sorted(df[TARGET].unique())
+    chd_label_map = {cls: ("No CHD" if cls == 0 else ("CHD" if cls == 1 else f"Class {cls}"))
+                     for cls in chd_classes}
     scatter_df = pd.DataFrame({
         "PC1": X_2d[:, 0],
         "PC2": X_2d[:, 1],
-        "CHD": df["chd"].map({0: "No CHD", 1: "CHD"}).values,
+        "CHD": df[TARGET].map(chd_label_map).values,
     })
 
     fig_scatter = px.scatter(
@@ -104,7 +110,7 @@ def render(df: pd.DataFrame) -> None:
     # ── 3. Loadings heatmap ────────────────────────────────────────────────
     loadings = pd.DataFrame(
         pca_2d.components_.T,
-        index=FEATURES,
+        index=ALL_FEATURES,
         columns=["PC1", "PC2"]
     ).round(3)
 

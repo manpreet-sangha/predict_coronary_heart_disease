@@ -16,9 +16,12 @@ import os
 
 # Allow imports from streamlit_app/ regardless of working directory
 sys.path.insert(0, os.path.dirname(__file__))
+# Allow importing config from project root
+sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 import streamlit as st
 
+from config import ALL_FEATURES, TARGET
 from utils.data_loader import load_data
 from pages import page_eda, page_lrrp, page_classifiers
 
@@ -41,13 +44,11 @@ with st.sidebar:
     st.divider()
 
     st.markdown("### Upload Dataset")
+    required_cols = ", ".join(ALL_FEATURES + [TARGET])
     uploaded_file = st.file_uploader(
         "Upload a CSV in the same format to replace the default dataset.",
         type=["csv"],
-        help=(
-            "Required columns: sbp, tobacco, ldl, adiposity, famhist, "
-            "typea, obesity, alcohol, age, chd"
-        ),
+        help=f"Required columns: {required_cols}",
     )
     st.divider()
     st.caption("All charts update automatically when a new file is uploaded.")

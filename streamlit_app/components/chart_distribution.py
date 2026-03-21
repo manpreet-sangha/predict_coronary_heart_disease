@@ -10,6 +10,9 @@ Literature basis: El-Sofany et al. (2024), Ogunpola et al. (2024),
 Bhatt et al. (2023).
 """
 
+import os
+import sys
+
 import pandas as pd
 import plotly.express as px
 import plotly.figure_factory as ff
@@ -17,9 +20,8 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import streamlit as st
 
-NUMERIC_FEATURES = ["sbp", "tobacco", "ldl", "adiposity",
-                    "typea", "obesity", "alcohol", "age"]
-ALL_FEATURES     = NUMERIC_FEATURES + ["famhist"]
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from config import NUMERIC_FEATURES, ALL_FEATURES, TARGET
 
 
 def render(df: pd.DataFrame) -> None:
@@ -35,7 +37,13 @@ def render(df: pd.DataFrame) -> None:
         key="dist_feature_select"
     )
 
-    chd_label = df["chd"].map({0: "No CHD", 1: "CHD"})
+    chd_classes = sorted(df[TARGET].unique())
+    chd_label_map = {cls: ("No CHD" if cls == 0 else ("CHD" if cls == 1 else f"Class {cls}"))
+                     for cls in chd_classes}
+    _palette = ["#4C78A8", "#E45756", "#54A24B", "#F58518"]
+    chd_color_map = {cls: _palette[i % len(_palette)]
+                     for i, cls in enumerate(chd_classes)}
+    chd_label = df[TARGET].map(chd_label_map)
 
     # ── 1. All-features overview: histograms grid ──────────────────────────
     st.markdown("#### All Features — Histogram Overview")
@@ -43,9 +51,10 @@ def render(df: pd.DataFrame) -> None:
                              subplot_titles=ALL_FEATURES)
     for i, feat in enumerate(ALL_FEATURES):
         row, col = divmod(i, 3)
-        for cls, name, color in [(0, "No CHD", "#4C78A8"),
-                                  (1, "CHD",    "#E45756")]:
-            subset = df.loc[df["chd"] == cls, feat]
+        for cls in chd_classes:
+            name = chd_label_map[cls]
+            color = chd_color_map[cls]
+            subset = df.loc[df[TARGET] == cls, feat]
             fig_grid.add_trace(
                 go.Histogram(
                     x=subset,
@@ -74,10 +83,11 @@ def render(df: pd.DataFrame) -> None:
     col_a, col_b = st.columns(2)
 
     with col_a:
+        color_discrete_map = {chd_label_map[cls]: chd_color_map[cls] for cls in chd_classes}
         fig_box = px.box(
             df, x=chd_label, y=selected,
             color=chd_label,
-            color_discrete_map={"No CHD": "#4C78A8", "CHD": "#E45756"},
+            color_discrete_map=color_discrete_map,
             points="outliers",
             title=f"Boxplot: {selected} by CHD Status",
             labels={"x": "CHD Status", selected: selected},
@@ -90,7 +100,7 @@ def render(df: pd.DataFrame) -> None:
         fig_vio = px.violin(
             df, x=chd_label, y=selected,
             color=chd_label,
-            color_discrete_map={"No CHD": "#4C78A8", "CHD": "#E45756"},
+            color_discrete_map=color_discrete_map,
             box=True, points="outliers",
             title=f"Violin: {selected} by CHD Status",
             labels={"x": "CHD Status", selected: selected},
@@ -101,12 +111,13 @@ def render(df: pd.DataFrame) -> None:
 
     # ── 3. KDE overlay for selected numeric feature ────────────────────────
     if selected in NUMERIC_FEATURES:
-        no_chd = df.loc[df["chd"] == 0, selected].dropna().tolist()
-        chd    = df.loc[df["chd"] == 1, selected].dropna().tolist()
+        kde_data   = [df.loc[df[TARGET] == cls, selected].dropna().tolist() for cls in chd_classes]
+        kde_labels = [chd_label_map[cls] for cls in chd_classes]
+        kde_colors = [chd_color_map[cls] for cls in chd_classes]
         fig_kde = ff.create_distplot(
-            [no_chd, chd],
-            group_labels=["No CHD", "CHD"],
-            colors=["#4C78A8", "#E45756"],
+            kde_data,
+            group_labels=kde_labels,
+            colors=kde_colors,
             show_hist=False,
             show_rug=False,
         )

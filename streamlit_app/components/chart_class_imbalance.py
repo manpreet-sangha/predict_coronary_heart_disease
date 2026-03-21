@@ -9,14 +9,17 @@ Literature basis: Rehman et al. (2025), Banerjee & Pacal (2025),
 Ganie et al. (2025), Shah et al. (2025).
 """
 
+import os
+import sys
+
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import streamlit as st
 
-NUMERIC_FEATURES = ["sbp", "tobacco", "ldl", "adiposity",
-                    "typea", "obesity", "alcohol", "age"]
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from config import NUMERIC_FEATURES, TARGET
 
 
 def render(df: pd.DataFrame) -> None:
@@ -24,9 +27,16 @@ def render(df: pd.DataFrame) -> None:
 
     st.subheader("Class Imbalance Analysis")
 
-    counts = df["chd"].value_counts().sort_index()
-    pct    = df["chd"].value_counts(normalize=True).sort_index() * 100
-    ratio  = counts[0] / counts[1]
+    counts = df[TARGET].value_counts().sort_index()
+    pct    = df[TARGET].value_counts(normalize=True).sort_index() * 100
+    ratio  = counts.max() / counts.min()
+
+    chd_classes = sorted(counts.index.tolist())
+    _palette = ["#4C78A8", "#E45756", "#54A24B", "#F58518"]
+    chd_label_map = {cls: ("No CHD" if cls == 0 else ("CHD" if cls == 1 else f"Class {cls}"))
+                     for cls in chd_classes}
+    bar_labels = [f"{chd_label_map[cls]} ({cls})" for cls in chd_classes]
+    bar_colors = [_palette[i % len(_palette)] for i in range(len(chd_classes))]
 
     # ── Imbalance alert ────────────────────────────────────────────────────
     if ratio > 1.5:
@@ -42,9 +52,9 @@ def render(df: pd.DataFrame) -> None:
 
     with col1:
         fig_bar = go.Figure(go.Bar(
-            x=["No CHD (0)", "CHD (1)"],
+            x=bar_labels,
             y=counts.values,
-            marker_color=["#4C78A8", "#E45756"],
+            marker_color=bar_colors,
             text=counts.values,
             textposition="outside",
             hovertemplate="%{x}<br>Count: %{y}<extra></extra>",
@@ -60,8 +70,8 @@ def render(df: pd.DataFrame) -> None:
     with col2:
         fig_pie = px.pie(
             values=counts.values,
-            names=["No CHD (0)", "CHD (1)"],
-            color_discrete_sequence=["#4C78A8", "#E45756"],
+            names=bar_labels,
+            color_discrete_sequence=bar_colors,
             title="Class Distribution (Proportion)",
             hole=0.35,
         )
@@ -75,17 +85,16 @@ def render(df: pd.DataFrame) -> None:
 
     # ── 2. Mean feature values per class (grouped bar) ─────────────────────
     st.markdown("#### Mean Feature Values by CHD Class")
-    class_means = df.groupby("chd")[NUMERIC_FEATURES].mean().round(3)
+    num_feats = [f for f in NUMERIC_FEATURES if f in df.columns]
+    class_means = df.groupby(TARGET)[num_feats].mean().round(3)
 
     fig_means = go.Figure()
-    colors = {0: "#4C78A8", 1: "#E45756"}
-    labels = {0: "No CHD", 1: "CHD"}
-    for cls in [0, 1]:
+    for i, cls in enumerate(chd_classes):
         fig_means.add_trace(go.Bar(
-            name=labels[cls],
-            x=NUMERIC_FEATURES,
+            name=chd_label_map[cls],
+            x=num_feats,
             y=class_means.loc[cls].values,
-            marker_color=colors[cls],
+            marker_color=_palette[i % len(_palette)],
             hovertemplate="<b>%{x}</b><br>Mean: %{y:.3f}<extra></extra>",
         ))
     fig_means.update_layout(
@@ -102,7 +111,7 @@ def render(df: pd.DataFrame) -> None:
     # ── 3. Outlier count bar chart (IQR method) ────────────────────────────
     st.markdown("#### Outlier Counts per Feature (IQR Method)")
     outlier_counts = {}
-    for feat in NUMERIC_FEATURES:
+    for feat in num_feats:
         Q1, Q3 = df[feat].quantile(0.25), df[feat].quantile(0.75)
         IQR = Q3 - Q1
         outlier_counts[feat] = int(

@@ -10,6 +10,9 @@ Literature basis: El-Sofany et al. (2024), Hassan et al. (2022),
 Ullah et al. (2024).
 """
 
+import os
+import sys
+
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
@@ -17,8 +20,8 @@ import streamlit as st
 from sklearn.feature_selection import mutual_info_classif, f_classif, chi2
 from sklearn.preprocessing import MinMaxScaler
 
-FEATURES = ["sbp", "tobacco", "ldl", "adiposity",
-            "famhist", "typea", "obesity", "alcohol", "age"]
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from config import ALL_FEATURES, CATEGORICAL_FEATURES, TARGET
 
 
 def render(df: pd.DataFrame) -> None:
@@ -26,13 +29,14 @@ def render(df: pd.DataFrame) -> None:
 
     st.subheader("Feature Importance Analysis")
 
-    X = df[FEATURES].values
-    y = df["chd"].values
+    X = df[ALL_FEATURES].values
+    y = df[TARGET].values
 
     # ── Compute scores ─────────────────────────────────────────────────────
     mi_scores          = mutual_info_classif(X, y, random_state=42)
     f_scores, p_values = f_classif(X, y)
-    chi2_stat, chi2_p  = chi2(df[["famhist"]].values, y)
+    chi2_cols = [c for c in CATEGORICAL_FEATURES if c in df.columns]
+    chi2_stat, chi2_p  = chi2(df[chi2_cols].values, y)
 
     # Normalise both to [0, 1] for side-by-side comparison
     scaler   = MinMaxScaler()
@@ -41,7 +45,7 @@ def render(df: pd.DataFrame) -> None:
     mean_imp = (mi_norm + f_norm) / 2
 
     importance_df = pd.DataFrame({
-        "Feature"        : FEATURES,
+        "Feature"        : ALL_FEATURES,
         "Mutual Info"    : mi_norm.round(4),
         "ANOVA F-test"   : f_norm.round(4),
         "Mean Score"     : mean_imp.round(4),
@@ -83,12 +87,13 @@ def render(df: pd.DataFrame) -> None:
     )
     st.plotly_chart(fig, use_container_width=True)
 
-    # ── 2. Chi-square result for famhist ───────────────────────────────────
-    st.markdown("#### Chi-Square Test: `famhist` vs `chd`")
-    cc1, cc2 = st.columns(2)
-    cc1.metric("Chi² statistic", f"{chi2_stat[0]:.3f}")
-    cc2.metric("p-value", f"{chi2_p[0]:.4f}",
-               delta="Significant" if chi2_p[0] < 0.05 else "Not significant")
+    # ── 2. Chi-square result for categorical features ──────────────────────
+    for i, col in enumerate(chi2_cols):
+        st.markdown(f"#### Chi-Square Test: `{col}` vs `{TARGET}`")
+        cc1, cc2 = st.columns(2)
+        cc1.metric("Chi² statistic", f"{chi2_stat[i]:.3f}")
+        cc2.metric("p-value", f"{chi2_p[i]:.4f}",
+                   delta="Significant" if chi2_p[i] < 0.05 else "Not significant")
 
     # ── 3. Ranked importance table ─────────────────────────────────────────
     with st.expander("Full Importance Scores Table"):

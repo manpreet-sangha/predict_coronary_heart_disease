@@ -8,15 +8,19 @@ receive the same clean dataframe without redundant computation.
 """
 
 import io
+import os
+import sys
+
 import pandas as pd
 import streamlit as st
 
+# Allow importing config from project root
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from config import ALL_FEATURES, TARGET, FAMHIST_ENCODING
+
 DEFAULT_PATH = "input_data/heart-disease.csv"
 
-EXPECTED_COLUMNS = [
-    "sbp", "tobacco", "ldl", "adiposity",
-    "famhist", "typea", "obesity", "alcohol", "age", "chd"
-]
+EXPECTED_COLUMNS = ALL_FEATURES + [TARGET]
 
 
 @st.cache_data(show_spinner="Loading dataset…")
@@ -61,8 +65,8 @@ def _validate(df: pd.DataFrame) -> None:
 
 
 def _preprocess(df: pd.DataFrame) -> pd.DataFrame:
-    """Encode famhist (Present=1, Absent=0) and return a clean copy."""
+    """Encode famhist using FAMHIST_ENCODING from config and return a clean copy."""
     df = df.copy()
     if df["famhist"].dtype == object:
-        df["famhist"] = df["famhist"].map({"Present": 1, "Absent": 0})
+        df["famhist"] = df["famhist"].map(FAMHIST_ENCODING)
     return df
