@@ -32,16 +32,18 @@
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{float}
+\usepackage{caption}        % \captionof inside minipage
+\usepackage{array}          % extended column formatting
 
 % ── Hyperlinks ────────────────────────────────────────────────────────────────
 \usepackage[colorlinks=true, linkcolor=black, citecolor=blue, urlcolor=blue]{hyperref}
 
 % ── References ────────────────────────────────────────────────────────────────
 \usepackage[numbers,sort&compress]{natbib}
-\usepackage{doi}          % makes DOI fields clickable hyperlinks
+\usepackage{doi}            % clickable DOI hyperlinks
 
 % ── ToC depth ─────────────────────────────────────────────────────────────────
-\setcounter{tocdepth}{2}
+\setcounter{tocdepth}{1}    % sections only — saves space
 
 % ── Appendix ──────────────────────────────────────────────────────────────────
 \usepackage[title]{appendix}
@@ -60,114 +62,171 @@
 \section{Exploratory Data Analysis}
 % =============================================================================
 
-\subsection{Dataset Overview}
+The \texttt{heart-disease.csv} dataset contains 462 male patients from the
+Western Cape, South Africa, described by nine clinical features and a binary
+target \texttt{chd} (1\,=\,CHD present). No missing values were detected.
+Table~\ref{tab:desc} summarises the key descriptive statistics. Notable
+right-skew in \texttt{alcohol} ($\gamma_{1}=2.31$), \texttt{tobacco}
+($\gamma_{1}=2.08$), and \texttt{ldl} ($\gamma_{1}=1.31$) indicates that
+log-transformation may improve classifier performance.
 
-The \texttt{heart-disease.csv} dataset comprises 462 male patients from a
-heart-disease high-risk region of the Western Cape, South Africa. Each patient
-is described by nine clinical features --- systolic blood pressure (\texttt{sbp}),
-cumulative tobacco consumption, LDL cholesterol, adiposity, family history of heart
-disease (\texttt{famhist}), type-A behaviour score, obesity, alcohol consumption,
-and age --- with a binary target variable \texttt{chd} indicating the presence (1)
-or absence (0) of coronary heart disease. No missing values were detected across
-any feature.
+\vspace{4pt}
+\noindent
+\begin{minipage}[t]{0.52\linewidth}
+\vspace{0pt}
+Of the 462 patients, 160 (34.6\%) are CHD-positive and 302 (65.4\%)
+CHD-negative, giving an imbalance ratio of 1.89:1. As documented in the
+literature \cite{rehman2025predicting, banerjee2025systematic}, raw accuracy
+is a misleading metric under such imbalance; SMOTE or class-weighted loss
+functions should be applied at the modelling stage to avoid the model
+defaulting to the majority class.
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.44\linewidth}
+\vspace{0pt}
+\centering
+\captionof{table}{\footnotesize Descriptive statistics for all nine features.}
+\label{tab:desc}
+\vspace{2pt}
+{\footnotesize
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Feature & Mean & Std & Min & Max \\
+\midrule
+sbp       & 138.3 & 20.5 & 101 & 218 \\
+tobacco   &   3.6 &  4.6 &   0 &  31 \\
+ldl       &   4.7 &  2.1 &   1 &  15 \\
+adiposity &  25.4 &  7.8 &   7 &  42 \\
+famhist   &   0.4 &  0.5 &   0 &   1 \\
+typea     &  53.1 &  9.8 &  13 &  78 \\
+obesity   &  26.0 &  4.2 &  15 &  47 \\
+alcohol   &  17.0 & 24.5 &   0 & 147 \\
+age       &  42.8 & 14.6 &  15 &  64 \\
+\bottomrule
+\end{tabular}}
+\end{minipage}
 
-\subsection{Class Distribution and Imbalance}
+\vspace{8pt}
 
-Of the 462 patients, 160 (34.6\%) are CHD-positive and 302 (65.4\%) are
-CHD-negative, yielding a majority-to-minority ratio of 1.89:1. This moderate
-class imbalance is consistent with findings in similar clinical datasets
-\cite{rehman2025predicting} and has implications for model evaluation: accuracy
-alone is a misleading metric, and techniques such as SMOTE or class-weighted
-loss should be considered at the modelling stage \cite{banerjee2025systematic}.
+% ── Correlation heatmap + analysis ───────────────────────────────────────────
+\noindent
+\begin{minipage}[t]{0.52\linewidth}
+\vspace{0pt}
+The Pearson correlation heatmap (Figure~\ref{fig:corr}) reveals that
+\texttt{age} ($r=0.37$) is the strongest linear predictor of CHD, followed
+by \texttt{tobacco} ($r=0.30$), \texttt{famhist} ($r=0.27$), and \texttt{ldl}
+($r=0.26$). \texttt{alcohol} ($r=0.06$) and \texttt{obesity} ($r=0.10$) are
+the weakest predictors. A moderate positive correlation between
+\texttt{adiposity} and \texttt{obesity} ($r=0.72$) suggests partial
+multicollinearity, motivating ridge regularisation in Section~\ref{sec:lrrp}
+\cite{hassan2022effectively, ogunpola2024machine}.
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.44\linewidth}
+\vspace{0pt}
+\centering
+\includegraphics[width=\linewidth]{../exploratory_data_analysis/eda_output/fig_correlation_heatmap.png}
+\captionof{figure}{\footnotesize Pearson correlation matrix.}
+\label{fig:corr}
+\end{minipage}
 
-\subsection{Correlation Analysis}
+\vspace{8pt}
 
-Pearson correlation coefficients between each feature and the CHD target reveal
-that \texttt{age} ($r = 0.373$) is the strongest linear predictor, followed by
-\texttt{tobacco} ($r = 0.300$), \texttt{famhist} ($r = 0.272$), and \texttt{ldl}
-($r = 0.263$). In contrast, \texttt{alcohol} ($r = 0.063$) and \texttt{obesity}
-($r = 0.100$) exhibit the weakest linear association with the target. Correlation
-heatmaps are widely used in clinical ML pipelines to guide feature selection
-and identify multicollinearity prior to modelling \cite{hassan2022effectively,
-ogunpola2024machine}.
+% ── Feature importance table + figure ────────────────────────────────────────
+\noindent
+\begin{minipage}[t]{0.52\linewidth}
+\vspace{0pt}
+Feature importance was assessed jointly using mutual information (MI) and
+the ANOVA F-test \cite{elsofany2024proposed, ullah2024machine}. Using two
+complementary criteria guards against misleading rankings from linear
+assumptions alone. Table~\ref{tab:fi} shows the normalised scores: \texttt{age}
+ranks first under both criteria, while \texttt{obesity} and \texttt{typea}
+score lowest. These rankings directly inform the variable selection strategy
+for the ridge logistic regression in Section~\ref{sec:lrrp}.
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.44\linewidth}
+\vspace{0pt}
+\centering
+\captionof{table}{\footnotesize Normalised feature importance scores (ranked by mean).}
+\label{tab:fi}
+\vspace{2pt}
+{\footnotesize
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Feature    & MI   & ANOVA & Mean \\
+\midrule
+age        & 1.00 & 1.00  & 1.00 \\
+tobacco    & 0.39 & 0.60  & 0.50 \\
+famhist    & 0.43 & 0.48  & 0.46 \\
+sbp        & 0.34 & 0.22  & 0.28 \\
+ldl        & 0.00 & 0.45  & 0.22 \\
+adiposity  & 0.00 & 0.41  & 0.21 \\
+alcohol    & 0.16 & 0.00  & 0.08 \\
+typea      & 0.07 & 0.04  & 0.06 \\
+obesity    & 0.00 & 0.04  & 0.02 \\
+\bottomrule
+\end{tabular}}
+\end{minipage}
 
-\subsection{Feature Distributions}
+\vspace{8pt}
 
-Skewness analysis identified three strongly right-skewed features: \texttt{alcohol}
-(skewness $= 2.31$), \texttt{tobacco} ($= 2.08$), and \texttt{ldl} ($= 1.31$),
-which may benefit from log-transformation before classification. Boxplots stratified
-by CHD class confirm that CHD patients exhibit consistently higher values across
-\texttt{age}, \texttt{tobacco}, \texttt{ldl}, and \texttt{adiposity}, providing
-visual evidence of class-conditional separation \cite{elsofany2024proposed}.
-
-\subsection{Principal Component Analysis}
-
-PCA was applied to the standardised feature matrix. The first principal component
-(PC1) explains 32.05\% of the total variance and loads positively on
-\texttt{adiposity}, \texttt{age}, and \texttt{obesity}, indicating a general
-\emph{metabolic risk} axis. Seven components are required to reach 90\% cumulative
-explained variance, suggesting a moderately high intrinsic dimensionality. The 2-D
-PCA projection shows partial but incomplete separation between CHD classes,
-consistent with the expectation that linear projections cannot fully resolve a
-non-linearly separable problem \cite{banerjee2025systematic}.
-
-\subsection{Feature Importance}
-
-Feature importance was assessed using two complementary criteria: mutual
-information (MI) and the ANOVA F-test. Both criteria rank \texttt{age} as the
-most informative feature (normalised score 1.000), followed by \texttt{tobacco},
-\texttt{famhist}, and \texttt{sbp}. \texttt{obesity} and \texttt{typea} score
-lowest on both metrics, suggesting they contribute the least marginal predictive
-information. Using multiple criteria reduces the risk of misleading rankings
-caused by linear assumptions in any single test \cite{elsofany2024proposed,
-ullah2024machine}.
+% ── PCA ──────────────────────────────────────────────────────────────────────
+\noindent
+\begin{minipage}[t]{0.52\linewidth}
+\vspace{0pt}
+PCA was applied to the standardised feature matrix
+\cite{banerjee2025systematic}. PC1 explains 32.1\% of variance and loads
+positively on \texttt{adiposity}, \texttt{age}, and \texttt{obesity} --- a
+latent \emph{metabolic risk} axis. Seven components are needed to reach 90\%
+cumulative variance, indicating moderate intrinsic dimensionality. The 2-D
+projection (Figure~\ref{fig:pca}) shows partial but incomplete class
+separation, confirming that linear decision boundaries will be insufficient
+and motivating the exploration of non-linear classifiers in Section~\ref{sec:oc}.
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.44\linewidth}
+\vspace{0pt}
+\centering
+\includegraphics[width=\linewidth]{../exploratory_data_analysis/eda_output/fig_pca_scatter.png}
+\captionof{figure}{\footnotesize PCA 2-D projection coloured by CHD class.}
+\label{fig:pca}
+\end{minipage}
 
 % =============================================================================
 \section{Logistic Regression with Ridge Penalty}
+\label{sec:lrrp}
 % =============================================================================
 
-% TODO: Complete this section after implementing lrrp.py
+% TODO: Complete after implementing logistic_regression_ridge_penalty/lrrp.py
 %
-% Suggested structure:
-%   2.1 Model Specification
-%       - Ridge (L2) penalty motivation: addresses multicollinearity,
-%         shrinks coefficients without hard zeroing
-%       - Hyperparameter C (inverse regularisation strength) selection via CV
-%   2.2 Results
-%       - Coefficient table (feature, sign, magnitude)
-%       - Classification report (precision, recall, F1, AUC)
-%       - ROC curve figure
-%       - Confusion matrix
-%   2.3 Interpretation
-%       - Which features drive the model most?
-%       - How does regularisation affect coefficients?
+% Structure:
+%   - Model specification: L2 penalty motivation (multicollinearity from EDA),
+%     C selection via cross-validation
+%   - Results: coefficient table (minipage right), ROC curve (minipage right),
+%     confusion matrix, classification report
+%   - Interpretation: sign/magnitude of coefficients, effect of regularisation
 
-\noindent\textit{This section will be completed upon implementation of the
-ridge logistic regression module (\texttt{logistic\_regression\_ridge\_penalty/lrrp.py}).}
+\noindent\textit{This section will be completed upon implementation of
+\texttt{logistic\_regression\_ridge\_penalty/lrrp.py}.}
 
 % =============================================================================
 \section{Alternative Classifiers}
+\label{sec:oc}
 % =============================================================================
 
-% TODO: Complete this section after implementing oc.py
+% TODO: Complete after implementing other_classifiers/oc.py
 %
-% Suggested structure:
-%   3.1 Classifier Selection Motivation
-%       - Why these classifiers? (tree-based, kernel-based, ensemble)
-%       - Cross-validation strategy
-%   3.2 Comparison Table
-%       - Accuracy, AUC, F1, Recall for each classifier
-%   3.3 Best Classifier
-%       - Identify best model and justify choice
-%       - Hyperparameter tuning procedure
-%       - Final results and discussion
+% Structure:
+%   - Classifier selection motivation (tree-based, kernel-based, ensemble)
+%   - Cross-validated comparison table (Accuracy, AUC, F1, Recall) — minipage
+%   - Best classifier: tuning procedure, final results, discussion
 
-\noindent\textit{This section will be completed upon implementation of the
-alternative classifiers module (\texttt{other\_classifiers/oc.py}).}
+\noindent\textit{This section will be completed upon implementation of
+\texttt{other\_classifiers/oc.py}.}
 
 % =============================================================================
 % References
-% Only entries actually cited above are included via BibTeX.
 % =============================================================================
 \newpage
 \bibliographystyle{plainnat}
@@ -181,13 +240,13 @@ alternative classifiers module (\texttt{other\_classifiers/oc.py}).}
 
 \section{Code Replication Instructions}
 
-The full source code for this project is publicly available on GitHub:
+The full source code is available on GitHub:
 
 \begin{center}
 \url{https://github.com/manpreet-sangha/predict_coronary_heart_disease}
 \end{center}
 
-\noindent An interactive live dashboard is deployed and accessible at:
+\noindent The interactive live dashboard is accessible at:
 
 \begin{center}
 \url{https://predict-coronary-heart-disease.streamlit.app/}
@@ -196,43 +255,18 @@ The full source code for this project is publicly available on GitHub:
 \subsection*{Local Setup}
 
 \begin{enumerate}
-    \item Clone the repository:
-    \begin{verbatim}
-git clone https://github.com/manpreet-sangha/predict_coronary_heart_disease.git
-cd predict_coronary_heart_disease
-    \end{verbatim}
-
+    \item Clone the repository and enter the project directory.
     \item Create and activate a virtual environment:
-    \begin{verbatim}
-python -m venv .venv
-.venv\Scripts\activate        # Windows
-source .venv/bin/activate     # macOS / Linux
-    \end{verbatim}
-
-    \item Install dependencies:
-    \begin{verbatim}
-pip install -r requirements.txt
-    \end{verbatim}
-
-    \item Run the full analysis pipeline:
-    \begin{verbatim}
-python chd_main.py
-    \end{verbatim}
-    Output figures and tables are saved to
-    \texttt{exploratory\_data\_analysis/eda\_output/}.
-
-    \item Launch the interactive dashboard locally:
-    \begin{verbatim}
-streamlit run app.py
-    \end{verbatim}
+          \texttt{python -m venv .venv} then \texttt{.venv\textbackslash Scripts\textbackslash activate} (Windows).
+    \item Install dependencies: \texttt{pip install -r requirements.txt}
+    \item Run the full pipeline: \texttt{python chd\_main.py}\\
+          Outputs saved to \texttt{exploratory\_data\_analysis/eda\_output/}.
+    \item Launch dashboard: \texttt{streamlit run app.py}
 \end{enumerate}
 
-\subsection*{Requirements}
-
-Python 3.10 or later is required. All package versions are pinned in
-\texttt{requirements.txt}. Key dependencies: \texttt{pandas $\geq$ 2.0},
-\texttt{scikit-learn $\geq$ 1.4}, \texttt{streamlit $\geq$ 1.35},
-\texttt{plotly $\geq$ 5.20}.
+\noindent Python~$\geq$\,3.10 required. Key packages: \texttt{pandas\,$\geq$\,2.0},
+\texttt{scikit-learn\,$\geq$\,1.4}, \texttt{streamlit\,$\geq$\,1.35},
+\texttt{plotly\,$\geq$\,5.20}.
 
 \end{appendices}
 
