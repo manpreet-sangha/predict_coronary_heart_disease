@@ -1,0 +1,47 @@
+"""
+config.py — Project-wide constants and configuration
+=====================================================
+All universal variables, feature lists, thresholds, and paths are
+defined here. Import from this file in any module across the project.
+Dynamic values (e.g. which features are skewed) are computed at
+runtime from the data — only the threshold lives here.
+"""
+
+import os
+
+# ── Project root ───────────────────────────────────────────────────────────────
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# ── Data ──────────────────────────────────────────────────────────────────────
+DATA_PATH = os.path.join(ROOT_DIR, "input_data", "heart-disease.csv")
+TARGET = "chd"
+
+# ── Feature lists ─────────────────────────────────────────────────────────────
+# ALL_FEATURES: all input columns (excluding target)
+ALL_FEATURES = [
+    "sbp", "tobacco", "ldl", "adiposity",
+    "famhist", "typea", "obesity", "alcohol", "age"
+]
+
+# NUMERIC_FEATURES: continuous features (excludes binary categorical)
+NUMERIC_FEATURES = [
+    "sbp", "tobacco", "ldl", "adiposity",
+    "typea", "obesity", "alcohol", "age"
+]
+
+# CATEGORICAL_FEATURES: features requiring encoding
+CATEGORICAL_FEATURES = ["famhist"]
+
+# Encoding map for famhist
+FAMHIST_ENCODING = {"Present": 1, "Absent": 0}
+
+# ── Thresholds ────────────────────────────────────────────────────────────────
+# Features whose |skewness| exceeds this value are flagged for log-transformation.
+# The actual list of skewed features is computed dynamically from the data
+# at runtime — not hardcoded — so it adapts to any uploaded dataset.
+SKEWNESS_THRESHOLD = 1.0
+
+# ── Output directories ────────────────────────────────────────────────────────
+EDA_OUTPUT_DIR  = os.path.join(ROOT_DIR, "exploratory_data_analysis", "eda_output")
+LRRP_OUTPUT_DIR = os.path.join(ROOT_DIR, "logistic_regression_ridge_penalty", "lrrp_output")
+OC_OUTPUT_DIR   = os.path.join(ROOT_DIR, "other_classifiers", "oc_output")

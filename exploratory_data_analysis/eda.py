@@ -1,30 +1,20 @@
 """
 eda.py — Exploratory Data Analysis Orchestrator
 ================================================
-This module is the single entry point for all EDA on the coronary heart
-disease dataset. It imports and calls each individual technique module in
-a logical sequence, passing the processed dataframe through the pipeline.
+Single entry point for all EDA on the coronary heart disease dataset.
+Imports and calls each individual technique module in a logical sequence,
+passing the processed dataframe through the pipeline.
 
 MODULE IMPORT MAP:
-    eda_descriptive      → basic stats, missing values, class distribution
-    eda_correlation      → Pearson correlation matrix and heatmap
-    eda_distribution     → histograms, boxplots, KDE by CHD class
-    eda_pca              → PCA scree plot, 2D projection, loadings
-    eda_feature_importance → mutual info, ANOVA F-test, chi-square
-    eda_class_imbalance  → class balance, feature means, outlier counts
+    eda_descriptive        → basic stats, missing values, class distribution
+    eda_correlation        → Pearson correlation matrix and heatmap
+    eda_distribution       → histograms, boxplots, violin plots, KDE by CHD class
+    eda_pca                → PCA scree plot, 2D projection, loadings heatmap
+    eda_feature_importance → mutual info, ANOVA F-test, chi-square ranking
+    eda_class_imbalance    → class balance, feature means, outlier counts
 
 All outputs (figures and CSV tables) are saved to:
     exploratory_data_analysis/eda_output/
-
-LITERATURE BASIS FOR TECHNIQUE SELECTION:
-    The six techniques implemented here reflect the EDA methods most
-    frequently used and recommended across the 10 reviewed papers on
-    ML-based CHD/CVD prediction (see report/references.bib). Specifically:
-      - Descriptive stats + correlation: all 10 papers
-      - Distribution analysis:           El-Sofany (2024), Ogunpola (2024)
-      - PCA:                             Banerjee (2025), Kumar (2025), Ullah (2024)
-      - Feature importance:              El-Sofany (2024), Hassan (2022), Ullah (2024)
-      - Class imbalance:                 Rehman (2025), Banerjee (2025), Ganie (2025)
 """
 
 import pandas as pd

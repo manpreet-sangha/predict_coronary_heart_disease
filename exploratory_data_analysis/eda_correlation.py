@@ -3,33 +3,31 @@ eda_correlation.py — Correlation Analysis for CHD Dataset
 ==========================================================
 WHY THIS MODULE IS USED:
     Correlation analysis is the most universally applied EDA technique
-    across the reviewed CHD/CVD literature. Hassan et al. (2022) and
-    Ogunpola et al. (2024) both use Pearson correlation heatmaps to
-    reveal feature interdependencies before modelling. El-Sofany et al.
-    (2024) show that correlation-guided feature understanding reduces
-    redundancy and improves classifier interpretability. Ullah et al.
-    (2024) further use correlation to remove highly collinear features
-    prior to feature selection.
+    across the CHD/CVD literature. Pearson correlation heatmaps reveal
+    feature interdependencies before modelling. Correlation-guided feature
+    understanding reduces redundancy and improves classifier interpretability.
+    Highly collinear features (r > 0.7) motivate ridge regularisation in
+    the logistic regression model.
 
 TECHNIQUES APPLIED:
     - Pearson correlation matrix (all features + target)
     - Lower-triangle heatmap for visual clarity
-    - Ranked bar chart of per-feature correlation with chd target
-
-REFERENCES:
-    Hassan et al. (2022). doi:10.3390/s22197227
-    El-Sofany et al. (2024). doi:10.1038/s41598-024-74656-2
-    Ogunpola et al. (2024). doi:10.3390/diagnostics14020144
-    Ullah et al. (2024). doi:10.1109/ACCESS.2024.3359910
+    - Ranked bar chart of per-feature correlation with target
 """
 
 import os
+import sys
 import numpy as np
 import pandas as pd
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "eda_output")
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from config import TARGET, EDA_OUTPUT_DIR
+
+OUTPUT_DIR = EDA_OUTPUT_DIR
 
 
 def run(df: pd.DataFrame) -> None:
@@ -49,12 +47,11 @@ def run(df: pd.DataFrame) -> None:
 
     corr = df.corr()
 
-    # ── 1. Print feature correlations with target ──────────────────────────
-    target_corr = corr["chd"].drop("chd").sort_values(ascending=False)
+    # ── 1. Feature correlations with target ───────────────────────────────
+    target_corr = corr[TARGET].drop(TARGET).sort_values(ascending=False)
     print("\n--- Feature Correlations with CHD (descending) ---")
     print(target_corr.round(3).to_string())
 
-    # Save correlation table
     corr_path = os.path.join(OUTPUT_DIR, "correlation_matrix.csv")
     corr.round(3).to_csv(corr_path)
     print(f"\n[Saved] {corr_path}")
@@ -64,37 +61,27 @@ def run(df: pd.DataFrame) -> None:
 
     fig, ax = plt.subplots(figsize=(10, 8))
     sns.heatmap(
-        corr,
-        mask=mask,
-        annot=True,
-        fmt=".2f",
-        cmap="coolwarm",
-        center=0,
-        linewidths=0.5,
-        ax=ax
+        corr, mask=mask, annot=True, fmt=".2f",
+        cmap="coolwarm", center=0, linewidths=0.5, ax=ax
     )
-    ax.set_title(
-        "Pearson Correlation Matrix — Heart Disease Features",
-        fontsize=13, fontweight="bold", pad=12
-    )
+    ax.set_title("Pearson Correlation Matrix — Heart Disease Features",
+                 fontsize=13, fontweight="bold", pad=12)
     plt.tight_layout()
     heatmap_path = os.path.join(OUTPUT_DIR, "fig_correlation_heatmap.png")
     plt.savefig(heatmap_path, dpi=150)
-    plt.show()
+    plt.close()
     print(f"[Saved] {heatmap_path}")
 
-    # ── 3. Bar chart: correlation with chd ────────────────────────────────
+    # ── 3. Bar chart: correlation with target ──────────────────────────────
     colors = ["tomato" if v > 0 else "steelblue" for v in target_corr.values]
     fig, ax = plt.subplots(figsize=(8, 5))
     ax.barh(target_corr.index, target_corr.values, color=colors)
     ax.axvline(0, color="black", linewidth=0.8)
-    ax.set_xlabel("Pearson Correlation with CHD")
-    ax.set_title(
-        "Feature Correlations with Coronary Heart Disease Target",
-        fontweight="bold"
-    )
+    ax.set_xlabel(f"Pearson Correlation with {TARGET.upper()}")
+    ax.set_title("Feature Correlations with Coronary Heart Disease Target",
+                 fontweight="bold")
     plt.tight_layout()
     bar_path = os.path.join(OUTPUT_DIR, "fig_target_correlation_bar.png")
     plt.savefig(bar_path, dpi=150)
-    plt.show()
+    plt.close()
     print(f"[Saved] {bar_path}")

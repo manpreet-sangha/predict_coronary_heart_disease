@@ -21,10 +21,8 @@ DATASET:
 
 import pandas as pd
 
+from config import DATA_PATH
 from exploratory_data_analysis.eda import run_eda
-
-# ── Configuration ─────────────────────────────────────────────────────────────
-DATA_PATH = "input_data/heart-disease.csv"
 
 # ── Load Data ─────────────────────────────────────────────────────────────────
 print("Loading dataset...")
