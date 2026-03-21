@@ -80,11 +80,8 @@ def render(df: pd.DataFrame) -> None:
     scatter_df = pd.DataFrame({
         "PC1": X_2d[:, 0],
         "PC2": X_2d[:, 1],
-        "CHD": y.astype(str).replace({"0": "No CHD", "1": "CHD"}),
+        "CHD": df["chd"].map({0: "No CHD", 1: "CHD"}).values,
     })
-    # Fix: map after creation
-    scatter_df["CHD"] = scatter_df["CHD"].map({"0": "No CHD", "1": "CHD"})
-    scatter_df["CHD"] = df["chd"].map({0: "No CHD", 1: "CHD"})
 
     fig_scatter = px.scatter(
         scatter_df,
