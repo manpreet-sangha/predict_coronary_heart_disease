@@ -151,10 +151,8 @@ In the Pearson correlation heatmap (Figure~\ref{fig:corr}), the feature most lin
 On the other hand, \texttt{alcohol} ($r=0.06$) and \texttt{obesity} ($r=0.10$)
 show little linear association with CHD. I also noticed a fairly strong
 correlation between \texttt{adiposity} and \texttt{obesity} ($r=0.72$), which
-means these two features carry overlapping information. This observed 
-multicollinearity is one of the reasons I chose ridge regularisation in
-Section~\ref{sec:lrrp}
-\cite{hassan2022effectively, ogunpola2024machine}.
+means these two features carry overlapping information. Multicollinearity is one of the reasons 
+to choose ridge regularisation in Section~\ref{sec:lrrp} \cite{hassan2022effectively, ogunpola2024machine}.
 
 Figure~\ref{fig:logtr} shows the effect of applying a
 log\textsubscript{1p}-transformation to the four skewed features.
@@ -163,10 +161,8 @@ In each case the skewness drops well below the $|\gamma_1|>1$ threshold:
 \texttt{ldl} from 1.31 to 0.16, and \texttt{alcohol} from 2.31 to 0.03.
 After transformation the distributions look much closer to a bell curve
 (blue vs.\ red in Figure~\ref{fig:logtr}), which helps models that assume
-roughly symmetric inputs --- particularly logistic regression and the
-generative classifiers (LDA, QDA, Gaussian NB) used later.
-I applied these transformations as a preprocessing step before fitting
-the models in Sections~\ref{sec:lrrp}--\ref{sec:oc}.
+roughly symmetric inputs e.g. logistic regression and the
+generative classifiers (LDA, QDA, Gaussian NB) used in this report.
 
 To clearly demonstrate feature importance, I ranked them using
 mutual information (MI) and the ANOVA F-test \cite{elsofany2024proposed, ullah2024machine}. 
@@ -256,19 +252,15 @@ them together, which is important given the multicollinearity observed between
 \texttt{adiposity} and \texttt{obesity} ($r=0.72$, Section~\ref{sec:eda}).
 
 \textbf{Feature engineering.}
-Two multiplicative interaction terms were derived from the nine original
-variables to capture joint effects that a linear model cannot represent
+Two features were derived to capture joint effects that a linear model cannot represent
 with base features alone.
 
 \textit{(i) \texttt{age\_tobacco} $=$ age $\times$ tobacco.}
-The \texttt{tobacco} column records cumulative lifetime consumption in kg,
-not a daily rate. A young patient and an older patient may carry the same
-lifetime total yet differ substantially in their cardiovascular trajectory:
-the older patient has sustained arterial exposure for far longer.
+The \texttt{tobacco} column records cumulative lifetime consumption (not daily rate).
 Multiplying age by tobacco encodes both quantity and duration of exposure in
-a single term. \textbf{Assumption:} the marginal CHD risk of additional
-tobacco consumption is multiplicative with age, i.e.\ the dose--risk
-relationship compounds over decades rather than remaining constant
+a single term. \textbf{Assumption:} the risk from smoking gets worse
+with age --- an older patient with the same tobacco total as a younger
+one has had longer exposure, so their CHD risk is higher
 \cite{rehman2025predicting}.
 
 \textit{(ii) \texttt{age\_famhist} $=$ age $\times$ famhist.}
