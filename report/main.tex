@@ -37,6 +37,23 @@
 \usepackage{wrapfig}        % text wraps around figures/tables
 \usepackage{placeins} % use \FloatBarrier explicitly where needed
 
+% ── Code listings ─────────────────────────────────────────────────────────────
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily\footnotesize,
+  backgroundcolor=\color[gray]{0.95},
+  frame=single,
+  framerule=0.4pt,
+  rulecolor=\color[gray]{0.6},
+  breaklines=true,
+  breakatwhitespace=true,
+  xleftmargin=6pt,
+  xrightmargin=6pt,
+  aboveskip=4pt,
+  belowskip=4pt,
+}
+\usepackage{xcolor}
+
 % ── Float placement defaults (prevents overflow past page bottom) ─────────────
 \renewcommand{\topfraction}{0.85}       % up to 85 % of page may be top floats
 \renewcommand{\bottomfraction}{0.70}    % up to 70 % of page may be bottom floats
@@ -600,33 +617,65 @@ conditional independence, or equal class covariances.
 
 \section{Code Replication Instructions}
 
-The full source code is available on GitHub:
-
-\begin{center}
+\noindent\textbf{Source code:}\quad
 \url{https://github.com/manpreet-sangha/predict_coronary_heart_disease}
-\end{center}
 
-\noindent The interactive live dashboard is accessible at:
-
-\begin{center}
+\noindent\textbf{Live dashboard:}\quad
 \url{https://predict-coronary-heart-disease.streamlit.app/}
-\end{center}
 
-\subsection*{Local Setup}
-
-\begin{enumerate}
-    \item Clone the repository and enter the project directory.
-    \item Create and activate a virtual environment:
-          \texttt{python -m venv .venv} then \texttt{.venv\textbackslash Scripts\textbackslash activate} (Windows).
-    \item Install dependencies: \texttt{pip install -r requirements.txt}
-    \item Run the full pipeline: \texttt{python chd\_main.py}\\
-          Outputs saved to \texttt{exploratory\_data\_analysis/eda\_output/}.
-    \item Launch dashboard: \texttt{streamlit run app.py}
-\end{enumerate}
-
-\noindent Python~$\geq$\,3.10 required. Key packages: \texttt{pandas\,$\geq$\,2.0},
-\texttt{scikit-learn\,$\geq$\,1.4}, \texttt{streamlit\,$\geq$\,1.35},
+\noindent\textbf{Requirements:} Python~$\geq$\,3.10,
+\texttt{pandas\,$\geq$\,2.0}, \texttt{scikit-learn\,$\geq$\,1.4},
+\texttt{statsmodels\,$\geq$\,0.14}, \texttt{streamlit\,$\geq$\,1.35},
 \texttt{plotly\,$\geq$\,5.20}.
+
+\subsection*{Step 1 — Clone the repository}
+
+\noindent\textit{Windows (Command Prompt or PowerShell):}
+\begin{lstlisting}
+git clone https://github.com/manpreet-sangha/predict_coronary_heart_disease.git
+cd predict_coronary_heart_disease
+\end{lstlisting}
+
+\noindent\textit{macOS / Linux (Terminal):}
+\begin{lstlisting}
+git clone https://github.com/manpreet-sangha/predict_coronary_heart_disease.git
+cd predict_coronary_heart_disease
+\end{lstlisting}
+
+\subsection*{Step 2 — Create and activate a virtual environment}
+
+\noindent\textit{Windows:}
+\begin{lstlisting}
+python -m venv .venv
+.venv\Scripts\activate
+\end{lstlisting}
+
+\noindent\textit{macOS / Linux:}
+\begin{lstlisting}
+python3 -m venv .venv
+source .venv/bin/activate
+\end{lstlisting}
+
+\subsection*{Step 3 — Install dependencies}
+\begin{lstlisting}
+pip install -r requirements.txt
+\end{lstlisting}
+
+\subsection*{Step 4 — Run the full analysis pipeline}
+\begin{lstlisting}
+python chd_main.py
+\end{lstlisting}
+\noindent Outputs (figures, CSVs) are saved to
+\texttt{exploratory\_data\_analysis/eda\_output/},
+\texttt{logistic\_regression\_ridge\_penalty/lrrp\_output/}, and
+\texttt{other\_classifiers/oc\_output/}.
+
+\subsection*{Step 5 — Launch the interactive dashboard}
+\begin{lstlisting}
+streamlit run streamlit_app/app.py
+\end{lstlisting}
+\noindent The dashboard opens automatically at \texttt{http://localhost:8501}.
+Upload \texttt{input\_data/heart-disease.csv} to explore the results interactively.
 
 \end{appendices}
 
