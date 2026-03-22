@@ -258,22 +258,21 @@ with base features alone.
 \textit{(i) \texttt{age\_tobacco} $=$ age $\times$ tobacco.}
 The \texttt{tobacco} column records cumulative lifetime consumption (not daily rate).
 Multiplying age by tobacco encodes both quantity and duration of exposure in
-a single term. \textbf{Assumption:} the risk from smoking gets worse
-with age --- an older patient with the same tobacco total as a younger
+a single feature. \textbf{Assumption:} the risk from smoking gets worse
+with age i.e., an older patient with the same tobacco total as a younger
 one has had longer exposure, so their CHD risk is higher
 \cite{rehman2025predicting}.
 
 \textit{(ii) \texttt{age\_famhist} $=$ age $\times$ famhist.}
-Family history is a binary genetic risk indicator. Genetic predisposition
-is not static: a 60-year-old with family history represents a materially
-higher immediate risk than a 30-year-old with the same flag. The
-interaction allows the model to represent this compounding effect, which
-ridge regularisation would otherwise suppress by shrinking the
-\texttt{famhist} coefficient towards zero. \textbf{Assumption:} the
-influence of family history amplifies with age rather than remaining
-additive and age-independent. Because \texttt{famhist} is binary, the
-term is equivalent to a piecewise age slope — positive for patients with
-family history and zero otherwise.
+A 60-year-old with family history represents a materially
+higher immediate risk than a 30-year-old with the same flag
+\cite{patel2023famhist}. The interaction allows the model to consider
+this compounding effect, which ridge regularisation would otherwise
+suppress by shrinking the \texttt{famhist} coefficient towards zero.
+\textbf{Assumption:} the influence of family history amplifies with age
+rather than remaining additive and age-independent. Because
+\texttt{famhist} is binary, the term is equivalent to a piecewise age
+slope --- positive for patients with family history and zero otherwise.
 
 \textbf{Limitations.} Both terms inherit the measurement limitations of
 their parent variables (self-reported tobacco total; binary family history
