@@ -342,18 +342,18 @@ AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753
 that CHD recall is 0.563 versus No-CHD recall of 0.871, a consequence of the
 1.89:1 class imbalance.
 \end{minipage}\hfill
-\begin{minipage}[t]{0.52\linewidth}
+\begin{minipage}[t]{0.50\linewidth}
 \centering
 \captionof{table}{\footnotesize Test-set performance of the ridge logistic
 regression.}
 \label{tab:perf}
 \vspace{2pt}
 {\footnotesize
-\begin{tabular}{@{}lcccc@{}}
+\begin{tabular}{@{}lrrrr@{}}
 \toprule
-Model & AUC-ROC & F1 & Precision & Recall \\
+Model & AUC & F1 & Prec. & Rec. \\
 \midrule
-Ridge LR ($C=0.01$) & 0.820 & 0.610 & 0.667 & 0.563 \\
+Ridge LR ($C\!=\!0.01$) & 0.820 & 0.610 & 0.667 & 0.563 \\
 \bottomrule
 \end{tabular}}
 \end{minipage}
@@ -448,19 +448,19 @@ AUC\,=\,0.788, F1\,=\,0.571, and accuracy\,=\,0.742
 F1 (0.610), suggesting the L2-regularised model generalises better
 when derived interaction features are included.
 \end{minipage}\hfill
-\begin{minipage}[t]{0.54\linewidth}
+\begin{minipage}[t]{0.52\linewidth}
 \centering
-\captionof{table}{\footnotesize Final test-set comparison: Ridge LR
-vs.\ best alternative classifier.}
+\captionof{table}{\footnotesize Final comparison: Ridge LR vs.\ best
+alternative classifier.}
 \label{tab:final}
 \vspace{2pt}
 {\footnotesize
-\begin{tabular}{@{}lcccc@{}}
+\begin{tabular}{@{}lrrrr@{}}
 \toprule
-Model & AUC-ROC & F1 & Precision & Recall \\
+Model & AUC & F1 & Prec. & Rec. \\
 \midrule
-Ridge LR ($C=0.01$)   & \textbf{0.820} & \textbf{0.610} & \textbf{0.667} & \textbf{0.563} \\
-Random Forest (tuned) & 0.788 & 0.571 & 0.667 & 0.500 \\
+Ridge LR ($C\!=\!0.01$)  & \textbf{0.820} & \textbf{0.610} & \textbf{0.667} & \textbf{0.563} \\
+Random Forest (tuned)    & 0.788 & 0.571 & 0.667 & 0.500 \\
 \bottomrule
 \end{tabular}}
 \end{minipage}
