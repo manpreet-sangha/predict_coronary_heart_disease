@@ -1,31 +1,26 @@
 """
 components/chart_distribution.py — Feature Distribution Component
-=================================================================
-Renders interactive Plotly histograms with KDE overlay, boxplots
-stratified by CHD class, and a violin plot for the user-selected
-feature. A sidebar selectbox lets the user choose any feature and
-all three plots update reactively.
-
-Literature basis: El-Sofany et al. (2024), Ogunpola et al. (2024),
-Bhatt et al. (2023).
 """
 
 import pandas as pd
-import plotly.express as px
 import plotly.figure_factory as ff
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
+import plotly.express as px
 import streamlit as st
 
 from config import NUMERIC_FEATURES, ALL_FEATURES, TARGET
 
 
 def render(df: pd.DataFrame) -> None:
-    """Render interactive distribution plots with a feature selector."""
 
     st.subheader("Feature Distribution Analysis")
+    st.markdown(
+        "Select a feature to inspect its distribution split by CHD class. "
+        "The **violin plot** shows the full distribution shape and spread for each class — "
+        "wider sections indicate higher density. The embedded box shows the median and IQR. "
+        "The **KDE curve** overlays smoothed density estimates, making class separation "
+        "immediately visible for numeric features."
+    )
 
-    # ── Feature selector ───────────────────────────────────────────────────
     selected = st.selectbox(
         "Select feature to inspect",
         options=ALL_FEATURES,
@@ -37,76 +32,30 @@ def render(df: pd.DataFrame) -> None:
     chd_label_map = {cls: ("No CHD" if cls == 0 else ("CHD" if cls == 1 else f"Class {cls}"))
                      for cls in chd_classes}
     _palette = ["#4C78A8", "#E45756", "#54A24B", "#F58518"]
-    chd_color_map = {cls: _palette[i % len(_palette)]
-                     for i, cls in enumerate(chd_classes)}
+    chd_color_map = {cls: _palette[i % len(_palette)] for i, cls in enumerate(chd_classes)}
+    color_discrete_map = {chd_label_map[cls]: chd_color_map[cls] for cls in chd_classes}
     chd_label = df[TARGET].map(chd_label_map)
 
-    # ── 1. All-features overview: histograms grid ──────────────────────────
-    st.markdown("#### All Features — Histogram Overview")
-    fig_grid = make_subplots(rows=3, cols=3,
-                             subplot_titles=ALL_FEATURES)
-    for i, feat in enumerate(ALL_FEATURES):
-        row, col = divmod(i, 3)
-        for cls in chd_classes:
-            name = chd_label_map[cls]
-            color = chd_color_map[cls]
-            subset = df.loc[df[TARGET] == cls, feat]
-            fig_grid.add_trace(
-                go.Histogram(
-                    x=subset,
-                    name=name,
-                    marker_color=color,
-                    opacity=0.65,
-                    showlegend=(i == 0),
-                    legendgroup=name,
-                    nbinsx=25,
-                    hovertemplate=f"{feat}<br>%{{x}}<extra>{name}</extra>"
-                ),
-                row=row + 1, col=col + 1
-            )
-    fig_grid.update_layout(
-        barmode="overlay",
-        height=700,
-        title_text="Feature Histograms by CHD Class",
-        legend=dict(orientation="h", y=-0.07),
-        margin=dict(l=20, r=20, t=60, b=20),
+    # ── Violin plot ────────────────────────────────────────────────────────
+    fig_vio = px.violin(
+        df, x=chd_label, y=selected,
+        color=chd_label,
+        color_discrete_map=color_discrete_map,
+        box=True, points="outliers",
+        title=f"Distribution of {selected} by CHD Status",
+        labels={"x": "CHD Status", selected: selected},
     )
-    st.plotly_chart(fig_grid, use_container_width=True)
+    fig_vio.update_layout(showlegend=False, height=420,
+                          margin=dict(l=10, r=10, t=45, b=10))
+    st.plotly_chart(fig_vio, use_container_width=True)
 
-    # ── 2. Selected feature: boxplot + violin ─────────────────────────────
-    st.markdown(f"#### Deep Dive — **{selected}**")
-
-    col_a, col_b = st.columns(2)
-
-    with col_a:
-        color_discrete_map = {chd_label_map[cls]: chd_color_map[cls] for cls in chd_classes}
-        fig_box = px.box(
-            df, x=chd_label, y=selected,
-            color=chd_label,
-            color_discrete_map=color_discrete_map,
-            points="outliers",
-            title=f"Boxplot: {selected} by CHD Status",
-            labels={"x": "CHD Status", selected: selected},
-        )
-        fig_box.update_layout(showlegend=False, height=380,
-                              margin=dict(l=10, r=10, t=45, b=10))
-        st.plotly_chart(fig_box, use_container_width=True)
-
-    with col_b:
-        fig_vio = px.violin(
-            df, x=chd_label, y=selected,
-            color=chd_label,
-            color_discrete_map=color_discrete_map,
-            box=True, points="outliers",
-            title=f"Violin: {selected} by CHD Status",
-            labels={"x": "CHD Status", selected: selected},
-        )
-        fig_vio.update_layout(showlegend=False, height=380,
-                              margin=dict(l=10, r=10, t=45, b=10))
-        st.plotly_chart(fig_vio, use_container_width=True)
-
-    # ── 3. KDE overlay for selected numeric feature ────────────────────────
+    # ── KDE overlay (numeric features only) ───────────────────────────────
     if selected in NUMERIC_FEATURES:
+        st.markdown(
+            f"The KDE below confirms whether the two classes have distinct distributions "
+            f"for **{selected}**. Greater separation between the curves indicates stronger "
+            f"predictive value."
+        )
         kde_data   = [df.loc[df[TARGET] == cls, selected].dropna().tolist() for cls in chd_classes]
         kde_labels = [chd_label_map[cls] for cls in chd_classes]
         kde_colors = [chd_color_map[cls] for cls in chd_classes]
