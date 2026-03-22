@@ -229,7 +229,7 @@ matter most for each principal component.
 % ── PCA figures (float to next available position) ───────────────────────────
 \begin{figure}[htbp]
 \centering
-\begin{minipage}{0.54\linewidth}
+\begin{minipage}{0.60\linewidth}
 \centering
 \includegraphics[width=\linewidth]{../exploratory_data_analysis/eda_output/fig_pca_scatter.png}
 \caption{\footnotesize PCA 2-D projection coloured by CHD class.}
@@ -378,6 +378,18 @@ Model & AUC & F1 & Prec. & Rec. \\
 \shortstack[l]{Ridge LR\\($C\!=\!0.01$)} & 0.820 & 0.610 & 0.667 & 0.563 \\
 \bottomrule
 \end{tabular}}
+
+\vspace{6pt}
+\raggedright
+Figure~\ref{fig:shrinkage} shows every unpenalised estimate (blue) is
+pulled toward zero by the ridge penalty (red), with the largest
+reductions on \texttt{age\_famhist} and \texttt{age}. The derived
+features improve recall by 12.5 percentage points relative to the
+original nine features. On the held-out test set ($n=93$, 20\,\%) the
+model achieves AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753
+(Table~\ref{tab:perf}). CHD recall is 0.563 versus No-CHD recall of
+0.871, a consequence of the 1.89:1 class imbalance
+\cite{rehman2025predicting, ogunpola2024machine}.
 \end{minipage}\hfill
 \begin{minipage}[t]{0.50\linewidth}
 \vspace{0pt}
@@ -388,28 +400,14 @@ Model & AUC & F1 & Prec. & Rec. \\
 \captionof{figure}{\footnotesize Coefficient shrinkage: ($\hat{\beta}_{\text{LR}}$) vs.\ ridge ($\hat{\beta}_{\text{ridge}}$).}
 \label{fig:shrinkage}
 \end{minipage}
-
-\vspace{4pt}
-Figure~\ref{fig:shrinkage} shows every unpenalised estimate (blue) is pulled toward zero by the ridge penalty
-(red), with the largest reductions on \texttt{age\_famhist} and \texttt{age}.
-The derived features improve recall by 12.5 percentage points
-relative to the original nine-features. AUC of 0.820 is substantially above
-the 0.5 random baseline \cite{rehman2025predicting, ogunpola2024machine}.
-
-On the held-out test set ($n=93$, 20\,\%) the model achieves
-AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753
-(Table~\ref{tab:perf}). CHD recall is 0.563 versus No-CHD recall of 0.871,
-a consequence of the 1.89:1 class imbalance (Figures~\ref{fig:roc}--\ref{fig:oc_roc},
-Tables~\ref{tab:cm}--\ref{tab:oc_cm}, Section~\ref{sec:oc}).
 % =============================================================================
-\newpage
 \section{Alternative Classifiers}
 \label{sec:oc}
 % =============================================================================
 Since the PCA scatter plot (Section~\ref{sec:eda}) shows overlapping between CHD and
 non-CHD patients, other classifiers such as discriminative models, tree-based ensembles, 
-and generative classifiers are considered in this section. I used the same preprocessing as Section~\ref{sec:lrrp}:
-\texttt{famhist} encoded, four skewed features
+and generative classifiers are considered in this section. I used the same preprocessing as 
+Section~\ref{sec:lrrp}: \texttt{famhist} encoded, four skewed features 
 log\,\textsubscript{1p}-transformed, all features standardised.
 
 All classifiers were screened using stratified 5-fold cross-validation on AUC-ROC
