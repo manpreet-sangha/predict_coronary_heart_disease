@@ -35,6 +35,16 @@
 \usepackage{caption}
 \usepackage{array}          % extended column formatting
 \usepackage{wrapfig}        % text wraps around figures/tables
+\usepackage[section]{placeins} % \FloatBarrier auto-inserted at each \section
+
+% ── Float placement defaults (prevents overflow past page bottom) ─────────────
+\renewcommand{\topfraction}{0.85}       % up to 85 % of page may be top floats
+\renewcommand{\bottomfraction}{0.70}    % up to 70 % of page may be bottom floats
+\renewcommand{\textfraction}{0.10}      % at least 10 % of page must be text
+\renewcommand{\floatpagefraction}{0.85} % float-only page must be >= 85 % full
+\setlength{\floatsep}{8pt plus 2pt minus 2pt}
+\setlength{\textfloatsep}{10pt plus 2pt minus 4pt}
+\setlength{\intextsep}{8pt plus 2pt minus 2pt}
 
 % ── Hyperlinks ────────────────────────────────────────────────────────────────
 \usepackage[colorlinks=true, linkcolor=black, citecolor=blue, urlcolor=blue]{hyperref}
@@ -196,7 +206,7 @@ captures metabolic risk while PC2 captures lifestyle behaviours, motivating
 non-linear classifiers in Section~\ref{sec:oc}.
 
 % ── PCA figures ──────────────────────────────────────────────────────────────
-\begin{figure}[h!]
+\begin{figure}[htbp]
 \centering
 \begin{minipage}{0.54\linewidth}
 \centering
@@ -306,7 +316,7 @@ and \texttt{adiposity}. \texttt{obesity} and \texttt{alcohol} remain
 almost fully shrunk to zero.
 
 % ── ROC + confusion matrix ─────────────────────────────────────────────────
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
 \begin{minipage}{0.48\linewidth}
 \centering
@@ -333,7 +343,7 @@ that CHD recall is 0.563 versus No-CHD recall of 0.871, a consequence of the
 is substantially above the 0.5 random baseline and competitive with published
 benchmarks on similar datasets \cite{rehman2025predicting, ogunpola2024machine}.
 
-\begin{table}[h!]
+\begin{table}[htbp]
 \centering
 \caption{\footnotesize Test-set performance of the ridge logistic regression.}
 \label{tab:perf}
@@ -404,7 +414,7 @@ The best configuration was \texttt{max\_depth=3}, \texttt{max\_features=sqrt},
 (\texttt{max\_depth=3}) prevent overfitting on a dataset of 462 observations.
 
 % ── ROC + confusion matrix ─────────────────────────────────────────────────
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
 \begin{minipage}{0.48\linewidth}
 \centering
@@ -432,7 +442,7 @@ importances confirm that \texttt{age}, \texttt{age\_famhist}, and
 \texttt{ldl} are the dominant predictors, consistent with EDA rankings and
 ridge coefficients \cite{rehman2025predicting, ogunpola2024machine}.
 
-\begin{table}[h!]
+\begin{table}[htbp]
 \centering
 \caption{\footnotesize Final test-set comparison: Ridge LR vs.\ best
 alternative classifier.}
