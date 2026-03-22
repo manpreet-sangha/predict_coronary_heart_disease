@@ -412,34 +412,11 @@ the largest absolute reductions on \texttt{age\_famhist} and \texttt{age}.
 
 % ── ROC curves and confusion matrices moved to Section 3 for side-by-side comparison
 
-% ── Table 4: minipage pair — text left, table right, full-width text below ───
-\noindent
-\begin{minipage}[t]{0.46\linewidth}
-\raggedright
 On the held-out test set ($n=93$, 20\,\%) the model achieves
-AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753
-(Table~\ref{tab:perf}). CHD recall is 0.563 versus No-CHD recall of 0.871,
+AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753.
+CHD recall is 0.563 versus No-CHD recall of 0.871,
 a consequence of the 1.89:1 class imbalance (Figures~\ref{fig:roc}--\ref{fig:oc_roc},
 Tables~\ref{tab:cm}--\ref{tab:oc_cm}, Section~\ref{sec:oc}).
-\end{minipage}\hfill
-\begin{minipage}[t]{0.50\linewidth}
-\centering
-\captionsetup{width=\linewidth}
-\captionof{table}{\footnotesize Test-set performance of the ridge logistic
-regression.}
-\label{tab:perf}
-\vspace{2pt}
-{\footnotesize
-\begin{tabular}{@{}lrrrr@{}}
-\toprule
-Model & AUC & F1 & Prec. & Rec. \\
-\midrule
-\shortstack[l]{Ridge LR\\($C\!=\!0.01$)} & 0.820 & 0.610 & 0.667 & 0.563 \\
-\bottomrule
-\end{tabular}}
-\end{minipage}
-
-\vspace{4pt}
 The derived interaction features improve recall by 12.5 percentage points
 relative to the nine-feature baseline. AUC of 0.820 is substantially above
 the 0.5 random baseline and competitive with published benchmarks on similar
