@@ -228,10 +228,20 @@ non-linear classifiers in Section~\ref{sec:oc}.
 \end{figure}
 
 Logistic regression with an L2 (ridge) penalty was chosen as the primary
-interpretable classifier. The multicollinearity between \texttt{adiposity}
-and \texttt{obesity} ($r=0.72$, Section~\ref{sec:eda}) motivates
-regularisation: ridge shrinks correlated coefficients jointly without zeroing
-any out \cite{borges2025logistic, hassan2022effectively}.
+interpretable classifier. To understand why ridge was chosen over lasso,
+it helps to think geometrically. Both penalties constrain how large the
+coefficients can be, but the shape of the constraint differs: lasso uses a
+diamond shape, while ridge uses a circle. Because a diamond has sharp corners
+sitting on the axes, the likelihood surface almost always touches it at a
+corner, which forces one or more coefficients to exactly zero. A circle has
+no corners, so the likelihood surface touches it at a smooth point and every
+coefficient is shrunk a little but none are eliminated. Since all eleven
+features in this model are clinically motivated and EDA confirmed each
+contributes signal, eliminating any arbitrarily would be inappropriate.
+Ridge's circular constraint shrinks correlated coefficients jointly without
+zeroing any out, which is exactly the behaviour needed given the
+multicollinearity between \texttt{adiposity} and \texttt{obesity}
+($r=0.72$, Section~\ref{sec:eda}) \cite{borges2025logistic, hassan2022effectively}.
 
 \textbf{Feature engineering.}
 Two multiplicative interaction terms were derived from the nine original
