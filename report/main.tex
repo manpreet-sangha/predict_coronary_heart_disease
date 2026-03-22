@@ -35,7 +35,7 @@
 \usepackage{caption}
 \usepackage{array}          % extended column formatting
 \usepackage{wrapfig}        % text wraps around figures/tables
-\usepackage[section]{placeins} % \FloatBarrier auto-inserted at each \section
+\usepackage{placeins} % use \FloatBarrier explicitly where needed
 
 % ── Float placement defaults (prevents overflow past page bottom) ─────────────
 \renewcommand{\topfraction}{0.85}       % up to 85 % of page may be top floats
@@ -205,7 +205,12 @@ separation; the loadings heatmap (Figure~\ref{fig:pcaload}) confirms PC1
 captures metabolic risk while PC2 captures lifestyle behaviours, motivating
 non-linear classifiers in Section~\ref{sec:oc}.
 
-% ── PCA figures ──────────────────────────────────────────────────────────────
+% =============================================================================
+\section{Logistic Regression with Ridge Penalty}
+\label{sec:lrrp}
+% =============================================================================
+
+% ── PCA figures (float to next available position) ───────────────────────────
 \begin{figure}[htbp]
 \centering
 \begin{minipage}{0.54\linewidth}
@@ -221,11 +226,6 @@ non-linear classifiers in Section~\ref{sec:oc}.
 \label{fig:pcaload}
 \end{minipage}
 \end{figure}
-
-% =============================================================================
-\section{Logistic Regression with Ridge Penalty}
-\label{sec:lrrp}
-% =============================================================================
 
 Logistic regression with an L2 (ridge) penalty was chosen as the primary
 interpretable classifier. The multicollinearity between \texttt{adiposity}
