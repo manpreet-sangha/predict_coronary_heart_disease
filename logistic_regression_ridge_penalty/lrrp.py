@@ -44,8 +44,10 @@ from sklearn.metrics import (
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import (
     ALL_FEATURES, NUMERIC_FEATURES, CATEGORICAL_FEATURES,
-    TARGET, FAMHIST_ENCODING, SKEWNESS_THRESHOLD, LRRP_OUTPUT_DIR
+    TARGET, FAMHIST_ENCODING, SKEWNESS_THRESHOLD, LRRP_OUTPUT_DIR,
+    MODEL_FEATURES, DERIVED_FEATURES
 )
+from feature_engineering.fe import run_feature_engineering
 
 OUTPUT_DIR = LRRP_OUTPUT_DIR
 
@@ -56,23 +58,24 @@ OUTPUT_DIR = LRRP_OUTPUT_DIR
 
 def preprocess(df: pd.DataFrame):
     """
-    Encode famhist, apply log1p to dynamically identified skewed features,
-    and return feature matrix X, target vector y, and list of skewed features.
+    Apply feature engineering, encode famhist, log1p skewed original features,
+    and return feature matrix X (MODEL_FEATURES), target y, and skewed list.
+
+    Feature engineering (run_feature_engineering) handles famhist encoding
+    internally before computing interaction terms, so categorical encoding
+    is not repeated here.
     """
-    df = df.copy()
+    # Apply feature engineering: encodes famhist, adds derived columns
+    df = run_feature_engineering(df)
 
-    # Encode categorical features
-    for col in CATEGORICAL_FEATURES:
-        if df[col].dtype == object:
-            df[col] = df[col].map(FAMHIST_ENCODING)
-
-    # Dynamically identify skewed features
+    # Dynamically identify skewed features among original numeric features only
+    # (derived interaction terms are not log-transformed)
     skewed = [f for f in NUMERIC_FEATURES
               if f in df.columns and abs(df[f].skew()) > SKEWNESS_THRESHOLD]
     for f in skewed:
         df[f] = np.log1p(df[f])
 
-    X = df[ALL_FEATURES].values
+    X = df[MODEL_FEATURES].values
     y = df[TARGET].values
     return X, y, skewed
 
@@ -167,7 +170,7 @@ def run_lrrp(df: pd.DataFrame) -> None:
     # ── 5. Coefficients ────────────────────────────────────────────────────
     coef = final_model.coef_[0]
     coef_df = pd.DataFrame({
-        "Feature":         ALL_FEATURES,
+        "Feature":         MODEL_FEATURES,
         "Coefficient":     np.round(coef, 4),
         "Abs_Coefficient": np.round(np.abs(coef), 4)
     }).sort_values("Abs_Coefficient", ascending=False).reset_index(drop=True)

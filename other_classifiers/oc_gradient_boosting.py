@@ -32,7 +32,7 @@ import os
 
 import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from config import ALL_FEATURES
+from config import MODEL_FEATURES as ALL_FEATURES
 
 NAME = "Gradient Boosting"
 

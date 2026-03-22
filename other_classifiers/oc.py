@@ -39,8 +39,10 @@ from sklearn.preprocessing import StandardScaler
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import (
     ALL_FEATURES, NUMERIC_FEATURES, CATEGORICAL_FEATURES,
-    TARGET, FAMHIST_ENCODING, SKEWNESS_THRESHOLD, OC_OUTPUT_DIR
+    TARGET, FAMHIST_ENCODING, SKEWNESS_THRESHOLD, OC_OUTPUT_DIR,
+    MODEL_FEATURES
 )
+from feature_engineering.fe import run_feature_engineering
 
 from other_classifiers import (
     oc_decision_tree,
@@ -67,16 +69,13 @@ CLASSIFIER_MODULES = [
 # =============================================================================
 
 def _preprocess(df: pd.DataFrame):
-    """Encode famhist, log1p skewed features, return X, y, skewed list."""
-    df = df.copy()
-    for col in CATEGORICAL_FEATURES:
-        if df[col].dtype == object:
-            df[col] = df[col].map(FAMHIST_ENCODING)
+    """Apply FE, log1p skewed original features, return X (MODEL_FEATURES), y, skewed list."""
+    df = run_feature_engineering(df)
     skewed = [f for f in NUMERIC_FEATURES
               if f in df.columns and abs(df[f].skew()) > SKEWNESS_THRESHOLD]
     for f in skewed:
         df[f] = np.log1p(df[f])
-    X = df[ALL_FEATURES].values
+    X = df[MODEL_FEATURES].values
     y = df[TARGET].values
     return X, y, skewed
 

@@ -35,6 +35,17 @@ CATEGORICAL_FEATURES = ["famhist"]
 # Encoding map for famhist
 FAMHIST_ENCODING = {"Present": 1, "Absent": 0}
 
+# DERIVED_FEATURES: engineered interaction terms added by feature_engineering/fe.py
+# These are computed from ALL_FEATURES after encoding and are used by models only.
+# EDA operates on ALL_FEATURES (original columns) to keep analysis interpretable.
+DERIVED_FEATURES = [
+    "age_tobacco",   # age × tobacco — lifetime smoking burden proxy
+    "age_famhist",   # age × famhist — genetic risk compounding with age
+]
+
+# MODEL_FEATURES: full feature set passed to classifiers (original + derived)
+MODEL_FEATURES = ALL_FEATURES + DERIVED_FEATURES
+
 # ── Thresholds ────────────────────────────────────────────────────────────────
 # Features whose |skewness| exceeds this value are flagged for log-transformation.
 # The actual list of skewed features is computed dynamically from the data

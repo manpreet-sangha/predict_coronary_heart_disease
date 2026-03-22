@@ -1,8 +1,8 @@
 best_C,0.01
-test_auc,0.8099
-test_f1,0.5185
-test_accuracy,0.7204
-test_precision,0.6364
-test_recall,0.4375
+test_auc,0.8202
+test_f1,0.6102
+test_accuracy,0.7527
+test_precision,0.6667
+test_recall,0.5625
 n_train,369.0
 n_test,93.0
