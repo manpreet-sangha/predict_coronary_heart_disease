@@ -92,6 +92,7 @@
 
 % =============================================================================
 \section{Exploratory Data Analysis}
+\label{sec:eda}
 % =============================================================================
 
 \begin{wraptable}{r}{0.46\linewidth}
@@ -504,7 +505,7 @@ Recall — No\,CHD\,85\%, CHD\,56\%.}
 \vspace{2pt}
 {\footnotesize
 \renewcommand{\arraystretch}{1.1}
-\begin{tabular}{@{}llrr@{}}
+\begin{tabular}{@{}ll|rr@{}}
 & & \multicolumn{2}{c}{\textit{Predicted label}} \\
 \cmidrule(l){3-4}
 & & No\,CHD & CHD \\
@@ -523,7 +524,7 @@ Recall — No\,CHD\,87\%, CHD\,50\%.}
 \vspace{2pt}
 {\footnotesize
 \renewcommand{\arraystretch}{1.1}
-\begin{tabular}{@{}llrr@{}}
+\begin{tabular}{@{}ll|rr@{}}
 & & \multicolumn{2}{c}{\textit{Predicted label}} \\
 \cmidrule(l){3-4}
 & & No\,CHD & CHD \\
@@ -535,6 +536,14 @@ Recall — No\,CHD\,87\%, CHD\,50\%.}
 \end{minipage}
 
 % ── Table 6: minipage pair — text left, table right, full-width text below ───
+\vspace{4pt}
+The ROC curves (Figures~\ref{fig:roc} and~\ref{fig:oc_roc}) show that Ridge LR
+(AUC\,=\,0.820) outperforms the tuned Random Forest (AUC\,=\,0.788); both lie
+well above the diagonal random-classifier baseline. The confusion matrices
+(Tables~\ref{tab:cm} and~\ref{tab:oc_cm}) confirm that both models struggle
+more with CHD recall than No-CHD recall, a direct consequence of the 1.89:1
+class imbalance.
+
 \noindent
 \begin{minipage}[t]{0.44\linewidth}
 \raggedright
