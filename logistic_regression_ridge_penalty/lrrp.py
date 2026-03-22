@@ -31,6 +31,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import seaborn as sns
+import statsmodels.api as sm
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import (
     train_test_split, StratifiedKFold, cross_val_score
@@ -238,7 +239,29 @@ def run_lrrp(df: pd.DataFrame) -> None:
     plt.close()
     print(f"[Saved] {cv_path}")
 
-    # ── 10. Save metrics summary and classification report ─────────────────
+    # ── 10. Unpenalised LR inference table (statsmodels) ───────────────────
+    # Ridge coefficients are biased and have no valid p-values.
+    # A separate unpenalised MLE fit on the training set provides the
+    # classical inference table (Coefficient, Std. Error, Z-statistic, P-value)
+    # as shown in the module lecture notes (kNN-P1.pdf, slide 6).
+    print("\n--- Unpenalised LR: inference table (statsmodels) ---")
+    X_train_sm = sm.add_constant(X_train_s)
+    sm_model = sm.Logit(y_train, X_train_sm)
+    sm_result = sm_model.fit(method="bfgs", maxiter=500, disp=False)
+
+    feature_names_with_intercept = ["Intercept"] + MODEL_FEATURES
+    inf_df = pd.DataFrame({
+        "Feature":    feature_names_with_intercept,
+        "Coef":       np.round(sm_result.params,    4),
+        "Std_Err":    np.round(sm_result.bse,       4),
+        "Z_stat":     np.round(sm_result.tvalues,   3),
+        "P_value":    np.round(sm_result.pvalues,   4),
+    })
+    inf_df["Significant"] = inf_df["P_value"] < 0.05
+    inf_df.to_csv(os.path.join(OUTPUT_DIR, "lrrp_inference_table.csv"), index=False)
+    print(inf_df.to_string(index=False))
+
+    # ── 11. Save metrics summary and classification report ─────────────────
     summary = pd.Series({
         "best_C":       best_C,
         "test_auc":     round(auc,  4),

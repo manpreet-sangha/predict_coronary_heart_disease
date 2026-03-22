@@ -1,0 +1,13 @@
+Feature,Coef,Std_Err,Z_stat,P_value,Significant
+Intercept,-0.8507,0.1375,-6.187,0.0,True
+sbp,0.1364,0.135,1.01,0.3124,False
+tobacco,0.3069,0.2607,1.177,0.2391,False
+ldl,0.42,0.1478,2.841,0.0045,True
+adiposity,-0.1574,0.2683,-0.586,0.5576,False
+famhist,-0.357,0.5266,-0.678,0.4977,False
+typea,0.3812,0.135,2.824,0.0047,True
+obesity,0.0165,0.2107,0.078,0.9375,False
+alcohol,-0.0498,0.1309,-0.38,0.7037,False
+age,0.5131,0.2364,2.171,0.03,True
+age_tobacco,0.0875,0.2425,0.361,0.7181,False
+age_famhist,0.8248,0.5348,1.542,0.123,False
