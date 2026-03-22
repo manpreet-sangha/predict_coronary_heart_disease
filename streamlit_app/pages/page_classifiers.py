@@ -76,8 +76,11 @@ def _preprocess(df):
     return df[MODEL_FEATURES].values, df[TARGET].values
 
 
+_CACHE_VERSION = 2  # bump to invalidate stale cached results after feature changes
+
+
 @st.cache_data(show_spinner=False)
-def _run_pipeline(data_hash: int, df_values, df_columns):
+def _run_pipeline(data_hash: int, df_values, df_columns, _version: int = _CACHE_VERSION):
     df = pd.DataFrame(df_values, columns=df_columns)
     X, y = _preprocess(df)
 

@@ -42,8 +42,11 @@ def _preprocess(df: pd.DataFrame):
     return X, y, skewed
 
 
+_CACHE_VERSION = 2  # bump to invalidate stale cached results after feature changes
+
+
 @st.cache_data(show_spinner=False)
-def _run_cv(data_hash: int, df_values, df_columns):
+def _run_cv(data_hash: int, df_values, df_columns, _version: int = _CACHE_VERSION):
     """Cache CV results so they don't recompute on every widget interaction."""
     df = pd.DataFrame(df_values, columns=df_columns)
     X, y, skewed = _preprocess(df)
@@ -172,7 +175,7 @@ def render(df: pd.DataFrame) -> None:
             name=f"Best C={best_C_auto}"
         ))
         fig_cv.update_layout(
-            xaxis_title="C (regularisation strength)",
+            xaxis=dict(title="C (regularisation strength)", type="category"),
             yaxis_title="5-fold CV AUC",
             height=340,
             margin=dict(l=10, r=10, t=30, b=10)
