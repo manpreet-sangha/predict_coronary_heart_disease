@@ -267,26 +267,11 @@ without severity grading). The multiplicative form imposes a specific
 functional shape; a flexible non-parametric model may better approximate
 the true relationship.
 
-% ── Coefficient table: minipage pair after FE text (avoids page-break gap) ───
-\noindent
-\begin{minipage}[t]{0.46\linewidth}
-\raggedright
-\textbf{Preprocessing.}
-\texttt{famhist} encoded as 0/1; skewed features (\texttt{sbp},
-\texttt{tobacco}, \texttt{ldl}, \texttt{alcohol})
-log\,\textsubscript{1p}-transformed; all eleven features standardised with
-\texttt{StandardScaler} (zero mean, unit variance).
-
-The regularisation strength $C$ (inverse of $\lambda$) was selected by
-stratified 5-fold cross-validation over the grid
-$\{0.001, 0.01, 0.1, 1, 10, 100\}$ maximising AUC-ROC on an 80\,\%
-training set. Table~\ref{tab:coef} lists the standardised coefficients of
-the best model ($C=0.01$).
-\end{minipage}\hfill
-\begin{minipage}[t]{0.52\linewidth}
+% ── Coefficient table: proper float so it fills gap at top of next page ───────
+\begin{table}[htbp]
 \centering
-\captionof{table}{\footnotesize Standardised coefficients of the ridge
-logistic regression ($C=0.01$), sorted by $|\hat{\beta}|$.}
+\caption{\footnotesize Standardised coefficients of the ridge logistic
+regression ($C=0.01$), sorted by $|\hat{\beta}|$.}
 \label{tab:coef}
 \vspace{2pt}
 {\footnotesize
@@ -302,9 +287,19 @@ famhist      &  0.130 & obesity     &  0.013 \\
 age\_tobacco &  0.125 &             &        \\
 \bottomrule
 \end{tabular}}
-\end{minipage}
+\end{table}
 
-\vspace{4pt}
+\textbf{Preprocessing.}
+\texttt{famhist} encoded as 0/1; skewed features (\texttt{sbp},
+\texttt{tobacco}, \texttt{ldl}, \texttt{alcohol})
+log\,\textsubscript{1p}-transformed; all eleven features standardised with
+\texttt{StandardScaler} (zero mean, unit variance).
+The regularisation strength $C$ (inverse of $\lambda$) was selected by
+stratified 5-fold cross-validation over the grid
+$\{0.001, 0.01, 0.1, 1, 10, 100\}$ maximising AUC-ROC on an 80\,\%
+training set. Table~\ref{tab:coef} lists the standardised coefficients of
+the best model ($C=0.01$).
+
 The optimal $C=0.01$ implies strong regularisation, consistent with
 multicollinear features reducing effective degrees of freedom.
 \texttt{age} retains the largest effect ($\hat{\beta}=0.212$), now
@@ -462,6 +457,7 @@ Random Forest (tuned) & 0.788 & 0.571 & 0.667 & 0.500 \\
 % =============================================================================
 % References
 % =============================================================================
+\newpage
 \bibliographystyle{plainnat}
 \bibliography{references}
 
