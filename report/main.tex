@@ -94,12 +94,13 @@ age       &  42.8 & 14.6 &  15 &  64 \\
 
 The \texttt{heart-disease.csv} dataset contains 462 male patients from the
 Western Cape, South Africa, described by nine clinical features and a binary
-target \texttt{chd} (1\,=\,CHD present). No missing values were detected.
-Table~\ref{tab:desc} summarises the key descriptive statistics. Four features
-exceed the $|\gamma_{1}|>1$ skewness threshold: \texttt{alcohol}
+target \texttt{chd} (1\,=\,CHD present) with no missing values.
+Four features exceed the $|\gamma_{1}|>1$ skewness threshold: \texttt{alcohol}
 ($\gamma_{1}=2.31$), \texttt{tobacco} ($\gamma_{1}=2.08$), \texttt{ldl}
 ($\gamma_{1}=1.31$), and \texttt{sbp} ($\gamma_{1}=1.18$), suggesting
 log-transformation may improve classifier performance.
+Table~\ref{tab:desc} summarises the key descriptive statistics. Four features
+
 Of the 462 patients, 160 (34.6\%) are CHD-positive and 302 (65.4\%)
 CHD-negative, giving an imbalance ratio of 1.89:1. This means raw accuracy
 will be a misleading evaluation metric
@@ -224,17 +225,20 @@ and \texttt{obesity} ($r=0.72$, Section~\ref{sec:eda}) motivates
 regularisation: ridge shrinks correlated coefficients jointly without zeroing
 any out \cite{borges2025logistic, hassan2022effectively}.
 
-All nine features were retained. Preprocessing mirrors the EDA pipeline:
-\texttt{famhist} encoded as 0/1; \texttt{sbp}, \texttt{tobacco},
-\texttt{ldl}, and \texttt{alcohol} log\,\textsubscript{1p}-transformed;
-all features standardised with \texttt{StandardScaler} (zero mean, unit
-variance) so coefficient magnitudes are directly comparable.
+Eleven features were used: the nine original features plus two derived
+interaction terms, \texttt{age\_tobacco} ($\text{age}\times\text{tobacco}$,
+a lifetime smoking burden proxy) and \texttt{age\_famhist}
+($\text{age}\times\text{famhist}$, genetic risk compounding with age).
+Preprocessing: \texttt{famhist} encoded as 0/1; skewed features
+(\texttt{sbp}, \texttt{tobacco}, \texttt{ldl}, \texttt{alcohol})
+log\,\textsubscript{1p}-transformed; all features standardised with
+\texttt{StandardScaler} (zero mean, unit variance).
 
 The regularisation strength $C$ (inverse of $\lambda$) was selected by
 stratified 5-fold cross-validation over the grid
 $\{0.001, 0.01, 0.1, 1, 10, 100\}$ maximising AUC-ROC on an 80\,\%
 training set. Table~\ref{tab:coef} lists the standardised coefficients of
-the best model ($C=0.01$, CV-AUC$=0.760$).
+the best model ($C=0.01$).
 \end{minipage}\hfill
 \begin{minipage}[t]{0.46\linewidth}
 \centering
@@ -245,17 +249,19 @@ logistic regression ($C=0.01$), sorted by $|\beta|$.}
 {\footnotesize
 \begin{tabular}{@{}lrr@{}}
 \toprule
-Feature    & $\hat{\beta}$ & $|\hat{\beta}|$ \\
+Feature          & $\hat{\beta}$ & $|\hat{\beta}|$ \\
 \midrule
-age        &  0.246 & 0.246 \\
-famhist    &  0.205 & 0.205 \\
-tobacco    &  0.198 & 0.198 \\
-ldl        &  0.180 & 0.180 \\
-typea      &  0.118 & 0.118 \\
-adiposity  &  0.085 & 0.085 \\
-sbp        &  0.080 & 0.080 \\
-obesity    &  0.014 & 0.014 \\
-alcohol    & $-$0.013 & 0.013 \\
+age              &  0.212 & 0.212 \\
+age\_famhist     &  0.189 & 0.189 \\
+ldl              &  0.174 & 0.174 \\
+tobacco          &  0.150 & 0.150 \\
+famhist          &  0.130 & 0.130 \\
+age\_tobacco     &  0.125 & 0.125 \\
+typea            &  0.122 & 0.122 \\
+sbp              &  0.079 & 0.079 \\
+adiposity        &  0.073 & 0.073 \\
+alcohol          & $-$0.015 & 0.015 \\
+obesity          &  0.013 & 0.013 \\
 \bottomrule
 \end{tabular}}
 \end{minipage}
@@ -263,11 +269,13 @@ alcohol    & $-$0.013 & 0.013 \\
 \vspace{4pt}
 The optimal $C=0.01$ implies strong regularisation, consistent with
 multicollinear features reducing effective degrees of freedom.
-\texttt{age} has the largest effect ($\hat{\beta}=0.246$), followed by
-\texttt{famhist} ($0.205$) and \texttt{tobacco} ($0.198$), reinforcing
-the EDA rankings. \texttt{obesity} and \texttt{alcohol} are almost fully
-shrunk to zero, suggesting they contribute little beyond what \texttt{adiposity}
-and \texttt{tobacco} already capture.
+\texttt{age} retains the largest effect ($\hat{\beta}=0.212$), now
+followed by \texttt{age\_famhist} ($0.189$) and \texttt{ldl} ($0.174$),
+indicating that the interaction of age with family history is a stronger
+standalone signal than either raw predictor alone. The derived term
+\texttt{age\_tobacco} ($0.125$) also outranks \texttt{typea}, \texttt{sbp},
+and \texttt{adiposity}. \texttt{obesity} and \texttt{alcohol} remain
+almost fully shrunk to zero.
 
 % ── ROC + confusion matrix ─────────────────────────────────────────────────
 \begin{figure}[H]
@@ -289,13 +297,13 @@ and \texttt{tobacco} already capture.
 \end{figure}
 
 On the held-out test set ($n=93$, 20\,\%) the model achieves
-AUC\,=\,0.810, F1\,=\,0.52, and accuracy\,=\,0.72
+AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753
 (Table~\ref{tab:perf}). The confusion matrix (Figure~\ref{fig:cm}) reveals
-that CHD recall is 0.44 versus No-CHD recall of 0.87, a consequence of the
-1.89:1 class imbalance; the model tends to predict the majority class. AUC
-of 0.810 is nevertheless substantially above the 0.5 random baseline and
-competitive with published benchmarks on similar datasets
-\cite{rehman2025predicting, ogunpola2024machine}.
+that CHD recall is 0.563 versus No-CHD recall of 0.871, a consequence of the
+1.89:1 class imbalance. The derived interaction features improve recall by
+12.5 percentage points relative to the nine-feature baseline. AUC of 0.820
+is substantially above the 0.5 random baseline and competitive with published
+benchmarks on similar datasets \cite{rehman2025predicting, ogunpola2024machine}.
 
 \begin{table}[h!]
 \centering
@@ -307,7 +315,7 @@ competitive with published benchmarks on similar datasets
 \toprule
 Model & AUC-ROC & F1 & Precision & Recall \\
 \midrule
-Ridge LR ($C=0.01$) & 0.810 & 0.52 & 0.64 & 0.44 \\
+Ridge LR ($C=0.01$) & 0.820 & 0.610 & 0.667 & 0.563 \\
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -331,11 +339,12 @@ Section~\ref{sec:lrrp}: \texttt{famhist} encoded, four skewed features
 log\,\textsubscript{1p}-transformed, all features standardised.
 
 All five were screened by stratified 5-fold cross-validation on AUC-ROC
-(Table~\ref{tab:cv}). Decision Tree performed worst (CV-AUC\,=\,0.557),
-confirming that a single tree overfits without pruning. Random Forest
-achieved the highest CV-AUC (0.715), marginally ahead of SVM (0.712) and
-Gradient Boosting (0.709). Random Forest was therefore selected for
-hyperparameter tuning.
+(Table~\ref{tab:cv}), using the same 11-feature set (including
+\texttt{age\_tobacco} and \texttt{age\_famhist}) as Section~\ref{sec:lrrp}.
+Decision Tree performed worst (CV-AUC\,=\,0.618), confirming that a single
+tree overfits without pruning. Random Forest achieved the highest CV-AUC
+(0.718), marginally ahead of SVM (0.716) and Gradient Boosting (0.699).
+Random Forest was therefore selected for hyperparameter tuning.
 \end{minipage}\hfill
 \begin{minipage}[t]{0.46\linewidth}
 \centering
@@ -348,11 +357,11 @@ hyperparameter tuning.
 \toprule
 Classifier        & CV AUC & CV F1 & CV Acc \\
 \midrule
-Decision Tree     & 0.557  & 0.422 & 0.596 \\
-KNN               & 0.659  & 0.464 & 0.675 \\
-Gradient Boosting & 0.709  & 0.481 & 0.683 \\
-SVM (RBF)         & 0.712  & 0.508 & 0.721 \\
-\textbf{Random Forest} & \textbf{0.715} & \textbf{0.489} & \textbf{0.686} \\
+Decision Tree     & 0.618  & 0.397 & 0.611 \\
+KNN               & 0.659  & 0.453 & 0.673 \\
+Gradient Boosting & 0.699  & 0.475 & 0.685 \\
+SVM (RBF)         & 0.716  & 0.511 & 0.722 \\
+\textbf{Random Forest} & \textbf{0.718} & \textbf{0.491} & \textbf{0.689} \\
 \bottomrule
 \end{tabular}}
 \end{minipage}
@@ -363,7 +372,7 @@ GridSearchCV with 5-fold CV optimised three hyperparameters simultaneously:
 \texttt{max\_depth} $\in\{3, 5, \text{None}\}$,
 \texttt{max\_features} $\in\{\text{sqrt}, \text{log2}\}$.
 The best configuration was \texttt{max\_depth=3}, \texttt{max\_features=sqrt},
-\texttt{n\_estimators=500} (tuned CV-AUC\,=\,0.748). Shallow trees
+\texttt{n\_estimators=500} (tuned CV-AUC\,=\,0.742). Shallow trees
 (\texttt{max\_depth=3}) prevent overfitting on a dataset of 462 observations.
 
 % ── ROC + confusion matrix ─────────────────────────────────────────────────
@@ -386,15 +395,14 @@ held-out test set.}
 \end{figure}
 
 On the held-out test set ($n=93$) the tuned Random Forest achieves
-AUC\,=\,0.783, F1\,=\,0.597, and accuracy\,=\,0.753
+AUC\,=\,0.788, F1\,=\,0.571, and accuracy\,=\,0.742
 (Table~\ref{tab:final}).
-Ridge logistic regression attains a higher AUC (0.810) suggesting better
-overall discrimination, while Random Forest surpasses it on F1 (0.597
-vs.\ 0.519) and accuracy (0.753 vs.\ 0.720) by improving CHD recall from
-0.44 to 0.53. Feature importances confirm that \texttt{age} (0.275),
-\texttt{tobacco} (0.165), and \texttt{ldl} (0.150) are the dominant
-predictors, fully consistent with EDA rankings and ridge coefficients
-\cite{rehman2025predicting, ogunpola2024machine}.
+Ridge logistic regression attains a higher AUC (0.820) and F1 (0.610),
+suggesting that the L2-regularised linear model generalises better on this
+small dataset when the derived interaction features are included. Feature
+importances confirm that \texttt{age}, \texttt{age\_famhist}, and
+\texttt{ldl} are the dominant predictors, consistent with EDA rankings and
+ridge coefficients \cite{rehman2025predicting, ogunpola2024machine}.
 
 \begin{table}[h!]
 \centering
@@ -407,8 +415,8 @@ alternative classifier.}
 \toprule
 Model & AUC-ROC & F1 & Precision & Recall \\
 \midrule
-Ridge LR ($C=0.01$)          & \textbf{0.810} & 0.519 & 0.636 & 0.438 \\
-Random Forest (tuned) & 0.783 & \textbf{0.597} & \textbf{0.680} & \textbf{0.531} \\
+Ridge LR ($C=0.01$)   & \textbf{0.820} & \textbf{0.610} & \textbf{0.667} & \textbf{0.563} \\
+Random Forest (tuned) & 0.788 & 0.571 & 0.667 & 0.500 \\
 \bottomrule
 \end{tabular}}
 \end{table}

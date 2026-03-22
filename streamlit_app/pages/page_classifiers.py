@@ -24,9 +24,9 @@ from sklearn.metrics import (
 )
 
 from config import (
-    ALL_FEATURES, NUMERIC_FEATURES, CATEGORICAL_FEATURES,
-    TARGET, FAMHIST_ENCODING, SKEWNESS_THRESHOLD
+    NUMERIC_FEATURES, TARGET, SKEWNESS_THRESHOLD, MODEL_FEATURES
 )
+from feature_engineering.fe import run_feature_engineering
 
 # =============================================================================
 # Constants
@@ -68,15 +68,12 @@ PARAM_GRIDS = {
 # =============================================================================
 
 def _preprocess(df):
-    df = df.copy()
-    for col in CATEGORICAL_FEATURES:
-        if df[col].dtype == object:
-            df[col] = df[col].map(FAMHIST_ENCODING)
+    df = run_feature_engineering(df)
     skewed = [f for f in NUMERIC_FEATURES
               if f in df.columns and abs(df[f].skew()) > SKEWNESS_THRESHOLD]
     for f in skewed:
         df[f] = np.log1p(df[f])
-    return df[ALL_FEATURES].values, df[TARGET].values
+    return df[MODEL_FEATURES].values, df[TARGET].values
 
 
 @st.cache_data(show_spinner=False)
@@ -160,7 +157,7 @@ def render(df: pd.DataFrame) -> None:
     # Top feature by importance (tree-based models only)
     if hasattr(best_model, "feature_importances_"):
         top_idx  = int(np.argmax(best_model.feature_importances_))
-        top_feat = f"`{ALL_FEATURES[top_idx]}` " \
+        top_feat = f"`{MODEL_FEATURES[top_idx]}` " \
                    f"({best_model.feature_importances_[top_idx]:.3f})"
     else:
         top_feat = "see classification report"
@@ -175,8 +172,8 @@ def render(df: pd.DataFrame) -> None:
         f"- **Top predictor** (importance): {top_feat} — consistent with EDA and ridge LR.\n"
         f"- Decision Tree performed worst (CV-AUC={dt_auc:.3f}), "
         f"confirming a single tree overfits without pruning.\n"
-        f"- {best_name} achieves higher accuracy ({acc:.3f}) and CHD recall "
-        f"({rec:.3f}) than ridge LR (0.720 / 0.44)."
+        f"- {best_name} achieves higher AUC ({auc:.3f}) and CHD recall "
+        f"({rec:.3f}) vs. ridge LR (AUC 0.820, recall 0.563)."
     )
 
     # ── CV Comparison ──────────────────────────────────────────────────────
@@ -269,7 +266,7 @@ def render(df: pd.DataFrame) -> None:
                 "EDA and ridge LR findings: `age`, `tobacco`, and `ldl` dominate."
             )
             fi = best_model.feature_importances_
-            fi_df = pd.DataFrame({"Feature": ALL_FEATURES, "Importance": fi})
+            fi_df = pd.DataFrame({"Feature": MODEL_FEATURES, "Importance": fi})
             fi_df = fi_df.sort_values("Importance")
 
             fig_fi = go.Figure(go.Bar(

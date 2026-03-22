@@ -22,9 +22,9 @@ from sklearn.metrics import (
 )
 
 from config import (
-    ALL_FEATURES, NUMERIC_FEATURES, CATEGORICAL_FEATURES,
-    TARGET, FAMHIST_ENCODING, SKEWNESS_THRESHOLD
+    NUMERIC_FEATURES, TARGET, SKEWNESS_THRESHOLD, MODEL_FEATURES
 )
+from feature_engineering.fe import run_feature_engineering
 
 
 # =============================================================================
@@ -32,15 +32,12 @@ from config import (
 # =============================================================================
 
 def _preprocess(df: pd.DataFrame):
-    df = df.copy()
-    for col in CATEGORICAL_FEATURES:
-        if df[col].dtype == object:
-            df[col] = df[col].map(FAMHIST_ENCODING)
+    df = run_feature_engineering(df)
     skewed = [f for f in NUMERIC_FEATURES
               if f in df.columns and abs(df[f].skew()) > SKEWNESS_THRESHOLD]
     for f in skewed:
         df[f] = np.log1p(df[f])
-    X = df[ALL_FEATURES].values
+    X = df[MODEL_FEATURES].values
     y = df[TARGET].values
     return X, y, skewed
 
@@ -121,7 +118,7 @@ def render(df: pd.DataFrame) -> None:
         f"- **AUC-ROC**: **{auc_best:.3f}** — primary metric; well above the 0.5 random baseline.\n"
         f"- **F1-score** (CHD class): **{f1_best:.3f}** · "
         f"**Accuracy**: **{acc_best:.3f}** (raw accuracy inflated by class imbalance).\n"
-        f"- **Top predictors** (by |coefficient|): `age`, `famhist`, `tobacco`, `ldl`.\n"
+        f"- **Top predictors** (by |coefficient|): `age`, `age_famhist`, `ldl`, `tobacco`, `age_tobacco`.\n"
         f"- Log₁p-transformed features: {skewed}."
     )
 
@@ -191,7 +188,7 @@ def render(df: pd.DataFrame) -> None:
         )
         coef = model.coef_[0]
         coef_df = pd.DataFrame({
-            "Feature": ALL_FEATURES,
+            "Feature": MODEL_FEATURES,
             "Coefficient": np.round(coef, 4)
         }).sort_values("Coefficient")
 
