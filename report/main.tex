@@ -404,9 +404,9 @@ model achieves AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753
 \section{Alternative Classifiers}
 \label{sec:oc}
 % =============================================================================
-Since the PCA scatter plot (Section~\ref{sec:eda}) shows overlapping between CHD and
-non-CHD patients, other classifiers such as discriminative models, tree-based ensembles, 
-and generative classifiers are considered in this section. I used the same preprocessing as 
+Since the PCA scatter plot (Section~\ref{sec:eda}) shows overlap between CHD and
+non-CHD patients: other classifiers such as discriminative models, tree-based ensembles, 
+and generative classifiers are evaluated in this section. I used the same preprocessing as 
 Section~\ref{sec:lrrp}: \texttt{famhist} encoded, four skewed features 
 log\,\textsubscript{1p}-transformed, all features standardised.
 
@@ -441,15 +441,14 @@ The ROC curves (Figures~\ref{fig:roc} and~\ref{fig:oc_roc}) show that
 all models sit well above the diagonal (random guessing) line.
 Table~\ref{tab:final} lists results for every classifier on the test set
 ($n=93$, 20\,\%). QDA gets the highest test AUC (0.828) and F1 (0.694),
-just ahead of LDA (0.821) and Ridge LR (0.820). I was surprised that the
-generative classifiers (QDA, LDA, Gaussian NB) did so well, since they
-assume features are normally distributed --- but the log-transformation
-I applied earlier seems to have fixed the worst of the skew, making those
+just ahead of LDA (0.821) and Ridge LR (0.820). The log-transformation applied earlier 
+improved the performance of the generative classifiers (QDA, LDA, Gaussian NB), since they
+assume features are normally distributed, making those
 assumptions more reasonable. The feature importances from the tree-based
 models agree with what I found in EDA: \texttt{age},
 \texttt{age\_famhist}, and \texttt{ldl} are the most important predictors
 \cite{rehman2025predicting, ogunpola2024machine}.
-\newline
+
 % ── Confusion matrices: Ridge LR vs Random Forest side by side ────────────
 \vspace{2pt}
 \noindent
