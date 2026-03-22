@@ -293,8 +293,17 @@ which stabilises estimates under multicollinearity.
 = \beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p
 \label{eq:logit}
 \end{equation}
-
-\vspace{4pt}
+The inference table (Table~\ref{tab:inference}) shows that \texttt{ldl}
+($z=2.84$, $p=0.005$), \texttt{typea} ($z=2.82$, $p=0.005$), and
+\texttt{age} ($z=2.17$, $p=0.030$) are statistically significant predictors
+under Maximum Likelihood Estimation (MLE). \texttt{tobacco}, \texttt{famhist}, \texttt{obesity}, and
+\texttt{alcohol} are not statistically significant individually, partly due to
+multicollinearity inflating their standard errors. The optimal $C=0.01$ (Table~\ref{tab:coef})
+implies strong regularisation: \texttt{age} retains the largest ridge
+effect ($\hat{\beta}=0.212$), followed by \texttt{age\_famhist} ($0.189$)
+and \texttt{ldl} ($0.174$). \texttt{obesity} and \texttt{alcohol} are
+shrunk near zero, consistent with their non-significance in the MLE fit.
+\vspace{2pt}
 \noindent
 \begin{minipage}[t]{0.50\linewidth}
 \centering
@@ -350,17 +359,8 @@ obesity      &  0.013 \\
 \end{tabular}}
 \end{minipage}
 
-\vspace{6pt}
-The inference table (Table~\ref{tab:inference}) shows that \texttt{ldl}
-($z=2.84$, $p=0.005$), \texttt{typea} ($z=2.82$, $p=0.005$), and
-\texttt{age} ($z=2.17$, $p=0.030$) are statistically significant predictors
-under Maximum Likelihood Estimation (MLE). \texttt{tobacco}, \texttt{famhist}, \texttt{obesity}, and
-\texttt{alcohol} are not statistically significant individually, partly due to
-multicollinearity inflating their standard errors. The optimal $C=0.01$ (Table~\ref{tab:coef})
-implies strong regularisation: \texttt{age} retains the largest ridge
-effect ($\hat{\beta}=0.212$), followed by \texttt{age\_famhist} ($0.189$)
-and \texttt{ldl} ($0.174$). \texttt{obesity} and \texttt{alcohol} are
-shrunk near zero, consistent with their non-significance in the MLE fit.
+\vspace{2pt}
+
 
 % ── Table 5: test-set performance ─────────────────────────────────────────────
 \begin{wraptable}{r}{0.46\linewidth}
