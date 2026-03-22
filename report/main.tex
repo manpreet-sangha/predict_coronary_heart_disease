@@ -164,7 +164,7 @@ the models in Sections~\ref{sec:lrrp}--\ref{sec:oc}.
 
 To clearly demonstrate feature importance, I ranked them using
 mutual information (MI) and the ANOVA F-test \cite{elsofany2024proposed, ullah2024machine}. 
-Single metric could be biased, that's why I used two measures above.
+I used two measures above as a single metric could be biased.
 Table~\ref{tab:fi} shows the normalised scores side by side.
 \texttt{age} comes top under both methods, while \texttt{obesity} and
 \texttt{typea} score lowest. These rankings helped inform which features to
@@ -206,20 +206,18 @@ obesity    & 0.00 & 0.04  & 0.02 \\
 \vspace{-4pt}
 \end{wraptable}
 
-I also ran PCA on the standardised features to see whether the data has any
-natural structure \cite{banerjee2025systematic}. The first component (PC1)
-explains 32.1\% of the variance and is most strongly associated with
-\texttt{adiposity} (0.52), \texttt{age} (0.46), and \texttt{obesity} (0.40),
-which together look like a metabolic risk axis. PC2 is driven by
-\texttt{alcohol} (0.54) and \texttt{tobacco} (0.46), picking up a lifestyle
-behaviour axis. To reach 90\% cumulative variance, seven components are needed,
-which tells me the data has moderate complexity and cannot be reduced to just
-a few dimensions without losing information. The 2-D scatter plot
-(Figure~\ref{fig:pca}) shows that CHD and non-CHD patients overlap
-considerably, meaning a linear boundary will not be enough to separate them
-cleanly. The loadings heatmap (Figure~\ref{fig:pcaload}) confirms which
-features drive each axis. This overlap is part of the reason I also tested
-non-linear classifiers in Section~\ref{sec:oc}.
+To determine the underlying structure, I ran PCA on the standardised features
+\cite{banerjee2025systematic}. PC1 captures 32.1\%
+of the variance and depends on \texttt{adiposity} (0.52),
+\texttt{age} (0.46), and \texttt{obesity} (0.40). 
+PC2 picks up lifestyle factors, driven by
+\texttt{alcohol} (0.54) and \texttt{tobacco} (0.46). Seven features explain 90\% cumulative variance, 
+which shows the data cannot be easily compressed into just two or three dimensions(appropriate reference here). The 2-D
+scatter plot (Figure~\ref{fig:pca}) shows a lot of overlap between CHD
+and non-CHD patients, meaning a straight (appropriate reference here) line cannot cleanly separate
+the two groups. The heatmap (Figure~\ref{fig:pcaload}) shows
+which features contribute most to each axis. This overlap motivated me
+to try non-linear classifiers in Section~\ref{sec:oc}.
 
 % =============================================================================
 \section{Logistic Regression with Ridge Penalty}
