@@ -332,9 +332,20 @@ almost fully shrunk to zero.
 \end{minipage}
 \end{figure}
 
-\begin{table}[htbp]
-\raggedleft
-\caption{\footnotesize Test-set performance of the ridge logistic regression.}
+% ── Table 4: minipage pair — text left, table right, full-width text below ───
+\noindent
+\begin{minipage}[t]{0.46\linewidth}
+\raggedright
+On the held-out test set ($n=93$, 20\,\%) the model achieves
+AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753
+(Table~\ref{tab:perf}). The confusion matrix (Figure~\ref{fig:cm}) reveals
+that CHD recall is 0.563 versus No-CHD recall of 0.871, a consequence of the
+1.89:1 class imbalance.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.52\linewidth}
+\centering
+\captionof{table}{\footnotesize Test-set performance of the ridge logistic
+regression.}
 \label{tab:perf}
 \vspace{2pt}
 {\footnotesize
@@ -345,16 +356,13 @@ Model & AUC-ROC & F1 & Precision & Recall \\
 Ridge LR ($C=0.01$) & 0.820 & 0.610 & 0.667 & 0.563 \\
 \bottomrule
 \end{tabular}}
-\end{table}
+\end{minipage}
 
-On the held-out test set ($n=93$, 20\,\%) the model achieves
-AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753
-(Table~\ref{tab:perf}). The confusion matrix (Figure~\ref{fig:cm}) reveals
-that CHD recall is 0.563 versus No-CHD recall of 0.871, a consequence of the
-1.89:1 class imbalance. The derived interaction features improve recall by
-12.5 percentage points relative to the nine-feature baseline. AUC of 0.820
-is substantially above the 0.5 random baseline and competitive with published
-benchmarks on similar datasets \cite{rehman2025predicting, ogunpola2024machine}.
+\vspace{4pt}
+The derived interaction features improve recall by 12.5 percentage points
+relative to the nine-feature baseline. AUC of 0.820 is substantially above
+the 0.5 random baseline and competitive with published benchmarks on similar
+datasets \cite{rehman2025predicting, ogunpola2024machine}.
 
 % =============================================================================
 \section{Alternative Classifiers}
@@ -430,10 +438,20 @@ held-out test set.}
 \end{minipage}
 \end{figure}
 
-\begin{table}[htbp]
-\raggedleft
-\caption{\footnotesize Final test-set comparison: Ridge LR vs.\ best
-alternative classifier.}
+% ── Table 6: minipage pair — text left, table right, full-width text below ───
+\noindent
+\begin{minipage}[t]{0.44\linewidth}
+\raggedright
+On the held-out test set ($n=93$) the tuned Random Forest achieves
+AUC\,=\,0.788, F1\,=\,0.571, and accuracy\,=\,0.742
+(Table~\ref{tab:final}). Ridge LR attains a higher AUC (0.820) and
+F1 (0.610), suggesting the L2-regularised model generalises better
+when derived interaction features are included.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.54\linewidth}
+\centering
+\captionof{table}{\footnotesize Final test-set comparison: Ridge LR
+vs.\ best alternative classifier.}
 \label{tab:final}
 \vspace{2pt}
 {\footnotesize
@@ -445,15 +463,10 @@ Ridge LR ($C=0.01$)   & \textbf{0.820} & \textbf{0.610} & \textbf{0.667} & \text
 Random Forest (tuned) & 0.788 & 0.571 & 0.667 & 0.500 \\
 \bottomrule
 \end{tabular}}
-\end{table}
+\end{minipage}
 
-On the held-out test set ($n=93$) the tuned Random Forest achieves
-AUC\,=\,0.788, F1\,=\,0.571, and accuracy\,=\,0.742
-(Table~\ref{tab:final}).
-Ridge logistic regression attains a higher AUC (0.820) and F1 (0.610),
-suggesting that the L2-regularised linear model generalises better on this
-small dataset when the derived interaction features are included. Feature
-importances confirm that \texttt{age}, \texttt{age\_famhist}, and
+\vspace{4pt}
+Feature importances confirm that \texttt{age}, \texttt{age\_famhist}, and
 \texttt{ldl} are the dominant predictors, consistent with EDA rankings and
 ridge coefficients \cite{rehman2025predicting, ogunpola2024machine}.
 
