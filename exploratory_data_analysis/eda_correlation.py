@@ -59,13 +59,13 @@ def run(df: pd.DataFrame) -> None:
     # ── 2. Heatmap (lower triangle only) ──────────────────────────────────
     mask = np.triu(np.ones_like(corr, dtype=bool))
 
-    fig, ax = plt.subplots(figsize=(5.5, 4.5))
+    fig, ax = plt.subplots(figsize=(7.5, 6.5))
     sns.heatmap(
         corr, mask=mask, annot=True, fmt=".2f",
         cmap="RdBu_r", center=0, linewidths=0.8,
-        annot_kws={"size": 7}, ax=ax
+        annot_kws={"size": 9}, ax=ax
     )
-    ax.tick_params(labelsize=7)
+    ax.tick_params(labelsize=9)
     plt.tight_layout()
     heatmap_path = os.path.join(OUTPUT_DIR, "fig_correlation_heatmap.png")
     plt.savefig(heatmap_path, dpi=220)
