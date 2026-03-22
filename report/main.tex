@@ -387,18 +387,6 @@ AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753
 a consequence of the 1.89:1 class imbalance (Figures~\ref{fig:roc}--\ref{fig:oc_roc},
 Tables~\ref{tab:cm}--\ref{tab:oc_cm}, Section~\ref{sec:oc}).
 
-% ── Figure 5: shrinkage chart ────────────────────────────────────────────────
-\begin{wrapfigure}{r}{0.40\linewidth}
-\vspace{-6pt}
-\captionsetup{width=\linewidth}
-\centering
-\includegraphics[width=\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_coefficient_shrinkage.png}
-\vspace{-6pt}
-\caption{\footnotesize Coefficient shrinkage: unpenalised MLE
-($\hat{\beta}_{\text{LR}}$) vs.\ ridge ($\hat{\beta}_{\text{ridge}}$, $C\!=\!0.01$).}
-\label{fig:shrinkage}
-\vspace{-6pt}
-\end{wrapfigure}
 Figure~\ref{fig:shrinkage} visualises the coefficient shrinkage: every
 unpenalised estimate (blue) is pulled toward zero by the ridge penalty
 (red), with the largest reductions on \texttt{age\_famhist} and \texttt{age}.
@@ -410,6 +398,19 @@ the 0.5 random baseline \cite{rehman2025predicting, ogunpola2024machine}.
 \section{Alternative Classifiers}
 \label{sec:oc}
 % =============================================================================
+
+% ── Figure 5: shrinkage chart (placed at top of Section 3 page) ──────────────
+\begin{wrapfigure}{r}{0.40\linewidth}
+\vspace{-6pt}
+\captionsetup{width=\linewidth}
+\centering
+\includegraphics[width=\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_coefficient_shrinkage.png}
+\vspace{-6pt}
+\caption{\footnotesize Coefficient shrinkage: unpenalised MLE
+($\hat{\beta}_{\text{LR}}$) vs.\ ridge ($\hat{\beta}_{\text{ridge}}$, $C\!=\!0.01$).}
+\label{fig:shrinkage}
+\vspace{-6pt}
+\end{wrapfigure}
 
 The PCA 2-D projection (Section~\ref{sec:eda}) showed only partial linear
 class separation, motivating alternatives to ridge logistic regression.
