@@ -141,7 +141,8 @@ def render(df: pd.DataFrame) -> None:
 
     with st.spinner("Running CV screening and tuning — this may take a minute …"):
         result = _run_pipeline(
-            hash(df.to_json()), df.values.tolist(), list(df.columns)
+            int(pd.util.hash_pandas_object(df).sum()),
+            df.values.tolist(), list(df.columns)
         )
 
     (screening, best_name, best_params, best_model,
@@ -155,17 +156,27 @@ def render(df: pd.DataFrame) -> None:
 
     # ── Summary ────────────────────────────────────────────────────────────
     params_str = ", ".join(f"{k}={v}" for k, v in best_params.items())
+
+    # Top feature by importance (tree-based models only)
+    if hasattr(best_model, "feature_importances_"):
+        top_idx  = int(np.argmax(best_model.feature_importances_))
+        top_feat = f"`{ALL_FEATURES[top_idx]}` " \
+                   f"({best_model.feature_importances_[top_idx]:.3f})"
+    else:
+        top_feat = "see classification report"
+
+    dt_auc = screening["Decision Tree"]["CV AUC"]
     st.info(
         f"**Alternative Classifiers — Key Results**\n\n"
         f"- **Best classifier** (5-fold CV, AUC criterion): **{best_name}**\n"
         f"- **Tuned parameters**: {params_str}\n"
         f"- **Test AUC-ROC**: **{auc:.3f}** · "
         f"**F1**: **{f1:.3f}** · **Accuracy**: **{acc:.3f}**\n"
-        f"- **Top feature** (importance): `age` ({screening}) — consistent with EDA and ridge LR.\n"
-        f"- Decision Tree performed worst (AUC={screening['Decision Tree']['CV AUC']:.3f}), "
-        f"confirming that a single tree overfits without pruning.\n"
-        f"- {best_name} improves on ridge LR accuracy "
-        f"({acc:.3f} vs 0.720) with higher CHD recall ({rec:.3f} vs 0.44)."
+        f"- **Top predictor** (importance): {top_feat} — consistent with EDA and ridge LR.\n"
+        f"- Decision Tree performed worst (CV-AUC={dt_auc:.3f}), "
+        f"confirming a single tree overfits without pruning.\n"
+        f"- {best_name} achieves higher accuracy ({acc:.3f}) and CHD recall "
+        f"({rec:.3f}) than ridge LR (0.720 / 0.44)."
     )
 
     # ── CV Comparison ──────────────────────────────────────────────────────

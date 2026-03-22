@@ -98,7 +98,7 @@ def render(df: pd.DataFrame) -> None:
     # ── Run CV (cached) ────────────────────────────────────────────────────
     with st.spinner("Running cross-validation …"):
         result = _run_cv(
-            hash(df.to_json()),
+            int(pd.util.hash_pandas_object(df).sum()),
             df.values.tolist(), list(df.columns)
         )
     (X_train_s, X_test_s, y_train, y_test,
