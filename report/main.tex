@@ -395,9 +395,11 @@ implies strong regularisation: \texttt{age} retains the largest ridge
 effect ($\hat{\beta}=0.212$), followed by \texttt{age\_famhist} ($0.189$)
 and \texttt{ldl} ($0.174$). \texttt{obesity} and \texttt{alcohol} are
 shrunk near zero, consistent with their non-significance in the MLE fit.
+
 % ── Table 5 + Figure 5: side by side ─────────────────────────────────────────
+\vspace{6pt}
 \noindent
-\begin{minipage}[t]{0.48\linewidth}
+\begin{minipage}[t]{0.46\linewidth}
 \vspace{0pt}
 \centering
 \captionsetup{width=\linewidth}
@@ -419,11 +421,12 @@ Figure~\ref{fig:shrinkage} visualises the coefficient shrinkage: every
 unpenalised estimate (blue) is pulled toward zero by the ridge penalty
 (red), with the largest reductions on \texttt{age\_famhist} and \texttt{age}.
 \end{minipage}\hfill
-\begin{minipage}[t]{0.48\linewidth}
+\begin{minipage}[t]{0.50\linewidth}
 \vspace{0pt}
 \centering
 \captionsetup{width=\linewidth}
 \includegraphics[width=\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_coefficient_shrinkage.png}
+\vspace{-4pt}
 \captionof{figure}{\footnotesize Coefficient shrinkage: unpenalised MLE
 ($\hat{\beta}_{\text{LR}}$) vs.\ ridge ($\hat{\beta}_{\text{ridge}}$, $C\!=\!0.01$).}
 \label{fig:shrinkage}
