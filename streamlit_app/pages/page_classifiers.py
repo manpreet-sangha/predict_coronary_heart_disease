@@ -1,8 +1,11 @@
 """
 pages/page_classifiers.py — Alternative Classifiers Tab
 =========================================================
-Screens five classifiers by 5-fold stratified CV, tunes the best with
-GridSearchCV, and displays an interactive comparison and results.
+Screens all registered classifiers by 5-fold stratified CV, tunes the best
+with GridSearchCV, and displays an interactive comparison and results.
+
+Classifiers and param grids are imported from their individual modules
+in other_classifiers/ — nothing is hardcoded here.
 """
 
 import numpy as np
@@ -10,10 +13,6 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 import streamlit as st
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-from sklearn.svm import SVC
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import (
     train_test_split, StratifiedKFold, cross_validate, GridSearchCV
 )
@@ -28,39 +27,50 @@ from config import (
 )
 from feature_engineering.fe import run_feature_engineering
 
+from other_classifiers import (
+    oc_decision_tree,
+    oc_random_forest,
+    oc_svm,
+    oc_knn,
+    oc_gradient_boosting,
+    oc_gaussian_nb,
+    oc_lda,
+    oc_qda,
+    oc_adaboost,
+    oc_extra_trees,
+    oc_bagging,
+)
+
+# LightGBM is optional — skip gracefully if not installed
+try:
+    from other_classifiers import oc_lgbm
+    _HAS_LGBM = True
+except ImportError:
+    _HAS_LGBM = False
+
 # =============================================================================
-# Constants
+# Build classifier and param-grid dicts dynamically from modules
 # =============================================================================
 
-CLASSIFIERS = {
-    "Decision Tree":     DecisionTreeClassifier(random_state=42),
-    "Random Forest":     RandomForestClassifier(n_estimators=200, random_state=42),
-    "SVM (RBF)":         SVC(kernel="rbf", probability=True, random_state=42),
-    "KNN":               KNeighborsClassifier(),
-    "Gradient Boosting": GradientBoostingClassifier(random_state=42),
-}
+_MODULES = [
+    oc_decision_tree,
+    oc_random_forest,
+    oc_svm,
+    oc_knn,
+    oc_gradient_boosting,
+    oc_gaussian_nb,
+    oc_lda,
+    oc_qda,
+    oc_adaboost,
+    oc_extra_trees,
+    oc_bagging,
+]
+if _HAS_LGBM:
+    _MODULES.append(oc_lgbm)
 
-PARAM_GRIDS = {
-    "Decision Tree": {
-        "max_depth": [3, 5, 7, None], "min_samples_leaf": [1, 5, 10],
-        "criterion": ["gini", "entropy"],
-    },
-    "Random Forest": {
-        "n_estimators": [100, 300, 500], "max_depth": [3, 5, None],
-        "max_features": ["sqrt", "log2"],
-    },
-    "SVM (RBF)": {
-        "C": [0.1, 1, 10, 100], "gamma": ["scale", "auto", 0.01, 0.1],
-    },
-    "KNN": {
-        "n_neighbors": [3, 5, 7, 11, 15], "weights": ["uniform", "distance"],
-        "metric": ["euclidean", "manhattan"],
-    },
-    "Gradient Boosting": {
-        "n_estimators": [100, 200, 300], "learning_rate": [0.05, 0.1, 0.2],
-        "max_depth": [2, 3, 4],
-    },
-}
+# Each module exposes NAME, CLASSIFIER, PARAM_GRID
+CLASSIFIERS = {m.NAME: m.CLASSIFIER for m in _MODULES}
+PARAM_GRIDS = {m.NAME: m.PARAM_GRID for m in _MODULES}
 
 
 # =============================================================================
@@ -76,7 +86,7 @@ def _preprocess(df):
     return df[MODEL_FEATURES].values, df[TARGET].values
 
 
-_CACHE_VERSION = 2  # bump to invalidate stale cached results after feature changes
+_CACHE_VERSION = 3  # bump to invalidate stale cached results after feature changes
 
 
 @st.cache_data(show_spinner=False)
@@ -133,10 +143,10 @@ def _run_pipeline(data_hash: int, df_values, df_columns, _version: int = _CACHE_
 def render(df: pd.DataFrame) -> None:
     st.title("Alternative Classifiers")
     st.markdown(
-        "Five classifiers from the module are screened by 5-fold stratified "
-        "cross-validation on AUC-ROC. The best performer is tuned with "
-        "GridSearchCV and evaluated on the same 20% held-out test set used "
-        "for the ridge logistic regression, enabling a direct comparison."
+        f"**{len(CLASSIFIERS)} classifiers** from the module are screened by "
+        "5-fold stratified cross-validation on AUC-ROC. The best performer is "
+        "tuned with GridSearchCV and evaluated on the same 20% held-out test "
+        "set used for the ridge logistic regression, enabling a direct comparison."
     )
 
     with st.spinner("Running CV screening and tuning — this may take a minute …"):
@@ -165,24 +175,21 @@ def render(df: pd.DataFrame) -> None:
     else:
         top_feat = "see classification report"
 
-    dt_auc = screening["Decision Tree"]["CV AUC"]
     st.info(
         f"**Alternative Classifiers — Key Results**\n\n"
         f"- **Best classifier** (5-fold CV, AUC criterion): **{best_name}**\n"
         f"- **Tuned parameters**: {params_str}\n"
         f"- **Test AUC-ROC**: **{auc:.3f}** · "
         f"**F1**: **{f1:.3f}** · **Accuracy**: **{acc:.3f}**\n"
-        f"- **Top predictor** (importance): {top_feat} — consistent with EDA and ridge LR.\n"
-        f"- Decision Tree performed worst (CV-AUC={dt_auc:.3f}), "
-        f"confirming a single tree overfits without pruning.\n"
-        f"- {best_name} achieves higher AUC ({auc:.3f}) and CHD recall "
-        f"({rec:.3f}) vs. ridge LR (AUC 0.820, recall 0.563)."
+        f"- **Top predictor** (importance): {top_feat}\n"
+        f"- {best_name} achieves AUC ({auc:.3f}) and CHD recall "
+        f"({rec:.3f}) on the held-out test set."
     )
 
     # ── CV Comparison ──────────────────────────────────────────────────────
     with st.expander("1 — Cross-validation Comparison", expanded=True):
         st.markdown(
-            "5-fold stratified CV AUC for all five classifiers. "
+            f"5-fold stratified CV AUC for all {len(CLASSIFIERS)} classifiers. "
             "Error bars show ± 1 standard deviation across folds. "
             "The best model (highlighted) is selected for hyperparameter tuning."
         )
@@ -204,7 +211,7 @@ def render(df: pd.DataFrame) -> None:
         fig_cmp.update_layout(
             xaxis_title="5-fold CV AUC-ROC",
             xaxis_range=[0.4, 0.85],
-            height=320,
+            height=max(320, len(names) * 32),
             margin=dict(l=10, r=40, t=20, b=10)
         )
         st.plotly_chart(fig_cmp, use_container_width=True)

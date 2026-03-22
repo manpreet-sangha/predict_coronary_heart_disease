@@ -6,3 +6,4 @@ scikit-learn>=1.4
 statsmodels>=0.14
 streamlit>=1.35
 plotly>=5.20
+lightgbm>=4.0

@@ -50,7 +50,20 @@ from other_classifiers import (
     oc_svm,
     oc_knn,
     oc_gradient_boosting,
+    oc_gaussian_nb,
+    oc_lda,
+    oc_qda,
+    oc_adaboost,
+    oc_extra_trees,
+    oc_bagging,
 )
+
+# LightGBM is optional — skip gracefully if not installed
+try:
+    from other_classifiers import oc_lgbm
+    _HAS_LGBM = True
+except ImportError:
+    _HAS_LGBM = False
 
 OUTPUT_DIR = OC_OUTPUT_DIR
 
@@ -61,7 +74,15 @@ CLASSIFIER_MODULES = [
     oc_svm,
     oc_knn,
     oc_gradient_boosting,
+    oc_gaussian_nb,
+    oc_lda,
+    oc_qda,
+    oc_adaboost,
+    oc_extra_trees,
+    oc_bagging,
 ]
+if _HAS_LGBM:
+    CLASSIFIER_MODULES.append(oc_lgbm)
 
 
 # =============================================================================
@@ -198,11 +219,18 @@ def _copy_best_outputs(best_name: str, output_dir: str) -> None:
     """
     import shutil
     prefix_map = {
-        "Decision Tree":    "dt",
-        "Random Forest":    "rf",
-        "SVM (RBF)":        "svm",
-        "KNN":              "knn",
-        "Gradient Boosting":"gb",
+        "Decision Tree":     "dt",
+        "Random Forest":     "rf",
+        "SVM (RBF)":         "svm",
+        "KNN":               "knn",
+        "Gradient Boosting": "gb",
+        "Gaussian NB":       "gnb",
+        "LDA":               "lda",
+        "QDA":               "qda",
+        "AdaBoost":          "adaboost",
+        "Extra Trees":       "et",
+        "Bagging":           "bagging",
+        "LightGBM":          "lgbm",
     }
     prefix = prefix_map.get(best_name, "best")
     for suffix in ["roc_curve", "confusion_matrix"]:

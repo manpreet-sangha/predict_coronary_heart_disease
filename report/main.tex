@@ -124,23 +124,17 @@ age       &  42.8 & 14.6 &  15 &  64 \\
 The dataset (\texttt{heart-disease.csv}) contains 462 male patients from the
 Western Cape, South Africa. Each patient is described by nine clinical features
 and a binary label \texttt{chd} (1\,=\,CHD present), and there are no missing
-values. Table~\ref{tab:desc} shows the summary statistics for each feature.
-Looking at the data, I noticed that four features are heavily right-skewed:
+values. Table~\ref{tab:desc} shows that four features are right-skewed i.e.,
 \texttt{alcohol} ($\gamma_{1}=2.31$), \texttt{tobacco} ($\gamma_{1}=2.08$),
 \texttt{ldl} ($\gamma_{1}=1.31$), and \texttt{sbp} ($\gamma_{1}=1.18$) all
 exceed the $|\gamma_{1}|>1$ threshold, which suggests a log-transformation
 could help the model.
 
-Of the 462 patients, 160 (34.6\%) have CHD and 302 (65.4\%) do not, giving a
-class imbalance ratio of 1.89:1. Because of this imbalance, accuracy alone
-would be a poor way to judge how well the model is doing --- for example, a
-classifier that always predicts ``no CHD'' would still achieve 65\% accuracy.
-For this reason, AUC and F1-score are used as the main evaluation metrics
-throughout this report
-\cite{rehman2025predicting, banerjee2025systematic, dutta2019efficient, borges2025logistic}.
-Looking at the Pearson correlation heatmap (Figure~\ref{fig:corr}), \texttt{age}
-($r=0.37$) is the feature most linearly associated with CHD, followed by
-\texttt{tobacco} ($r=0.30$), \texttt{famhist} ($r=0.27$), and \texttt{ldl}
+Of the 462 patients, 160 (34.6\%) have CHD and 302 (65.4\%) do not, resulting in a
+class imbalance ratio of 1.89:1. Thus, instead of just using accuracy, I use AUC and F1-score 
+as the main evaluation metrics \cite{rehman2025predicting, banerjee2025systematic, dutta2019efficient, borges2025logistic}.
+In the Pearson correlation heatmap (Figure~\ref{fig:corr}), the feature most linearly associated with CHD is \texttt{age}
+($r=0.37$), followed by \texttt{tobacco} ($r=0.30$), \texttt{famhist} ($r=0.27$), and \texttt{ldl}
 ($r=0.26$).
 
 % ── Correlation heatmap ────────────────────────────────────────────────────────
@@ -437,55 +431,24 @@ datasets \cite{rehman2025predicting, ogunpola2024machine}.
 \label{sec:oc}
 % =============================================================================
 
-% ── CV screening: wraptable right, text wraps left and below ─────────────────
-\begin{wraptable}{r}{0.46\linewidth}
-\vspace{-6pt}
-\captionsetup{width=\linewidth}
-\centering
-\caption{\footnotesize 5-fold CV screening of all classifiers
-(AUC-ROC, F1, accuracy).}
-\label{tab:cv}
-\vspace{2pt}
-{\footnotesize
-\begin{tabular}{@{}lrrr@{}}
-\toprule
-Classifier & CV AUC & CV F1 & CV Acc \\
-\midrule
-\shortstack[l]{Decision\\Tree}     & 0.618  & 0.397 & 0.611 \\[4pt]
-KNN                                & 0.659  & 0.453 & 0.673 \\[4pt]
-\shortstack[l]{Gradient\\Boosting} & 0.699  & 0.475 & 0.685 \\[4pt]
-\shortstack[l]{SVM\\(RBF)}         & 0.716  & 0.511 & 0.722 \\[4pt]
-\textbf{\shortstack[l]{Random\\Forest}} & \textbf{0.718} & \textbf{0.491} & \textbf{0.689} \\
-\bottomrule
-\end{tabular}}
-\vspace{-4pt}
-\end{wraptable}
-
 The PCA 2-D projection (Section~\ref{sec:eda}) showed only partial linear
-class separation, motivating non-linear alternatives to ridge logistic
-regression. Five classifiers from the module were evaluated: a
-\textbf{Decision Tree} (interpretable baseline), \textbf{Random Forest}
-(bagged ensemble), \textbf{SVM with RBF kernel} (margin-based, non-linear),
-\textbf{KNN} (non-parametric, distance-based), and \textbf{Gradient
-Boosting} (sequential ensemble). Preprocessing was identical to
-Section~\ref{sec:lrrp}: \texttt{famhist} encoded, four skewed features
-log\,\textsubscript{1p}-transformed, all features standardised.
+class separation, motivating alternatives to ridge logistic regression.
+Twelve classifiers from the module were evaluated, spanning discriminative
+models, tree-based ensembles, and generative classifiers.
+Preprocessing was identical to Section~\ref{sec:lrrp}: \texttt{famhist}
+encoded, four skewed features log\,\textsubscript{1p}-transformed, all
+features standardised.
 
-All five were screened by stratified 5-fold cross-validation on AUC-ROC
-(Table~\ref{tab:cv}), using the same 11-feature set (including
+All twelve were screened by stratified 5-fold cross-validation on AUC-ROC
+(Table~\ref{tab:final}), using the same 11-feature set (including
 \texttt{age\_tobacco} and \texttt{age\_famhist}) as Section~\ref{sec:lrrp}.
-Decision Tree performed worst (CV-AUC\,=\,0.618), confirming that a single
-tree overfits without pruning. Random Forest achieved the highest CV-AUC
-(0.718), marginally ahead of SVM (0.716) and Gradient Boosting (0.699).
-Random Forest was therefore selected for hyperparameter tuning.
-
-GridSearchCV with 5-fold CV optimised three hyperparameters simultaneously:
-\texttt{n\_estimators} $\in\{100, 300, 500\}$,
-\texttt{max\_depth} $\in\{3, 5, \text{None}\}$,
-\texttt{max\_features} $\in\{\text{sqrt}, \text{log2}\}$.
-The best configuration was \texttt{max\_depth=3}, \texttt{max\_features=sqrt},
-\texttt{n\_estimators=500} (tuned CV-AUC\,=\,0.742). Shallow trees
-(\texttt{max\_depth=3}) prevent overfitting on a dataset of 462 observations.
+Gaussian NB achieved the highest CV-AUC (0.765), followed by LDA (0.751)
+and QDA (0.744). Among tree-based models, Extra Trees (0.730) and Random
+Forest (0.718) led. The best CV performer (Gaussian NB) was tuned via
+GridSearchCV; the best \texttt{var\_smoothing} was $10^{-12}$
+(tuned CV-AUC\,=\,0.765). On the test set, however, QDA achieved the
+highest AUC (0.828) and F1 (0.694), demonstrating that class-specific
+covariance modelling benefits this dataset after log-transformation.
 
 % ── ROC curves: Ridge LR vs Random Forest side by side ───────────────────
 \begin{figure}[htbp]
@@ -499,7 +462,7 @@ The best configuration was \texttt{max\_depth=3}, \texttt{max\_features=sqrt},
 \begin{minipage}{0.48\linewidth}
 \centering
 \includegraphics[width=\linewidth]{../other_classifiers/oc_output/fig_oc_roc_curve.png}
-\caption{\footnotesize Tuned Random Forest: AUC\,=\,0.788, test set $n=93$.}
+\caption{\footnotesize Best alternative classifier: AUC on test set $n=93$.}
 \label{fig:oc_roc}
 \end{minipage}
 \end{figure}
@@ -529,8 +492,8 @@ Recall — No\,CHD\,85\%, CHD\,56\%.}
 \begin{minipage}[t]{0.46\linewidth}
 \centering
 \captionsetup{width=\linewidth}
-\captionof{table}{\footnotesize RF: confusion matrix (threshold\,=\,0.5).
-Recall — No\,CHD\,87\%, CHD\,50\%.}
+\captionof{table}{\footnotesize Gaussian NB: confusion matrix (threshold\,=\,0.5).
+Recall — No\,CHD\,70\%, CHD\,75\%.}
 \label{tab:oc_cm}
 \vspace{2pt}
 {\footnotesize
@@ -540,92 +503,77 @@ Recall — No\,CHD\,87\%, CHD\,50\%.}
 \cmidrule(l){3-4}
 & & No\,CHD & CHD \\
 \midrule
-\multirow{2}{*}{\textit{True Label}} & No\,CHD & \textbf{53} & 8  \\
-                                     & CHD     & 16          & \textbf{16} \\
+\multirow{2}{*}{\textit{True Label}} & No\,CHD & \textbf{43} & 18 \\
+                                     & CHD     & 8           & \textbf{24} \\
 \bottomrule
 \end{tabular}}
 \end{minipage}
 
-% ── Table 6: minipage pair — text left, table right, full-width text below ───
+% ── Full model comparison table ──────────────────────────────────────────────
 \vspace{4pt}
-The ROC curves (Figures~\ref{fig:roc} and~\ref{fig:oc_roc}) show that Ridge LR
-(AUC\,=\,0.820) outperforms the tuned Random Forest (AUC\,=\,0.788); both lie
-well above the diagonal random-classifier baseline. The confusion matrices
-(Tables~\ref{tab:cm} and~\ref{tab:oc_cm}) confirm that both models struggle
-more with CHD recall than No-CHD recall, a direct consequence of the 1.89:1
-class imbalance.
+The ROC curves (Figures~\ref{fig:roc} and~\ref{fig:oc_roc}) confirm that all
+models lie well above the diagonal random-classifier baseline.
+Table~\ref{tab:final} summarises every classifier evaluated on the held-out
+test set ($n=93$, 20\,\%).
 
-\noindent
-\begin{minipage}[t]{0.44\linewidth}
-\raggedright
-On the held-out test set ($n=93$) the tuned Random Forest achieves
-AUC\,=\,0.788, F1\,=\,0.571, and accuracy\,=\,0.742
-(Table~\ref{tab:final}). Ridge LR attains a higher AUC (0.820) and
-F1 (0.610), suggesting the L2-regularised model generalises better
-when derived interaction features are included.
-\end{minipage}\hfill
-\begin{minipage}[t]{0.52\linewidth}
+\begin{table}[htbp]
 \centering
 \captionsetup{width=\linewidth}
-\captionof{table}{\footnotesize Final comparison: Ridge LR vs.\ best
-alternative classifier.}
+\caption{\footnotesize Performance of all classifiers on the SA Heart Disease dataset,
+sorted by test AUC-ROC. CV columns report 5-fold stratified means.}
 \label{tab:final}
 \vspace{2pt}
 {\footnotesize
-\begin{tabular}{@{}lrrrr@{}}
+\begin{tabular}{@{}lrrr|rrrrr@{}}
 \toprule
-Model & AUC & F1 & Prec. & Rec. \\
+Classifier & CV AUC & CV F1 & CV Acc & Test AUC & Test F1 & Test Acc & Test Prec & Test Rec \\
 \midrule
-\shortstack[l]{Ridge LR\\($C\!=\!0.01$)}  & \textbf{0.820} & \textbf{0.610} & \textbf{0.667} & \textbf{0.563} \\
-\shortstack[l]{Random Forest\\(tuned)}    & 0.788 & 0.571 & 0.667 & 0.500 \\
+QDA               & 0.744 & 0.568 & 0.707 & \textbf{0.828} & \textbf{0.694} & \textbf{0.763} & 0.625 & \textbf{0.781} \\
+LDA               & 0.751 & 0.534 & 0.713 & 0.821 & 0.630 & 0.710 & 0.561 & 0.719 \\
+Ridge LR ($C\!=\!0.01$) & 0.764 & 0.458 & 0.732 & 0.820 & 0.610 & 0.753 & \textbf{0.667} & 0.562 \\
+Gaussian NB       & \textbf{0.765} & \textbf{0.591} & 0.686 & 0.811 & 0.649 & 0.720 & 0.571 & 0.750 \\
+AdaBoost          & 0.717 & 0.518 & 0.694 & 0.799 & 0.576 & 0.731 & 0.630 & 0.531 \\
+Extra Trees       & 0.730 & 0.478 & 0.699 & 0.795 & 0.567 & 0.720 & 0.607 & 0.531 \\
+Decision Tree     & 0.618 & 0.504 & 0.642 & 0.795 & 0.536 & 0.720 & 0.625 & 0.469 \\
+Random Forest     & 0.718 & 0.485 & 0.694 & 0.788 & 0.571 & 0.742 & \textbf{0.667} & 0.500 \\
+Bagging           & 0.699 & 0.457 & 0.686 & 0.770 & 0.548 & 0.699 & 0.567 & 0.531 \\
+Gradient Boosting & 0.699 & 0.483 & 0.680 & 0.766 & 0.590 & 0.731 & 0.621 & 0.562 \\
+SVM (RBF)         & 0.716 & 0.483 & \textbf{0.713} & 0.811 & --- & 0.656 & --- & --- \\
+LightGBM          & 0.708 & 0.540 & 0.702 & 0.724 & 0.537 & 0.667 & 0.514 & 0.562 \\
+KNN               & 0.659 & 0.423 & 0.667 & 0.714 & 0.433 & 0.634 & 0.464 & 0.406 \\
 \bottomrule
 \end{tabular}}
-\end{minipage}
+\end{table}
 
-\vspace{4pt}
-Feature importances confirm that \texttt{age}, \texttt{age\_famhist}, and
-\texttt{ldl} are the dominant predictors, consistent with EDA rankings and
-ridge coefficients \cite{rehman2025predicting, ogunpola2024machine}.
+\vspace{2pt}
+QDA achieves the highest test AUC (0.828) and F1 (0.694), narrowly ahead
+of LDA (0.821) and Ridge LR (0.820). The generative classifiers (QDA, LDA,
+Gaussian NB) perform competitively despite the independence/normality
+assumptions, likely because log-transformation mitigated the original skew.
+Feature importances from tree-based models confirm that \texttt{age},
+\texttt{age\_famhist}, and \texttt{ldl} are the dominant predictors,
+consistent with EDA rankings and ridge coefficients
+\cite{rehman2025predicting, ogunpola2024machine}.
 
 \textbf{Methods considered but excluded.}
 \textit{Factor Analysis} (FA) is an unsupervised latent-variable model
 designed for structure discovery, not prediction; PCA already fulfils this
-exploratory role in Section~\ref{sec:eda}. Critically, FA assumes
-multivariate normality across all features --- violated by the binary
-\texttt{famhist} and the four right-skewed clinical variables.
-
-The generative classifiers in the module lecture notes (Naive Bayes, LDA,
-QDA, and Fisher's DA) each impose assumptions incompatible with this
-dataset. \textit{Naive Bayes} requires conditional independence of
-predictors given class, which fails given the
-\texttt{adiposity}--\texttt{obesity} correlation ($r=0.72$) and the
-engineered \texttt{age}--\texttt{tobacco} joint effect. \textit{LDA} and
-\textit{QDA} assume Gaussian class-conditional distributions
-$P(\mathbf{x}\mid Y\!=\!k)\sim\mathcal{N}(\boldsymbol{\mu}_k,\boldsymbol{\Sigma})$;
-the binary \texttt{famhist} and skewed variables directly violate this.
-\textit{QDA} additionally estimates a full $11\!\times\!11$ covariance
-matrix per class: with only 160 CHD-positive training observations this
-is severely underdetermined and prone to overfitting.
+exploratory role in Section~\ref{sec:eda}.
 \textit{Fisher's DA} (FDA) for a binary outcome reduces to a single linear
 discriminant direction mathematically equivalent to LDA under equal-covariance
-assumptions, and is primarily a supervised dimensionality reduction
-tool --- redundant when only 11 features are present and the objective is
-risk prediction, not projection.
+assumptions --- redundant given LDA is already included.
 
 \textbf{Why the chosen methods are appropriate.}
-Ridge logistic regression is the discriminative counterpart to LDA: it
-produces an equivalent linear decision boundary without requiring
-class-conditional normality, making it strictly more robust when
-distributional assumptions are violated \cite{hassan2022effectively}.
-The L2 penalty directly addresses the multicollinearity identified in
-EDA without zeroing any predictor. The five alternative classifiers span
-bagging (Random Forest), boosting (Gradient Boosting), kernel-based
-separation (SVM with RBF kernel), instance-based reasoning (KNN), and
-an interpretable single-tree baseline (Decision Tree) --- none of which
-impose distributional assumptions on the features. This breadth ensures
-the partial non-linear class separation visible in the PCA projection
-(Figure~\ref{fig:pca}) is captured without assuming Gaussianity,
-conditional independence, or equal class covariances.
+The 12 classifiers in Table~\ref{tab:final} span discriminative models
+(Ridge LR, SVM, KNN), tree ensembles (Random Forest, Extra Trees, Gradient
+Boosting, AdaBoost, LightGBM, Bagging, Decision Tree), and generative
+models (Gaussian NB, LDA, QDA). Log-transformation of skewed features
+mitigates the normality concerns, allowing generative classifiers to compete
+effectively. Ridge logistic regression addresses the multicollinearity
+identified in EDA without zeroing any predictor
+\cite{hassan2022effectively}. This breadth ensures the partial non-linear
+class separation visible in the PCA projection (Figure~\ref{fig:pca})
+is captured across fundamentally different modelling paradigms.
 
 % =============================================================================
 % References

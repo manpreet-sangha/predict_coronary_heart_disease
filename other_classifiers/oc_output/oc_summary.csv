@@ -1,10 +1,10 @@
-best_classifier,Random Forest
-best_params,"{'max_depth': 3, 'max_features': 'sqrt', 'n_estimators': 500}"
-tuned_cv_auc,0.7534
-test_auc,0.7884
-test_f1,0.5714
-test_accuracy,0.7419
-test_precision,0.6667
-test_recall,0.5
+best_classifier,Gaussian NB
+best_params,{'var_smoothing': 1e-12}
+tuned_cv_auc,0.7651
+test_auc,0.8115
+test_f1,0.6486
+test_accuracy,0.7204
+test_precision,0.5714
+test_recall,0.75
 n_train,369
 n_test,93
