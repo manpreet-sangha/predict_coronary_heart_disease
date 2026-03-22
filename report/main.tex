@@ -121,23 +121,26 @@ age       &  42.8 & 14.6 &  15 &  64 \\
 \vspace{-4pt}
 \end{wraptable}
 
-The \texttt{heart-disease.csv} dataset contains 462 male patients from the
-Western Cape, South Africa, described by nine clinical features and a binary
-target \texttt{chd} (1\,=\,CHD present) with no missing values.
-Four features exceed the $|\gamma_{1}|>1$ skewness threshold: \texttt{alcohol}
-($\gamma_{1}=2.31$), \texttt{tobacco} ($\gamma_{1}=2.08$), \texttt{ldl}
-($\gamma_{1}=1.31$), and \texttt{sbp} ($\gamma_{1}=1.18$), suggesting
-log-transformation may improve classifier performance.
-Table~\ref{tab:desc} summarises the key descriptive statistics. Four features
+The dataset (\texttt{heart-disease.csv}) contains 462 male patients from the
+Western Cape, South Africa. Each patient is described by nine clinical features
+and a binary label \texttt{chd} (1\,=\,CHD present), and there are no missing
+values. Table~\ref{tab:desc} shows the summary statistics for each feature.
+Looking at the data, I noticed that four features are heavily right-skewed:
+\texttt{alcohol} ($\gamma_{1}=2.31$), \texttt{tobacco} ($\gamma_{1}=2.08$),
+\texttt{ldl} ($\gamma_{1}=1.31$), and \texttt{sbp} ($\gamma_{1}=1.18$) all
+exceed the $|\gamma_{1}|>1$ threshold, which suggests a log-transformation
+could help the model.
 
-Of the 462 patients, 160 (34.6\%) are CHD-positive and 302 (65.4\%)
-CHD-negative, giving an imbalance ratio of 1.89:1. This means raw accuracy
-will be a misleading evaluation metric
-\cite{rehman2025predicting, banerjee2025systematic, dutta2019efficient, borges2025logistic}
-and alternative measures such as AUC and F1-score are used throughout.
-The Pearson correlation heatmap (Figure~\ref{fig:corr}) reveals that
-\texttt{age} ($r=0.37$) is the strongest linear predictor of CHD, followed
-by \texttt{tobacco} ($r=0.30$), \texttt{famhist} ($r=0.27$), and \texttt{ldl}
+Of the 462 patients, 160 (34.6\%) have CHD and 302 (65.4\%) do not, giving a
+class imbalance ratio of 1.89:1. Because of this imbalance, accuracy alone
+would be a poor way to judge how well the model is doing --- for example, a
+classifier that always predicts ``no CHD'' would still achieve 65\% accuracy.
+For this reason, AUC and F1-score are used as the main evaluation metrics
+throughout this report
+\cite{rehman2025predicting, banerjee2025systematic, dutta2019efficient, borges2025logistic}.
+Looking at the Pearson correlation heatmap (Figure~\ref{fig:corr}), \texttt{age}
+($r=0.37$) is the feature most linearly associated with CHD, followed by
+\texttt{tobacco} ($r=0.30$), \texttt{famhist} ($r=0.27$), and \texttt{ldl}
 ($r=0.26$).
 
 % ── Correlation heatmap ────────────────────────────────────────────────────────
@@ -151,30 +154,35 @@ by \texttt{tobacco} ($r=0.30$), \texttt{famhist} ($r=0.27$), and \texttt{ldl}
 \vspace{-8pt}
 \end{wrapfigure}
 
-\texttt{alcohol} ($r=0.06$) and \texttt{obesity} ($r=0.10$) are
-the weakest predictors. A moderate positive correlation between
-\texttt{adiposity} and \texttt{obesity} ($r=0.72$) suggests partial
-multicollinearity, motivating ridge regularisation in Section~\ref{sec:lrrp}
+On the other hand, \texttt{alcohol} ($r=0.06$) and \texttt{obesity} ($r=0.10$)
+show very little linear association with CHD. I also noticed a fairly strong
+correlation between \texttt{adiposity} and \texttt{obesity} ($r=0.72$), which
+means these two features carry overlapping information. This kind of
+multicollinearity is one of the reasons I chose ridge regularisation in
+Section~\ref{sec:lrrp}
 \cite{hassan2022effectively, ogunpola2024machine}.
-Violin plots stratified by CHD class confirm that \texttt{age}, \texttt{tobacco},
-and \texttt{ldl} show the clearest class-conditional separation, while
-\texttt{obesity} and \texttt{typea} distributions overlap substantially.
+Violin plots split by CHD class further confirm that \texttt{age},
+\texttt{tobacco}, and \texttt{ldl} separate the two groups most clearly,
+whereas \texttt{obesity} and \texttt{typea} distributions look very similar
+for both groups.
 
-Log\,\textsubscript{1p}-transformation of the four dynamically identified
-skewed features reduces their skewness markedly (Figure~\ref{fig:logtr}):
+Figure~\ref{fig:logtr} shows the effect of applying a
+log\textsubscript{1p}-transformation to the four skewed features.
+The skewness drops considerably in each case:
 \texttt{alcohol} from 2.31 to 0.44, \texttt{tobacco} from 2.08 to 0.53,
 \texttt{ldl} from 1.31 to 0.50, and \texttt{sbp} from 1.18 to 0.48.
-These transformations are applied as a preprocessing option in the
-modelling stages (Sections~\ref{sec:lrrp}--\ref{sec:oc}).
+These transformations are offered as a preprocessing option in the modelling
+stages (Sections~\ref{sec:lrrp}--\ref{sec:oc}).
 
 % ── Feature importance paragraph (plain — fills page 1 bottom) ───────────────
-Feature importance was assessed jointly using mutual information (MI) and
-the ANOVA F-test \cite{elsofany2024proposed, ullah2024machine}. Using two
-complementary criteria guards against misleading rankings from linear
-assumptions alone. Table~\ref{tab:fi} shows the normalised scores: \texttt{age}
-ranks first under both criteria, while \texttt{obesity} and \texttt{typea}
-score lowest. These rankings directly inform the variable selection strategy
-for the ridge logistic regression in Section~\ref{sec:lrrp}.
+To get a clearer picture of which features matter most, I ranked them using
+two different methods: mutual information (MI) and the ANOVA F-test
+\cite{elsofany2024proposed, ullah2024machine}. Using both together means I am
+not relying on a single measure that could be biased towards linear
+relationships. Table~\ref{tab:fi} shows the normalised scores side by side.
+\texttt{age} comes top under both methods, while \texttt{obesity} and
+\texttt{typea} score lowest. These rankings helped inform which features to
+include in the ridge logistic regression model in Section~\ref{sec:lrrp}.
 
 % ── Distribution analysis + log-transform ────────────────────────────────────
 \begin{figure}[t]
@@ -212,16 +220,19 @@ obesity    & 0.00 & 0.04  & 0.02 \\
 \vspace{-4pt}
 \end{wraptable}
 
-PCA was applied to the standardised feature matrix
-\cite{banerjee2025systematic}. PC1 explains 32.1\% of variance and loads
-positively on \texttt{adiposity} (0.52), \texttt{age} (0.46), and
-\texttt{obesity} (0.40) --- a latent \emph{metabolic risk} axis. PC2 is
-driven by \texttt{alcohol} (0.54) and \texttt{tobacco} (0.46), reflecting a
-\emph{lifestyle} axis. Seven components are needed to reach 90\% cumulative
-variance, indicating moderate intrinsic dimensionality. The 2-D
-projection (Figure~\ref{fig:pca}) shows partial but incomplete class
-separation; the loadings heatmap (Figure~\ref{fig:pcaload}) confirms PC1
-captures metabolic risk while PC2 captures lifestyle behaviours, motivating
+I also ran PCA on the standardised features to see whether the data has any
+natural structure \cite{banerjee2025systematic}. The first component (PC1)
+explains 32.1\% of the variance and is most strongly associated with
+\texttt{adiposity} (0.52), \texttt{age} (0.46), and \texttt{obesity} (0.40),
+which together look like a metabolic risk axis. PC2 is driven by
+\texttt{alcohol} (0.54) and \texttt{tobacco} (0.46), picking up a lifestyle
+behaviour axis. To reach 90\% cumulative variance, seven components are needed,
+which tells me the data has moderate complexity and cannot be reduced to just
+a few dimensions without losing information. The 2-D scatter plot
+(Figure~\ref{fig:pca}) shows that CHD and non-CHD patients overlap
+considerably, meaning a linear boundary will not be enough to separate them
+cleanly. The loadings heatmap (Figure~\ref{fig:pcaload}) confirms which
+features drive each axis. This overlap is part of the reason I also tested
 non-linear classifiers in Section~\ref{sec:oc}.
 
 % =============================================================================
