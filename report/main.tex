@@ -34,6 +34,7 @@
 \usepackage{float}
 \usepackage{caption}
 \usepackage{array}          % extended column formatting
+\usepackage{multirow}       % multirow cells in tables
 \usepackage{wrapfig}        % text wraps around figures/tables
 \usepackage{placeins} % use \FloatBarrier explicitly where needed
 
@@ -503,32 +504,32 @@ Recall — No\,CHD\,85\%, CHD\,56\%.}
 \vspace{2pt}
 {\footnotesize
 \renewcommand{\arraystretch}{1.1}
-\begin{tabular}{@{}llrr@{}}
+\begin{tabular}{@{}l|lrr@{}}
 & & \multicolumn{2}{c}{\textit{Predicted label}} \\
 \cmidrule(l){3-4}
 & & No\,CHD & CHD \\
 \midrule
-\textit{True Label} & No\,CHD & \textbf{52} & 9  \\
-                    & CHD     & 14          & \textbf{18} \\
+\multirow{2}{*}{\textit{True Label}} & No\,CHD & \textbf{52} & 9  \\
+                                     & CHD     & 14          & \textbf{18} \\
 \bottomrule
 \end{tabular}}
 \end{minipage}\hfill
 \begin{minipage}[t]{0.46\linewidth}
 \centering
 \captionsetup{width=\linewidth}
-\captionof{table}{\footnotesize Random Forest: confusion matrix (threshold\,=\,0.5).
+\captionof{table}{\footnotesize RF: confusion matrix (threshold\,=\,0.5).
 Recall — No\,CHD\,87\%, CHD\,50\%.}
 \label{tab:oc_cm}
 \vspace{2pt}
 {\footnotesize
 \renewcommand{\arraystretch}{1.1}
-\begin{tabular}{@{}llrr@{}}
+\begin{tabular}{@{}l|lrr@{}}
 & & \multicolumn{2}{c}{\textit{Predicted label}} \\
 \cmidrule(l){3-4}
 & & No\,CHD & CHD \\
 \midrule
-\textit{True Label} & No\,CHD & \textbf{53} & 8  \\
-                    & CHD     & 16          & \textbf{16} \\
+\multirow{2}{*}{\textit{True Label}} & No\,CHD & \textbf{53} & 8  \\
+                                     & CHD     & 16          & \textbf{16} \\
 \bottomrule
 \end{tabular}}
 \end{minipage}
