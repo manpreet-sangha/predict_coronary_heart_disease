@@ -156,20 +156,16 @@ multicollinearity is one of the reasons I chose ridge regularisation in
 Section~\ref{sec:lrrp}
 \cite{hassan2022effectively, ogunpola2024machine}.
 
-Figure~\ref{fig:logtr} shows the effect of applying a
-log\textsubscript{1p}-transformation to the four skewed features.
-The skewness drops considerably in each case:
+Figure~\ref{fig:logtr} shows log\textsubscript{1p}-transformation reduces skewness for the four skewed features:
 \texttt{alcohol} from 2.31 to 0.44, \texttt{tobacco} from 2.08 to 0.53,
 \texttt{ldl} from 1.31 to 0.50, and \texttt{sbp} from 1.18 to 0.48.
-These transformations are offered as a preprocessing option in the modelling
-stages (Sections~\ref{sec:lrrp}--\ref{sec:oc}).
+I applied these transformations as a preprocessing step before fitting
+the models in Sections~\ref{sec:lrrp}--\ref{sec:oc}.
 
-% ── Feature importance paragraph (plain — fills page 1 bottom) ───────────────
-To get a clearer picture of which features matter most, I ranked them using
-two different methods: mutual information (MI) and the ANOVA F-test
-\cite{elsofany2024proposed, ullah2024machine}. Using both together means I am
-not relying on a single measure that could be biased towards linear
-relationships. Table~\ref{tab:fi} shows the normalised scores side by side.
+To clearly demonstrate feature importance, I ranked them using
+mutual information (MI) and the ANOVA F-test \cite{elsofany2024proposed, ullah2024machine}. 
+Single metric could be biased, that's why I used two measures above.
+Table~\ref{tab:fi} shows the normalised scores side by side.
 \texttt{age} comes top under both methods, while \texttt{obesity} and
 \texttt{typea} score lowest. These rankings helped inform which features to
 include in the ridge logistic regression model in Section~\ref{sec:lrrp}.
