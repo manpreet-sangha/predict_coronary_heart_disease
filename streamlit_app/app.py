@@ -14,10 +14,11 @@ Structure:
 import sys
 import os
 
-# Allow imports from streamlit_app/ regardless of working directory
-sys.path.insert(0, os.path.dirname(__file__))
-# Allow importing config from project root
-sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+# Allow imports from streamlit_app/ and project root regardless of working directory
+_HERE = os.path.dirname(os.path.abspath(__file__))
+_ROOT = os.path.dirname(_HERE)
+sys.path.insert(0, _HERE)
+sys.path.insert(0, _ROOT)
 
 import streamlit as st
 

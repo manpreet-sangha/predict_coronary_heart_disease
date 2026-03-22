@@ -8,14 +8,10 @@ receive the same clean dataframe without redundant computation.
 """
 
 import io
-import os
-import sys
 
 import pandas as pd
 import streamlit as st
 
-# Allow importing config from project root
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from config import ALL_FEATURES, TARGET, FAMHIST_ENCODING
 
 DEFAULT_PATH = "input_data/heart-disease.csv"

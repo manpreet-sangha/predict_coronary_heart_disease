@@ -10,9 +10,6 @@ Literature basis: Banerjee & Pacal (2025), Kumar et al. (2025),
 Ullah et al. (2024).
 """
 
-import os
-import sys
-
 import numpy as np
 import pandas as pd
 import plotly.express as px
@@ -22,7 +19,6 @@ import streamlit as st
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from config import ALL_FEATURES, TARGET
 
 

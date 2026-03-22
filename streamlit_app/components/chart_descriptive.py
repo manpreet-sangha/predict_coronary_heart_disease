@@ -6,13 +6,9 @@ the family history cross-tabulation for the loaded dataset.
 All outputs update reactively when a new file is uploaded.
 """
 
-import os
-import sys
-
 import pandas as pd
 import streamlit as st
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from config import ALL_FEATURES, TARGET
 
 

@@ -10,9 +10,6 @@ Literature basis: El-Sofany et al. (2024), Ogunpola et al. (2024),
 Bhatt et al. (2023).
 """
 
-import os
-import sys
-
 import pandas as pd
 import plotly.express as px
 import plotly.figure_factory as ff
@@ -20,7 +17,6 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import streamlit as st
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from config import NUMERIC_FEATURES, ALL_FEATURES, TARGET
 
 

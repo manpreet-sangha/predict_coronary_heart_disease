@@ -10,9 +10,6 @@ Literature basis: El-Sofany et al. (2024), Hassan et al. (2022),
 Ullah et al. (2024).
 """
 
-import os
-import sys
-
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
@@ -20,7 +17,6 @@ import streamlit as st
 from sklearn.feature_selection import mutual_info_classif, f_classif, chi2
 from sklearn.preprocessing import MinMaxScaler
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from config import ALL_FEATURES, CATEGORICAL_FEATURES, TARGET
 
 
