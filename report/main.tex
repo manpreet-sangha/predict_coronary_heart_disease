@@ -470,6 +470,46 @@ Feature importances confirm that \texttt{age}, \texttt{age\_famhist}, and
 \texttt{ldl} are the dominant predictors, consistent with EDA rankings and
 ridge coefficients \cite{rehman2025predicting, ogunpola2024machine}.
 
+\textbf{Methods considered but excluded.}
+\textit{Factor Analysis} (FA) is an unsupervised latent-variable model
+designed for structure discovery, not prediction; PCA already fulfils this
+exploratory role in Section~\ref{sec:eda}. Critically, FA assumes
+multivariate normality across all features --- violated by the binary
+\texttt{famhist} and the four right-skewed clinical variables.
+
+The generative classifiers in the module lecture notes (Naive Bayes, LDA,
+QDA, and Fisher's DA) each impose assumptions incompatible with this
+dataset. \textit{Naive Bayes} requires conditional independence of
+predictors given class, which fails given the
+\texttt{adiposity}--\texttt{obesity} correlation ($r=0.72$) and the
+engineered \texttt{age}--\texttt{tobacco} joint effect. \textit{LDA} and
+\textit{QDA} assume Gaussian class-conditional distributions
+$P(\mathbf{x}\mid Y\!=\!k)\sim\mathcal{N}(\boldsymbol{\mu}_k,\boldsymbol{\Sigma})$;
+the binary \texttt{famhist} and skewed variables directly violate this.
+\textit{QDA} additionally estimates a full $11\!\times\!11$ covariance
+matrix per class: with only 160 CHD-positive training observations this
+is severely underdetermined and prone to overfitting.
+\textit{Fisher's DA} (FDA) for a binary outcome reduces to a single linear
+discriminant direction mathematically equivalent to LDA under equal-covariance
+assumptions, and is primarily a supervised dimensionality reduction
+tool --- redundant when only 11 features are present and the objective is
+risk prediction, not projection.
+
+\textbf{Why the chosen methods are appropriate.}
+Ridge logistic regression is the discriminative counterpart to LDA: it
+produces an equivalent linear decision boundary without requiring
+class-conditional normality, making it strictly more robust when
+distributional assumptions are violated \cite{hassan2022effectively}.
+The L2 penalty directly addresses the multicollinearity identified in
+EDA without zeroing any predictor. The five alternative classifiers span
+bagging (Random Forest), boosting (Gradient Boosting), kernel-based
+separation (SVM with RBF kernel), instance-based reasoning (KNN), and
+an interpretable single-tree baseline (Decision Tree) --- none of which
+impose distributional assumptions on the features. This breadth ensures
+the partial non-linear class separation visible in the PCA projection
+(Figure~\ref{fig:pca}) is captured without assuming Gaussianity,
+conditional independence, or equal class covariances.
+
 % =============================================================================
 % References
 % =============================================================================
