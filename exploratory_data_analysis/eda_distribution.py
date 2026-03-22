@@ -216,8 +216,6 @@ def run(df: pd.DataFrame) -> None:
             fontsize=10)
         axes[1, j].set_ylabel("Density")
 
-    fig.suptitle("Log-Transformation of Dynamically Identified Skewed Features",
-                 fontsize=13, fontweight="bold")
     plt.tight_layout()
     log_path = os.path.join(OUTPUT_DIR, "fig_log_transformed_features.png")
     plt.savefig(log_path, dpi=150)

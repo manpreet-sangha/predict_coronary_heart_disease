@@ -64,8 +64,6 @@ def run(df: pd.DataFrame) -> None:
         corr, mask=mask, annot=True, fmt=".2f",
         cmap="coolwarm", center=0, linewidths=0.5, ax=ax
     )
-    ax.set_title("Pearson Correlation Matrix — Heart Disease Features",
-                 fontsize=13, fontweight="bold", pad=12)
     plt.tight_layout()
     heatmap_path = os.path.join(OUTPUT_DIR, "fig_correlation_heatmap.png")
     plt.savefig(heatmap_path, dpi=150)
