@@ -80,32 +80,33 @@ def run_shrinkage_plot(df: pd.DataFrame) -> None:
         "MLE", key=lambda s: s.abs(), ascending=True
     ).reset_index(drop=True)
 
-    # ── Plot ─────────────────────────────────────────────────────────────
-    fig, ax = plt.subplots(figsize=(6, 4.5))
+    # ── Plot (compact for wrapfigure) ─────────────────────────────────
+    fig, ax = plt.subplots(figsize=(3.4, 3.6))
     y_pos = np.arange(len(coef_df))
     bar_h = 0.35
 
     ax.barh(
         y_pos + bar_h / 2, coef_df["MLE"], bar_h,
-        label=r"$\hat{\beta}_{\mathrm{LR}}$ (unpenalised)",
+        label=r"$\hat{\beta}_{\mathrm{LR}}$",
         color="steelblue", edgecolor="white"
     )
     ax.barh(
         y_pos - bar_h / 2, coef_df["Ridge"], bar_h,
-        label=r"$\hat{\beta}_{\mathrm{ridge}}$ ($C=0.01$)",
+        label=r"$\hat{\beta}_{\mathrm{ridge}}$",
         color="tomato", edgecolor="white"
     )
 
     ax.set_yticks(y_pos)
-    ax.set_yticklabels(coef_df["Feature"], fontsize=9)
+    ax.set_yticklabels(coef_df["Feature"], fontsize=7)
+    ax.tick_params(axis="x", labelsize=7)
     ax.axvline(0, color="black", linewidth=0.8)
-    ax.set_xlabel("Standardised Coefficient", fontsize=10)
-    ax.legend(fontsize=8, loc="lower right")
+    ax.set_xlabel("Standardised Coefficient", fontsize=8)
+    ax.legend(fontsize=7, loc="lower right")
 
-    plt.tight_layout()
+    plt.tight_layout(pad=0.3)
     os.makedirs(LRRP_OUTPUT_DIR, exist_ok=True)
     out_path = os.path.join(LRRP_OUTPUT_DIR, "fig_lrrp_coefficient_shrinkage.png")
-    plt.savefig(out_path, dpi=200)
+    plt.savefig(out_path, dpi=300)
     plt.close()
     print(f"[Saved] {out_path}")
 

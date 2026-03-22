@@ -399,13 +399,16 @@ Figure~\ref{fig:shrinkage} visualises this shrinkage: every unpenalised
 coefficient (blue) is pulled toward zero by the ridge penalty (red), with
 the largest absolute reductions on \texttt{age\_famhist} and \texttt{age}.
 
-\begin{figure}[htbp]
+\begin{wrapfigure}{r}{0.46\linewidth}
+\vspace{-6pt}
+\captionsetup{width=\linewidth}
 \centering
-\includegraphics[width=0.85\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_coefficient_shrinkage.png}
+\includegraphics[width=\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_coefficient_shrinkage.png}
 \caption{\footnotesize Coefficient shrinkage: unpenalised MLE
 ($\hat{\beta}_{\text{LR}}$) vs.\ ridge ($\hat{\beta}_{\text{ridge}}$, $C\!=\!0.01$).}
 \label{fig:shrinkage}
-\end{figure}
+\vspace{-8pt}
+\end{wrapfigure}
 
 % ── ROC curves and confusion matrices moved to Section 3 for side-by-side comparison
 
