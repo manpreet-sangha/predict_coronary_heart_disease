@@ -65,6 +65,7 @@
 
 \begin{wraptable}{r}{0.46\linewidth}
 \vspace{-6pt}
+\captionsetup{width=0.9\linewidth}
 \centering
 \caption{\footnotesize Descriptive statistics for all nine features.}
 \label{tab:desc}
@@ -101,10 +102,15 @@ CHD-negative, giving an imbalance ratio of 1.89:1. This means raw accuracy
 will be a misleading evaluation metric
 \cite{rehman2025predicting, banerjee2025systematic, dutta2019efficient, borges2025logistic}
 and alternative measures such as AUC and F1-score are used throughout.
+The Pearson correlation heatmap (Figure~\ref{fig:corr}) reveals that
+\texttt{age} ($r=0.37$) is the strongest linear predictor of CHD, followed
+by \texttt{tobacco} ($r=0.30$), \texttt{famhist} ($r=0.27$), and \texttt{ldl}
+($r=0.26$).
 
-% ── Correlation heatmap + analysis ───────────────────────────────────────────
+% ── Correlation heatmap ────────────────────────────────────────────────────────
 \begin{wrapfigure}{r}{0.46\linewidth}
 \vspace{-6pt}
+\captionsetup{width=0.9\linewidth}
 \centering
 \includegraphics[width=\linewidth]{../exploratory_data_analysis/eda_output/fig_correlation_heatmap.png}
 \caption{\footnotesize Pearson correlation matrix.}
@@ -112,10 +118,7 @@ and alternative measures such as AUC and F1-score are used throughout.
 \vspace{-8pt}
 \end{wrapfigure}
 
-The Pearson correlation heatmap (Figure~\ref{fig:corr}) reveals that
-\texttt{age} ($r=0.37$) is the strongest linear predictor of CHD, followed
-by \texttt{tobacco} ($r=0.30$), \texttt{famhist} ($r=0.27$), and \texttt{ldl}
-($r=0.26$). \texttt{alcohol} ($r=0.06$) and \texttt{obesity} ($r=0.10$) are
+\texttt{alcohol} ($r=0.06$) and \texttt{obesity} ($r=0.10$) are
 the weakest predictors. A moderate positive correlation between
 \texttt{adiposity} and \texttt{obesity} ($r=0.72$) suggests partial
 multicollinearity, motivating ridge regularisation in Section~\ref{sec:lrrp}
@@ -143,6 +146,7 @@ four dynamically identified skewed features.}
 % ── Feature importance ────────────────────────────────────────────────────────
 \begin{wraptable}{r}{0.46\linewidth}
 \vspace{-6pt}
+\captionsetup{width=0.9\linewidth}
 \centering
 \caption{\footnotesize Normalised feature importance scores (ranked by mean).}
 \label{tab:fi}
@@ -177,6 +181,7 @@ for the ridge logistic regression in Section~\ref{sec:lrrp}.
 % ── PCA ──────────────────────────────────────────────────────────────────────
 \begin{wrapfigure}{r}{0.46\linewidth}
 \vspace{-6pt}
+\captionsetup{width=0.9\linewidth}
 \centering
 \includegraphics[width=\linewidth]{../exploratory_data_analysis/eda_output/fig_pca_scatter.png}
 \caption{\footnotesize PCA 2-D projection coloured by CHD class.}
