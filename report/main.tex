@@ -404,10 +404,9 @@ model achieves AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753
 \section{Alternative Classifiers}
 \label{sec:oc}
 % =============================================================================
-Since the PCA scatter plot (Section~\ref{sec:eda}) shows overlap between CHD and
-non-CHD patients: other classifiers such as discriminative models, tree-based ensembles, 
-and generative classifiers are evaluated in this section. I used the same preprocessing as 
-Section~\ref{sec:lrrp}: \texttt{famhist} encoded, four skewed features 
+Other classifiers such as discriminative models, tree-based ensembles, 
+and generative classifiers are evaluated in this section. Same preprocessed data is utilized
+as in Section~\ref{sec:lrrp}: \texttt{famhist} encoded, four skewed features 
 log\,\textsubscript{1p}-transformed, all features standardised.
 
 All classifiers were screened using stratified 5-fold cross-validation on AUC-ROC
@@ -524,19 +523,29 @@ KNN               & 0.659 & 0.423 & 0.667 & 0.714 & 0.433 & 0.634 & 0.464 & 0.40
 \vspace{2pt}
 \textbf{Clinical relevance of recall.}
 In CHD prediction, sensitivity (recall $= \text{TP}/(\text{TP}+\text{FN})$)
-is the most clinically important metric: missing a patient who truly has
+is the most clinically important metric i.e., missing a patient who truly has
 heart disease (false negative) risks delayed treatment and potentially a
 fatal cardiac event, whereas a false positive leads only to further
 diagnostic testing. Ridge LR achieves the highest precision (0.667) but
-its CHD recall is only 0.563 --- it misses 44\% of CHD patients, which is
+its CHD recall is only 0.563 i.e., it misses 44\% of CHD patients, which is
 clinically unacceptable for a screening tool. Gaussian NB flips this
 trade-off: recall rises to 0.750 (catches 75\% of CHD cases) at the cost
 of lower precision (0.571), producing more false alarms but fewer missed
-diagnoses. For a medical screening context, this is arguably preferable.
-QDA achieves the best recall (0.781), correctly identifying 78\% of CHD
+diagnoses. This may be acceptable in a screening context.
+QDA achieves the best recall (0.781) correctly identifying 78\% of CHD
 patients while maintaining the highest overall F1 (0.694) and accuracy
 (0.763), making it the most clinically appropriate classifier in this
 evaluation.
+
+\textbf{Stability across repeated splits.}
+A single train/test split can yield optimistic or pessimistic estimates
+depending on which patients fall in the test set. Figure~\ref{fig:repeated}
+shows the distribution of test AUC-ROC across 30 repeated stratified
+80/20 splits. Ridge LR has the highest median AUC (0.778), followed by
+LDA (0.772) and Gaussian NB (0.764). QDA, despite achieving the best
+single-split AUC (0.828), drops to fourth (median 0.749) with wider
+spread, indicating greater sensitivity to the specific split. This
+confirms that the Ridge LR is the consistently a strong performer for the dataset.
 
 \begin{wrapfigure}{r}{0.46\linewidth}
 \vspace{-6pt}
@@ -548,17 +557,6 @@ splits. Top 3 by median highlighted in red.}
 \label{fig:repeated}
 \vspace{-8pt}
 \end{wrapfigure}
-
-\textbf{Stability across repeated splits.}
-A single train/test split can yield optimistic or pessimistic estimates
-depending on which patients fall in the test set. Figure~\ref{fig:repeated}
-shows the distribution of test AUC-ROC across 30 repeated stratified
-80/20 splits. Ridge LR has the highest median AUC (0.778), followed by
-LDA (0.772) and Gaussian NB (0.764). QDA, despite achieving the best
-single-split AUC (0.828), drops to fourth (median 0.749) with wider
-spread, indicating greater sensitivity to the specific split. This
-confirms that the generative classifiers and Ridge LR are the most
-\emph{consistently} strong performers on this dataset.
 
 \textbf{Methods considered but excluded.}
 \textit{Factor Analysis} (FA) is an unsupervised latent-variable model
