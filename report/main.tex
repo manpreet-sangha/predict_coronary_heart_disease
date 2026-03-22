@@ -490,7 +490,22 @@ Recall — No\,CHD\,70\%, CHD\,75\%.}
 \end{tabular}}
 \end{minipage}
 
-% ── Full model comparison table ──────────────────────────────────────────────
+\vspace{2pt}
+\textbf{Clinical relevance of recall.}
+In CHD prediction, sensitivity (recall $= \text{TP}/(\text{TP}+\text{FN})$)
+is the most clinically important metric i.e., missing a patient who truly has
+heart disease (false negative) risks delayed treatment and potentially a
+fatal cardiac event, whereas a false positive leads only to further
+diagnostic testing. Ridge LR achieves the highest precision (0.667) but
+its CHD recall is only 0.563 i.e., it misses 44\% of CHD patients, which is
+clinically unacceptable for a screening tool. Gaussian NB flips this
+trade-off: recall rises to 0.750 (catches 75\% of CHD cases) at the cost
+of lower precision (0.571), producing more false alarms but fewer missed
+diagnoses. This may be acceptable in a screening context.
+QDA achieves the best recall (0.781) correctly identifying 78\% of CHD
+patients while maintaining the highest overall F1 (0.694) and accuracy
+(0.763), making it the most clinically appropriate classifier in this
+evaluation.
 \vspace{4pt}
 \begin{table}[htbp]
 \centering
@@ -519,24 +534,6 @@ KNN               & 0.659 & 0.423 & 0.667 & 0.714 & 0.433 & 0.634 & 0.464 & 0.40
 \bottomrule
 \end{tabular}}
 \end{table}
-
-\vspace{2pt}
-\textbf{Clinical relevance of recall.}
-In CHD prediction, sensitivity (recall $= \text{TP}/(\text{TP}+\text{FN})$)
-is the most clinically important metric i.e., missing a patient who truly has
-heart disease (false negative) risks delayed treatment and potentially a
-fatal cardiac event, whereas a false positive leads only to further
-diagnostic testing. Ridge LR achieves the highest precision (0.667) but
-its CHD recall is only 0.563 i.e., it misses 44\% of CHD patients, which is
-clinically unacceptable for a screening tool. Gaussian NB flips this
-trade-off: recall rises to 0.750 (catches 75\% of CHD cases) at the cost
-of lower precision (0.571), producing more false alarms but fewer missed
-diagnoses. This may be acceptable in a screening context.
-QDA achieves the best recall (0.781) correctly identifying 78\% of CHD
-patients while maintaining the highest overall F1 (0.694) and accuracy
-(0.763), making it the most clinically appropriate classifier in this
-evaluation.
-
 \textbf{Stability across repeated splits.}
 A single train/test split can yield optimistic or pessimistic estimates
 depending on which patients fall in the test set. Figure~\ref{fig:repeated}
