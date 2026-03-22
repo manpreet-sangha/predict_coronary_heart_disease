@@ -393,8 +393,8 @@ shrunk near zero, consistent with their non-significance in the MLE fit.
 On the held-out test set ($n=93$, 20\,\%) the model achieves
 AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753
 (Table~\ref{tab:perf}). CHD recall is 0.563 versus No-CHD recall of 0.871,
-a consequence of the 1.89:1 class imbalance (Figures~\ref{fig:roc}--\ref{fig:oc_cm},
-Section~\ref{sec:oc}).
+a consequence of the 1.89:1 class imbalance (Figures~\ref{fig:roc}--\ref{fig:oc_roc},
+Tables~\ref{tab:cm}--\ref{tab:oc_cm}, Section~\ref{sec:oc}).
 \end{minipage}\hfill
 \begin{minipage}[t]{0.50\linewidth}
 \centering
@@ -492,17 +492,17 @@ The best configuration was \texttt{max\_depth=3}, \texttt{max\_features=sqrt},
 \end{figure}
 
 % ── Confusion matrices: Ridge LR vs Random Forest side by side ────────────
-\vspace{4pt}
+\vspace{2pt}
 \noindent
 \begin{minipage}[t]{0.46\linewidth}
 \centering
 \captionsetup{width=\linewidth}
-\captionof{figure}{\footnotesize Ridge LR confusion matrix (threshold\,=\,0.5).
-Bold\,=\,correct; recall: No\,CHD\,85\%, CHD\,56\%.}
-\label{fig:cm}
-\vspace{4pt}
+\captionof{table}{\footnotesize Ridge LR: confusion matrix (threshold\,=\,0.5).
+Recall — No\,CHD\,85\%, CHD\,56\%.}
+\label{tab:cm}
+\vspace{2pt}
 {\footnotesize
-\renewcommand{\arraystretch}{1.3}
+\renewcommand{\arraystretch}{1.1}
 \begin{tabular}{@{}llrr@{}}
 \toprule
 & & \multicolumn{2}{c}{\textit{Predicted}} \\
@@ -517,12 +517,12 @@ Bold\,=\,correct; recall: No\,CHD\,85\%, CHD\,56\%.}
 \begin{minipage}[t]{0.46\linewidth}
 \centering
 \captionsetup{width=\linewidth}
-\captionof{figure}{\footnotesize Random Forest confusion matrix (threshold\,=\,0.5).
-Bold\,=\,correct; recall: No\,CHD\,87\%, CHD\,50\%.}
-\label{fig:oc_cm}
-\vspace{4pt}
+\captionof{table}{\footnotesize Random Forest: confusion matrix (threshold\,=\,0.5).
+Recall — No\,CHD\,87\%, CHD\,50\%.}
+\label{tab:oc_cm}
+\vspace{2pt}
 {\footnotesize
-\renewcommand{\arraystretch}{1.3}
+\renewcommand{\arraystretch}{1.1}
 \begin{tabular}{@{}llrr@{}}
 \toprule
 & & \multicolumn{2}{c}{\textit{Predicted}} \\
