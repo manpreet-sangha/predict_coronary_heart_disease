@@ -534,6 +534,7 @@ KNN               & 0.659 & 0.423 & 0.667 & 0.714 & 0.433 & 0.634 & 0.464 & 0.40
 \bottomrule
 \end{tabular}}
 \end{table}
+\newline
 \textbf{Stability across repeated splits.}
 A single train/test split can yield optimistic or pessimistic estimates
 depending on which patients fall in the test set. Figure~\ref{fig:repeated}
@@ -554,14 +555,6 @@ splits. Top 3 by median highlighted in red.}
 \label{fig:repeated}
 \vspace{-8pt}
 \end{wrapfigure}
-
-\textbf{Methods considered but excluded.}
-\textit{Factor Analysis} (FA) is an unsupervised latent-variable model
-designed for structure discovery, not prediction; PCA already fulfils this
-exploratory role in Section~\ref{sec:eda}.
-\textit{Fisher's DA} (FDA) for a binary outcome reduces to a single linear
-discriminant direction mathematically equivalent to LDA under equal-covariance
-assumptions --- redundant given LDA is already included.
 
 \textbf{Why the chosen methods are appropriate.}
 The 12 classifiers in Table~\ref{tab:final} span discriminative models
