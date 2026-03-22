@@ -394,15 +394,13 @@ Tables~\ref{tab:cm}--\ref{tab:oc_cm}, Section~\ref{sec:oc}).
 \section{Alternative Classifiers}
 \label{sec:oc}
 % =============================================================================
-Since the PCA scatter plot (Section~\ref{sec:eda}) showed that CHD and
-non-CHD patients overlap a lot, I wanted to try classifiers that can
-draw non-linear boundaries. I tested twelve classifiers from the module,
-covering discriminative models, tree-based ensembles, and generative
-classifiers. I used the same preprocessing as Section~\ref{sec:lrrp}:
+Since the PCA scatter plot (Section~\ref{sec:eda}) shows overlapping between CHD and
+non-CHD patients, other classifiers such as discriminative models, tree-based ensembles, 
+and generative classifiers are considered in this section. I used the same preprocessing as Section~\ref{sec:lrrp}:
 \texttt{famhist} encoded, four skewed features
 log\,\textsubscript{1p}-transformed, all features standardised.
 
-I screened all twelve using stratified 5-fold cross-validation on AUC-ROC
+All classifiers were screened using stratified 5-fold cross-validation on AUC-ROC
 (Table~\ref{tab:final}), with the same 11 features (including
 \texttt{age\_tobacco} and \texttt{age\_famhist}) as Section~\ref{sec:lrrp}.
 Gaussian NB came out on top in CV (AUC\,=\,0.765), followed by LDA (0.751)
