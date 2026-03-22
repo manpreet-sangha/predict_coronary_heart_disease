@@ -365,36 +365,7 @@ effect ($\hat{\beta}=0.212$), followed by \texttt{age\_famhist} ($0.189$)
 and \texttt{ldl} ($0.174$). \texttt{obesity} and \texttt{alcohol} are
 shrunk near zero, consistent with their non-significance in the MLE fit.
 
-% ── ROC + confusion matrix ─────────────────────────────────────────────────
-\begin{figure}[htbp]
-\centering
-\begin{minipage}{0.54\linewidth}
-\centering
-\includegraphics[width=\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_roc_curve.png}
-\caption{\footnotesize ROC curve for the ridge logistic regression
-($C=0.01$) on the 20\,\% held-out test set.}
-\label{fig:roc}
-\end{minipage}\hfill
-\begin{minipage}{0.42\linewidth}
-\centering
-\captionof{figure}{\footnotesize Confusion matrix at the 0.5 decision
-threshold (test set, $n=93$). Bold = correct classifications.}
-\label{fig:cm}
-\vspace{6pt}
-{\footnotesize
-\renewcommand{\arraystretch}{1.3}
-\begin{tabular}{@{}llrr@{}}
-\toprule
-& & \multicolumn{2}{c}{\textit{Predicted}} \\
-\cmidrule(l){3-4}
-\textit{Actual} & & No\,CHD & CHD \\
-\midrule
-& No\,CHD & \textbf{52} & 9 \\
-& CHD     & 14          & \textbf{18} \\
-\bottomrule
-\end{tabular}}
-\end{minipage}
-\end{figure}
+% ── ROC curves and confusion matrices moved to Section 3 for side-by-side comparison
 
 % ── Table 4: minipage pair — text left, table right, full-width text below ───
 \noindent
@@ -402,9 +373,9 @@ threshold (test set, $n=93$). Bold = correct classifications.}
 \raggedright
 On the held-out test set ($n=93$, 20\,\%) the model achieves
 AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753
-(Table~\ref{tab:perf}). The confusion matrix (Figure~\ref{fig:cm}) reveals
-that CHD recall is 0.563 versus No-CHD recall of 0.871, a consequence of the
-1.89:1 class imbalance.
+(Table~\ref{tab:perf}). CHD recall is 0.563 versus No-CHD recall of 0.871,
+a consequence of the 1.89:1 class imbalance (Figures~\ref{fig:roc}--\ref{fig:oc_cm},
+Section~\ref{sec:oc}).
 \end{minipage}\hfill
 \begin{minipage}[t]{0.50\linewidth}
 \centering
@@ -445,13 +416,13 @@ datasets \cite{rehman2025predicting, ogunpola2024machine}.
 {\footnotesize
 \begin{tabular}{@{}lrrr@{}}
 \toprule
-Classifier        & CV AUC & CV F1 & CV Acc \\
+Classifier & CV AUC & CV F1 & CV Acc \\
 \midrule
-Decision Tree     & 0.618  & 0.397 & 0.611 \\
-KNN               & 0.659  & 0.453 & 0.673 \\
-Gradient Boosting & 0.699  & 0.475 & 0.685 \\
-SVM (RBF)         & 0.716  & 0.511 & 0.722 \\
-\textbf{Random Forest} & \textbf{0.718} & \textbf{0.491} & \textbf{0.689} \\
+\shortstack[l]{Decision\\Tree}     & 0.618  & 0.397 & 0.611 \\[4pt]
+KNN                                & 0.659  & 0.453 & 0.673 \\[4pt]
+\shortstack[l]{Gradient\\Boosting} & 0.699  & 0.475 & 0.685 \\[4pt]
+\shortstack[l]{SVM\\(RBF)}         & 0.716  & 0.511 & 0.722 \\[4pt]
+\textbf{\shortstack[l]{Random\\Forest}} & \textbf{0.718} & \textbf{0.491} & \textbf{0.689} \\
 \bottomrule
 \end{tabular}}
 \vspace{-4pt}
@@ -483,36 +454,64 @@ The best configuration was \texttt{max\_depth=3}, \texttt{max\_features=sqrt},
 \texttt{n\_estimators=500} (tuned CV-AUC\,=\,0.742). Shallow trees
 (\texttt{max\_depth=3}) prevent overfitting on a dataset of 462 observations.
 
-% ── ROC + confusion matrix ─────────────────────────────────────────────────
+% ── ROC curves: Ridge LR vs Random Forest side by side ───────────────────
 \begin{figure}[htbp]
 \centering
-\begin{minipage}{0.54\linewidth}
+\begin{minipage}{0.48\linewidth}
+\centering
+\includegraphics[width=\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_roc_curve.png}
+\caption{\footnotesize Ridge LR ($C\!=\!0.01$): AUC\,=\,0.820, test set $n=93$.}
+\label{fig:roc}
+\end{minipage}\hfill
+\begin{minipage}{0.48\linewidth}
 \centering
 \includegraphics[width=\linewidth]{../other_classifiers/oc_output/fig_oc_roc_curve.png}
-\caption{\footnotesize ROC curve for the tuned Random Forest on the 20\,\%
-held-out test set.}
+\caption{\footnotesize Tuned Random Forest: AUC\,=\,0.788, test set $n=93$.}
 \label{fig:oc_roc}
-\end{minipage}\hfill
-\begin{minipage}{0.42\linewidth}
+\end{minipage}
+\end{figure}
+
+% ── Confusion matrices: Ridge LR vs Random Forest side by side ────────────
+\vspace{4pt}
+\noindent
+\begin{minipage}[t]{0.46\linewidth}
 \centering
-\captionof{figure}{\footnotesize Confusion matrix for the tuned Random
-Forest ($n=93$, threshold\,=\,0.5). Bold = correct classifications.}
-\label{fig:oc_cm}
-\vspace{6pt}
+\captionof{figure}{\footnotesize Ridge LR confusion matrix (threshold\,=\,0.5).
+Bold\,=\,correct; recall: No\,CHD\,85\%, CHD\,56\%.}
+\label{fig:cm}
+\vspace{4pt}
 {\footnotesize
 \renewcommand{\arraystretch}{1.3}
 \begin{tabular}{@{}llrr@{}}
 \toprule
 & & \multicolumn{2}{c}{\textit{Predicted}} \\
 \cmidrule(l){3-4}
-\textit{Actual} & & No\,CHD & CHD \\
+\textit{True Label} & & No\,CHD & CHD \\
 \midrule
-& No\,CHD & \textbf{53} & 8 \\
+& No\,CHD & \textbf{52} & 9  \\
+& CHD     & 14          & \textbf{18} \\
+\bottomrule
+\end{tabular}}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.46\linewidth}
+\centering
+\captionof{figure}{\footnotesize Random Forest confusion matrix (threshold\,=\,0.5).
+Bold\,=\,correct; recall: No\,CHD\,87\%, CHD\,50\%.}
+\label{fig:oc_cm}
+\vspace{4pt}
+{\footnotesize
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}llrr@{}}
+\toprule
+& & \multicolumn{2}{c}{\textit{Predicted}} \\
+\cmidrule(l){3-4}
+\textit{True Label} & & No\,CHD & CHD \\
+\midrule
+& No\,CHD & \textbf{53} & 8  \\
 & CHD     & 16          & \textbf{16} \\
 \bottomrule
 \end{tabular}}
 \end{minipage}
-\end{figure}
 
 % ── Table 6: minipage pair — text left, table right, full-width text below ───
 \noindent

@@ -197,15 +197,16 @@ def run_lrrp(df: pd.DataFrame) -> None:
 
     # ── 7. Figure: ROC curve ───────────────────────────────────────────────
     fpr, tpr, _ = roc_curve(y_test, y_prob)
-    fig, ax = plt.subplots(figsize=(4.5, 4.5))
+    fig, ax = plt.subplots(figsize=(3.0, 3.0))
     ax.plot(fpr, tpr, color="tomato", lw=2, label=f"AUC = {auc:.3f}")
     ax.plot([0, 1], [0, 1], "k--", lw=1)
-    ax.set_xlabel("False Positive Rate")
-    ax.set_ylabel("True Positive Rate")
-    ax.legend(loc="lower right", fontsize=9)
+    ax.set_xlabel("False Positive Rate", fontsize=8)
+    ax.set_ylabel("True Positive Rate", fontsize=8)
+    ax.tick_params(labelsize=7)
+    ax.legend(loc="lower right", fontsize=8)
     plt.tight_layout()
     roc_path = os.path.join(OUTPUT_DIR, "fig_lrrp_roc_curve.png")
-    plt.savefig(roc_path, dpi=150)
+    plt.savefig(roc_path, dpi=220)
     plt.close()
     print(f"[Saved] {roc_path}")
 

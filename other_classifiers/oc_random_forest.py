@@ -119,14 +119,15 @@ def tune_and_evaluate(
 def _save_figures(model, y_test, y_pred, y_prob, auc, output_dir):
     # ROC curve
     fpr, tpr, _ = roc_curve(y_test, y_prob)
-    fig, ax = plt.subplots(figsize=(4.5, 4.5))
+    fig, ax = plt.subplots(figsize=(3.0, 3.0))
     ax.plot(fpr, tpr, color="tomato", lw=2, label=f"AUC = {auc:.3f}")
     ax.plot([0, 1], [0, 1], "k--", lw=1)
-    ax.set_xlabel("False Positive Rate")
-    ax.set_ylabel("True Positive Rate")
-    ax.legend(loc="lower right", fontsize=9)
+    ax.set_xlabel("False Positive Rate", fontsize=8)
+    ax.set_ylabel("True Positive Rate", fontsize=8)
+    ax.tick_params(labelsize=7)
+    ax.legend(loc="lower right", fontsize=8)
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, "fig_rf_roc_curve.png"), dpi=150)
+    plt.savefig(os.path.join(output_dir, "fig_rf_roc_curve.png"), dpi=220)
     plt.close()
 
     # Confusion matrix
