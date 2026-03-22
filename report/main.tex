@@ -332,11 +332,8 @@ almost fully shrunk to zero.
 \end{minipage}
 \end{figure}
 
-% ── Table 4: wraptable right, results text wraps left and below ──────────────
-\begin{wraptable}{r}{0.52\linewidth}
-\vspace{-6pt}
-\captionsetup{width=0.95\linewidth}
-\centering
+\begin{table}[htbp]
+\raggedleft
 \caption{\footnotesize Test-set performance of the ridge logistic regression.}
 \label{tab:perf}
 \vspace{2pt}
@@ -348,8 +345,7 @@ Model & AUC-ROC & F1 & Precision & Recall \\
 Ridge LR ($C=0.01$) & 0.820 & 0.610 & 0.667 & 0.563 \\
 \bottomrule
 \end{tabular}}
-\vspace{-4pt}
-\end{wraptable}
+\end{table}
 
 On the held-out test set ($n=93$, 20\,\%) the model achieves
 AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753
@@ -434,11 +430,8 @@ held-out test set.}
 \end{minipage}
 \end{figure}
 
-% ── Table 6: wraptable right, comparison text wraps left and below ────────────
-\begin{wraptable}{r}{0.54\linewidth}
-\vspace{-6pt}
-\captionsetup{width=0.95\linewidth}
-\centering
+\begin{table}[htbp]
+\raggedleft
 \caption{\footnotesize Final test-set comparison: Ridge LR vs.\ best
 alternative classifier.}
 \label{tab:final}
@@ -452,8 +445,7 @@ Ridge LR ($C=0.01$)   & \textbf{0.820} & \textbf{0.610} & \textbf{0.667} & \text
 Random Forest (tuned) & 0.788 & 0.571 & 0.667 & 0.500 \\
 \bottomrule
 \end{tabular}}
-\vspace{-4pt}
-\end{wraptable}
+\end{table}
 
 On the held-out test set ($n=93$) the tuned Random Forest achieves
 AUC\,=\,0.788, F1\,=\,0.571, and accuracy\,=\,0.742
