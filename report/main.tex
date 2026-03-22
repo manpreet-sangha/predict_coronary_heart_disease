@@ -395,35 +395,13 @@ implies strong regularisation: \texttt{age} retains the largest ridge
 effect ($\hat{\beta}=0.212$), followed by \texttt{age\_famhist} ($0.189$)
 and \texttt{ldl} ($0.174$). \texttt{obesity} and \texttt{alcohol} are
 shrunk near zero, consistent with their non-significance in the MLE fit.
-Figure~\ref{fig:shrinkage} visualises this shrinkage: every unpenalised
-coefficient (blue) is pulled toward zero by the ridge penalty (red), with
-the largest absolute reductions on \texttt{age\_famhist} and \texttt{age}.
-
-\begin{wrapfigure}{r}{0.46\linewidth}
-\vspace{-6pt}
+% ── Table 5 + Figure 5: side by side ─────────────────────────────────────────
+\noindent
+\begin{minipage}[t]{0.48\linewidth}
+\vspace{0pt}
+\centering
 \captionsetup{width=\linewidth}
-\centering
-\includegraphics[width=\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_coefficient_shrinkage.png}
-\caption{\footnotesize Coefficient shrinkage: unpenalised MLE
-($\hat{\beta}_{\text{LR}}$) vs.\ ridge ($\hat{\beta}_{\text{ridge}}$, $C\!=\!0.01$).}
-\label{fig:shrinkage}
-\vspace{-8pt}
-\end{wrapfigure}
-
-% ── ROC curves and confusion matrices moved to Section 3 for side-by-side comparison
-
-\FloatBarrier
-
-On the held-out test set ($n=93$, 20\,\%) the model achieves
-AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753
-(Table~\ref{tab:perf}). CHD recall is 0.563 versus No-CHD recall of 0.871,
-a consequence of the 1.89:1 class imbalance (Figures~\ref{fig:roc}--\ref{fig:oc_roc},
-Tables~\ref{tab:cm}--\ref{tab:oc_cm}, Section~\ref{sec:oc}).
-
-\begin{table}[htbp]
-\centering
-\captionsetup{width=0.7\linewidth}
-\caption{\footnotesize Test-set performance of the ridge logistic regression.}
+\captionof{table}{\footnotesize Test-set performance of the ridge logistic regression.}
 \label{tab:perf}
 \vspace{2pt}
 {\footnotesize
@@ -431,10 +409,32 @@ Tables~\ref{tab:cm}--\ref{tab:oc_cm}, Section~\ref{sec:oc}).
 \toprule
 Model & AUC & F1 & Prec. & Rec. \\
 \midrule
-Ridge LR ($C\!=\!0.01$) & 0.820 & 0.610 & 0.667 & 0.563 \\
+\shortstack[l]{Ridge LR\\($C\!=\!0.01$)} & 0.820 & 0.610 & 0.667 & 0.563 \\
 \bottomrule
 \end{tabular}}
-\end{table}
+
+\vspace{6pt}
+\raggedright
+Figure~\ref{fig:shrinkage} visualises the coefficient shrinkage: every
+unpenalised estimate (blue) is pulled toward zero by the ridge penalty
+(red), with the largest reductions on \texttt{age\_famhist} and \texttt{age}.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\linewidth}
+\vspace{0pt}
+\centering
+\captionsetup{width=\linewidth}
+\includegraphics[width=\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_coefficient_shrinkage.png}
+\captionof{figure}{\footnotesize Coefficient shrinkage: unpenalised MLE
+($\hat{\beta}_{\text{LR}}$) vs.\ ridge ($\hat{\beta}_{\text{ridge}}$, $C\!=\!0.01$).}
+\label{fig:shrinkage}
+\end{minipage}
+
+\vspace{6pt}
+On the held-out test set ($n=93$, 20\,\%) the model achieves
+AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753
+(Table~\ref{tab:perf}). CHD recall is 0.563 versus No-CHD recall of 0.871,
+a consequence of the 1.89:1 class imbalance (Figures~\ref{fig:roc}--\ref{fig:oc_roc},
+Tables~\ref{tab:cm}--\ref{tab:oc_cm}, Section~\ref{sec:oc}).
 
 The derived interaction features improve recall by 12.5 percentage points
 relative to the nine-feature baseline. AUC of 0.820 is substantially above
