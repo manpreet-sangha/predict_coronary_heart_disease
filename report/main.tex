@@ -215,18 +215,102 @@ non-linear classifiers in Section~\ref{sec:oc}.
 \label{sec:lrrp}
 % =============================================================================
 
-% TODO: Complete after implementing logistic_regression_ridge_penalty/lrrp.py
-%
-% Structure:
-%   - Model specification: L2 penalty motivation (multicollinearity from EDA),
-%     C selection via cross-validation
-%   - Results: coefficient table (minipage right), ROC curve (minipage right),
-%     confusion matrix, classification report
-%   - Interpretation: sign/magnitude of coefficients, effect of regularisation
+\noindent
+\begin{minipage}[t]{0.50\linewidth}
+\raggedright
+Logistic regression with an L2 (ridge) penalty was chosen as the primary
+interpretable classifier. The multicollinearity between \texttt{adiposity}
+and \texttt{obesity} ($r=0.72$, Section~\ref{sec:eda}) motivates
+regularisation: ridge shrinks correlated coefficients jointly without zeroing
+any out \cite{borges2025logistic, hassan2022effectively}.
 
-\noindent\textit{This section will be completed upon implementation of
-\texttt{logistic\_regression\_ridge\_penalty/lrrp.py}.}
-% Key reference for this section: \cite{borges2025logistic}
+All nine features were retained. Preprocessing mirrors the EDA pipeline:
+\texttt{famhist} encoded as 0/1; \texttt{sbp}, \texttt{tobacco},
+\texttt{ldl}, and \texttt{alcohol} log\,\textsubscript{1p}-transformed;
+all features standardised with \texttt{StandardScaler} (zero mean, unit
+variance) so coefficient magnitudes are directly comparable.
+
+The regularisation strength $C$ (inverse of $\lambda$) was selected by
+stratified 5-fold cross-validation over the grid
+$\{0.001, 0.01, 0.1, 1, 10, 100\}$ maximising AUC-ROC on an 80\,\%
+training set. Table~\ref{tab:coef} lists the standardised coefficients of
+the best model ($C=0.01$, CV-AUC$=0.760$).
+\end{minipage}\hfill
+\begin{minipage}[t]{0.46\linewidth}
+\centering
+\captionof{table}{\footnotesize Standardised coefficients of the ridge
+logistic regression ($C=0.01$), sorted by $|\beta|$.}
+\label{tab:coef}
+\vspace{2pt}
+{\footnotesize
+\begin{tabular}{@{}lrr@{}}
+\toprule
+Feature    & $\hat{\beta}$ & $|\hat{\beta}|$ \\
+\midrule
+age        &  0.246 & 0.246 \\
+famhist    &  0.205 & 0.205 \\
+tobacco    &  0.198 & 0.198 \\
+ldl        &  0.180 & 0.180 \\
+typea      &  0.118 & 0.118 \\
+adiposity  &  0.085 & 0.085 \\
+sbp        &  0.080 & 0.080 \\
+obesity    &  0.014 & 0.014 \\
+alcohol    & $-$0.013 & 0.013 \\
+\bottomrule
+\end{tabular}}
+\end{minipage}
+
+\vspace{4pt}
+The optimal $C=0.01$ implies strong regularisation, consistent with
+multicollinear features reducing effective degrees of freedom.
+\texttt{age} has the largest effect ($\hat{\beta}=0.246$), followed by
+\texttt{famhist} ($0.205$) and \texttt{tobacco} ($0.198$), reinforcing
+the EDA rankings. \texttt{obesity} and \texttt{alcohol} are almost fully
+shrunk to zero, suggesting they contribute little beyond what \texttt{adiposity}
+and \texttt{tobacco} already capture.
+
+% ── ROC + confusion matrix ─────────────────────────────────────────────────
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.48\linewidth}
+\centering
+\includegraphics[width=\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_roc_curve.png}
+\caption{\footnotesize ROC curve for the ridge logistic regression
+($C=0.01$) on the 20\,\% held-out test set.}
+\label{fig:roc}
+\end{minipage}\hfill
+\begin{minipage}{0.48\linewidth}
+\centering
+\includegraphics[width=\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_confusion_matrix.png}
+\caption{\footnotesize Confusion matrix at the 0.5 decision threshold
+(test set, $n=93$).}
+\label{fig:cm}
+\end{minipage}
+\end{figure}
+
+On the held-out test set ($n=93$, 20\,\%) the model achieves
+AUC\,=\,0.810, F1\,=\,0.52, and accuracy\,=\,0.72
+(Table~\ref{tab:perf}). The confusion matrix (Figure~\ref{fig:cm}) reveals
+that CHD recall is 0.44 versus No-CHD recall of 0.87, a consequence of the
+1.89:1 class imbalance; the model tends to predict the majority class. AUC
+of 0.810 is nevertheless substantially above the 0.5 random baseline and
+competitive with published benchmarks on similar datasets
+\cite{rehman2025predicting, ogunpola2024machine}.
+
+\begin{table}[h!]
+\centering
+\caption{\footnotesize Test-set performance of the ridge logistic regression.}
+\label{tab:perf}
+\vspace{2pt}
+{\footnotesize
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Model & AUC-ROC & F1 & Precision & Recall \\
+\midrule
+Ridge LR ($C=0.01$) & 0.810 & 0.52 & 0.64 & 0.44 \\
+\bottomrule
+\end{tabular}}
+\end{table}
 
 % =============================================================================
 \section{Alternative Classifiers}
