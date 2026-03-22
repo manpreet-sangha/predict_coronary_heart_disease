@@ -32,8 +32,9 @@
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{float}
-\usepackage{caption}        % \captionof inside minipage
+\usepackage{caption}
 \usepackage{array}          % extended column formatting
+\usepackage{wrapfig}        % text wraps around figures/tables
 
 % ── Hyperlinks ────────────────────────────────────────────────────────────────
 \usepackage[colorlinks=true, linkcolor=black, citecolor=blue, urlcolor=blue]{hyperref}
@@ -62,30 +63,10 @@
 \section{Exploratory Data Analysis}
 % =============================================================================
 
-The \texttt{heart-disease.csv} dataset contains 462 male patients from the
-Western Cape, South Africa, described by nine clinical features and a binary
-target \texttt{chd} (1\,=\,CHD present). No missing values were detected.
-Table~\ref{tab:desc} summarises the key descriptive statistics. Four features
-exceed the $|\gamma_{1}|>1$ skewness threshold: \texttt{alcohol}
-($\gamma_{1}=2.31$), \texttt{tobacco} ($\gamma_{1}=2.08$), \texttt{ldl}
-($\gamma_{1}=1.31$), and \texttt{sbp} ($\gamma_{1}=1.18$), suggesting
-log-transformation may improve classifier performance.
-
-\vspace{4pt}
-\noindent
-\begin{minipage}[t]{0.52\linewidth}
-\vspace{0pt}
-Of the 462 patients, 160 (34.6\%) are CHD-positive and 302 (65.4\%)
-CHD-negative, giving an imbalance ratio of 1.89:1. This means raw accuracy
-will be a misleading evaluation metric
-\cite{rehman2025predicting, banerjee2025systematic, dutta2019efficient, borges2025logistic}
-and alternative measures such as AUC and F1-score are used throughout.
-\end{minipage}%
-\hfill
-\begin{minipage}[t]{0.44\linewidth}
-\vspace{0pt}
+\begin{wraptable}{r}{0.46\linewidth}
+\vspace{-6pt}
 \centering
-\captionof{table}{\footnotesize Descriptive statistics for all nine features.}
+\caption{\footnotesize Descriptive statistics for all nine features.}
 \label{tab:desc}
 \vspace{2pt}
 {\footnotesize
@@ -104,14 +85,33 @@ alcohol   &  17.0 & 24.5 &   0 & 147 \\
 age       &  42.8 & 14.6 &  15 &  64 \\
 \bottomrule
 \end{tabular}}
-\end{minipage}
+\vspace{-4pt}
+\end{wraptable}
 
-\vspace{8pt}
+The \texttt{heart-disease.csv} dataset contains 462 male patients from the
+Western Cape, South Africa, described by nine clinical features and a binary
+target \texttt{chd} (1\,=\,CHD present). No missing values were detected.
+Table~\ref{tab:desc} summarises the key descriptive statistics. Four features
+exceed the $|\gamma_{1}|>1$ skewness threshold: \texttt{alcohol}
+($\gamma_{1}=2.31$), \texttt{tobacco} ($\gamma_{1}=2.08$), \texttt{ldl}
+($\gamma_{1}=1.31$), and \texttt{sbp} ($\gamma_{1}=1.18$), suggesting
+log-transformation may improve classifier performance.
+Of the 462 patients, 160 (34.6\%) are CHD-positive and 302 (65.4\%)
+CHD-negative, giving an imbalance ratio of 1.89:1. This means raw accuracy
+will be a misleading evaluation metric
+\cite{rehman2025predicting, banerjee2025systematic, dutta2019efficient, borges2025logistic}
+and alternative measures such as AUC and F1-score are used throughout.
 
 % ── Correlation heatmap + analysis ───────────────────────────────────────────
-\noindent
-\begin{minipage}[t]{0.52\linewidth}
-\vspace{0pt}
+\begin{wrapfigure}{r}{0.46\linewidth}
+\vspace{-6pt}
+\centering
+\includegraphics[width=\linewidth]{../exploratory_data_analysis/eda_output/fig_correlation_heatmap.png}
+\caption{\footnotesize Pearson correlation matrix.}
+\label{fig:corr}
+\vspace{-8pt}
+\end{wrapfigure}
+
 The Pearson correlation heatmap (Figure~\ref{fig:corr}) reveals that
 \texttt{age} ($r=0.37$) is the strongest linear predictor of CHD, followed
 by \texttt{tobacco} ($r=0.30$), \texttt{famhist} ($r=0.27$), and \texttt{ldl}
@@ -120,61 +120,33 @@ the weakest predictors. A moderate positive correlation between
 \texttt{adiposity} and \texttt{obesity} ($r=0.72$) suggests partial
 multicollinearity, motivating ridge regularisation in Section~\ref{sec:lrrp}
 \cite{hassan2022effectively, ogunpola2024machine}.
-\end{minipage}%
-\hfill
-\begin{minipage}[t]{0.44\linewidth}
-\vspace{0pt}
-\centering
-\includegraphics[width=\linewidth]{../exploratory_data_analysis/eda_output/fig_correlation_heatmap.png}
-\captionof{figure}{\footnotesize Pearson correlation matrix.}
-\label{fig:corr}
-\end{minipage}
-
-\vspace{8pt}
-
-% ── Distribution analysis + log-transform ────────────────────────────────────
-\noindent
-\begin{minipage}[t]{0.52\linewidth}
-\vspace{0pt}
 Violin plots stratified by CHD class confirm that \texttt{age}, \texttt{tobacco},
 and \texttt{ldl} show the clearest class-conditional separation, while
 \texttt{obesity} and \texttt{typea} distributions overlap substantially.
+
+% ── Distribution analysis + log-transform ────────────────────────────────────
+\begin{wrapfigure}{r}{0.46\linewidth}
+\vspace{-6pt}
+\centering
+\includegraphics[width=\linewidth]{../exploratory_data_analysis/eda_output/fig_log_transformed_features.png}
+\caption{\footnotesize Log\textsubscript{1p}-transformation of the
+four dynamically identified skewed features.}
+\label{fig:logtr}
+\vspace{-8pt}
+\end{wrapfigure}
+
 Log\,\textsubscript{1p}-transformation of the four dynamically identified
 skewed features reduces their skewness markedly (Figure~\ref{fig:logtr}):
 \texttt{alcohol} from 2.31 to 0.44, \texttt{tobacco} from 2.08 to 0.53,
 \texttt{ldl} from 1.31 to 0.50, and \texttt{sbp} from 1.18 to 0.48.
 These transformations are applied as a preprocessing option in the
 modelling stages (Sections~\ref{sec:lrrp}--\ref{sec:oc}).
-\end{minipage}%
-\hfill
-\begin{minipage}[t]{0.44\linewidth}
-\vspace{0pt}
-\centering
-\includegraphics[width=\linewidth]{../exploratory_data_analysis/eda_output/fig_log_transformed_features.png}
-\captionof{figure}{\footnotesize Log\textsubscript{1p}-transformation of the
-four dynamically identified skewed features.}
-\label{fig:logtr}
-\end{minipage}
 
-\vspace{8pt}
-
-% ── Feature importance table + figure ────────────────────────────────────────
-\noindent
-\begin{minipage}[t]{0.52\linewidth}
-\vspace{0pt}
-Feature importance was assessed jointly using mutual information (MI) and
-the ANOVA F-test \cite{elsofany2024proposed, ullah2024machine}. Using two
-complementary criteria guards against misleading rankings from linear
-assumptions alone. Table~\ref{tab:fi} shows the normalised scores: \texttt{age}
-ranks first under both criteria, while \texttt{obesity} and \texttt{typea}
-score lowest. These rankings directly inform the variable selection strategy
-for the ridge logistic regression in Section~\ref{sec:lrrp}.
-\end{minipage}%
-\hfill
-\begin{minipage}[t]{0.44\linewidth}
-\vspace{0pt}
+% ── Feature importance ────────────────────────────────────────────────────────
+\begin{wraptable}{r}{0.46\linewidth}
+\vspace{-6pt}
 \centering
-\captionof{table}{\footnotesize Normalised feature importance scores (ranked by mean).}
+\caption{\footnotesize Normalised feature importance scores (ranked by mean).}
 \label{tab:fi}
 \vspace{2pt}
 {\footnotesize
@@ -193,14 +165,31 @@ typea      & 0.07 & 0.04  & 0.06 \\
 obesity    & 0.00 & 0.04  & 0.02 \\
 \bottomrule
 \end{tabular}}
-\end{minipage}
+\vspace{-4pt}
+\end{wraptable}
 
-\vspace{8pt}
+Feature importance was assessed jointly using mutual information (MI) and
+the ANOVA F-test \cite{elsofany2024proposed, ullah2024machine}. Using two
+complementary criteria guards against misleading rankings from linear
+assumptions alone. Table~\ref{tab:fi} shows the normalised scores: \texttt{age}
+ranks first under both criteria, while \texttt{obesity} and \texttt{typea}
+score lowest. These rankings directly inform the variable selection strategy
+for the ridge logistic regression in Section~\ref{sec:lrrp}.
 
 % ── PCA ──────────────────────────────────────────────────────────────────────
-\noindent
-\begin{minipage}[t]{0.52\linewidth}
-\vspace{0pt}
+\begin{wrapfigure}{r}{0.46\linewidth}
+\vspace{-6pt}
+\centering
+\includegraphics[width=\linewidth]{../exploratory_data_analysis/eda_output/fig_pca_scatter.png}
+\caption{\footnotesize PCA 2-D projection coloured by CHD class.}
+\label{fig:pca}
+\vspace{2pt}
+\includegraphics[width=0.72\linewidth]{../exploratory_data_analysis/eda_output/fig_pca_loadings_heatmap.png}
+\caption{\footnotesize PCA feature loadings (PC1 \& PC2).}
+\label{fig:pcaload}
+\vspace{-8pt}
+\end{wrapfigure}
+
 PCA was applied to the standardised feature matrix
 \cite{banerjee2025systematic}. PC1 explains 32.1\% of variance and loads
 positively on \texttt{adiposity} (0.52), \texttt{age} (0.46), and
@@ -212,19 +201,6 @@ projection (Figure~\ref{fig:pca}) shows partial but incomplete class
 separation; the loadings heatmap (Figure~\ref{fig:pcaload}) confirms PC1
 captures metabolic risk while PC2 captures lifestyle behaviours, motivating
 non-linear classifiers in Section~\ref{sec:oc}.
-\end{minipage}%
-\hfill
-\begin{minipage}[t]{0.44\linewidth}
-\vspace{0pt}
-\centering
-\includegraphics[width=\linewidth]{../exploratory_data_analysis/eda_output/fig_pca_scatter.png}
-\captionof{figure}{\footnotesize PCA 2-D projection coloured by CHD class.}
-\label{fig:pca}
-\vspace{4pt}
-\includegraphics[width=0.72\linewidth]{../exploratory_data_analysis/eda_output/fig_pca_loadings_heatmap.png}
-\captionof{figure}{\footnotesize PCA feature loadings (PC1 \& PC2).}
-\label{fig:pcaload}
-\end{minipage}
 
 % =============================================================================
 \section{Logistic Regression with Ridge Penalty}
