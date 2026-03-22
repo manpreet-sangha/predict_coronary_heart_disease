@@ -56,8 +56,11 @@
 \includepdf[pages=1]{Group Coursework Submission Form.pdf}
 
 % ── Table of Contents ─────────────────────────────────────────────────────────
+\pagenumbering{gobble}
 \tableofcontents
 \newpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
 
 % =============================================================================
 \section{Exploratory Data Analysis}
@@ -144,9 +147,7 @@ four dynamically identified skewed features.}
 \end{figure}
 
 % ── Feature importance ────────────────────────────────────────────────────────
-\begin{wraptable}{r}{0.46\linewidth}
-\vspace{-6pt}
-\captionsetup{width=0.9\linewidth}
+\begin{table}[h!]
 \centering
 \caption{\footnotesize Normalised feature importance scores (ranked by mean).}
 \label{tab:fi}
@@ -167,8 +168,7 @@ typea      & 0.07 & 0.04  & 0.06 \\
 obesity    & 0.00 & 0.04  & 0.02 \\
 \bottomrule
 \end{tabular}}
-\vspace{-4pt}
-\end{wraptable}
+\end{table}
 
 Feature importance was assessed jointly using mutual information (MI) and
 the ANOVA F-test \cite{elsofany2024proposed, ullah2024machine}. Using two
@@ -179,19 +179,21 @@ score lowest. These rankings directly inform the variable selection strategy
 for the ridge logistic regression in Section~\ref{sec:lrrp}.
 
 % ── PCA ──────────────────────────────────────────────────────────────────────
-\begin{wrapfigure}{r}{0.46\linewidth}
-\vspace{-6pt}
-\captionsetup{width=0.9\linewidth}
+\begin{figure}[h!]
+\centering
+\begin{minipage}{0.54\linewidth}
 \centering
 \includegraphics[width=\linewidth]{../exploratory_data_analysis/eda_output/fig_pca_scatter.png}
 \caption{\footnotesize PCA 2-D projection coloured by CHD class.}
 \label{fig:pca}
-\vspace{2pt}
-\includegraphics[width=0.72\linewidth]{../exploratory_data_analysis/eda_output/fig_pca_loadings_heatmap.png}
+\end{minipage}\hfill
+\begin{minipage}{0.42\linewidth}
+\centering
+\includegraphics[width=\linewidth]{../exploratory_data_analysis/eda_output/fig_pca_loadings_heatmap.png}
 \caption{\footnotesize PCA feature loadings (PC1 \& PC2).}
 \label{fig:pcaload}
-\vspace{-8pt}
-\end{wrapfigure}
+\end{minipage}
+\end{figure}
 
 PCA was applied to the standardised feature matrix
 \cite{banerjee2025systematic}. PC1 explains 32.1\% of variance and loads
