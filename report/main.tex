@@ -332,16 +332,10 @@ almost fully shrunk to zero.
 \end{minipage}
 \end{figure}
 
-On the held-out test set ($n=93$, 20\,\%) the model achieves
-AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753
-(Table~\ref{tab:perf}). The confusion matrix (Figure~\ref{fig:cm}) reveals
-that CHD recall is 0.563 versus No-CHD recall of 0.871, a consequence of the
-1.89:1 class imbalance. The derived interaction features improve recall by
-12.5 percentage points relative to the nine-feature baseline. AUC of 0.820
-is substantially above the 0.5 random baseline and competitive with published
-benchmarks on similar datasets \cite{rehman2025predicting, ogunpola2024machine}.
-
-\begin{table}[htbp]
+% ── Table 4: wraptable right, results text wraps left and below ──────────────
+\begin{wraptable}{r}{0.52\linewidth}
+\vspace{-6pt}
+\captionsetup{width=0.95\linewidth}
 \centering
 \caption{\footnotesize Test-set performance of the ridge logistic regression.}
 \label{tab:perf}
@@ -354,7 +348,17 @@ Model & AUC-ROC & F1 & Precision & Recall \\
 Ridge LR ($C=0.01$) & 0.820 & 0.610 & 0.667 & 0.563 \\
 \bottomrule
 \end{tabular}}
-\end{table}
+\vspace{-4pt}
+\end{wraptable}
+
+On the held-out test set ($n=93$, 20\,\%) the model achieves
+AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753
+(Table~\ref{tab:perf}). The confusion matrix (Figure~\ref{fig:cm}) reveals
+that CHD recall is 0.563 versus No-CHD recall of 0.871, a consequence of the
+1.89:1 class imbalance. The derived interaction features improve recall by
+12.5 percentage points relative to the nine-feature baseline. AUC of 0.820
+is substantially above the 0.5 random baseline and competitive with published
+benchmarks on similar datasets \cite{rehman2025predicting, ogunpola2024machine}.
 
 % =============================================================================
 \section{Alternative Classifiers}
