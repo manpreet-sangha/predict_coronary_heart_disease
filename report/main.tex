@@ -362,9 +362,34 @@ effect ($\hat{\beta}=0.212$), followed by \texttt{age\_famhist} ($0.189$)
 and \texttt{ldl} ($0.174$). \texttt{obesity} and \texttt{alcohol} are
 shrunk near zero, consistent with their non-significance in the MLE fit.
 
-% ── Figure 5: shrinkage chart (wrapfigure, text flows around it) ─────────────
+% ── Table 5: test-set performance ─────────────────────────────────────────────
+\begin{wraptable}{r}{0.46\linewidth}
+\vspace{-6pt}
+\captionsetup{width=\linewidth}
+\centering
+\caption{\footnotesize Test-set performance of the ridge logistic regression.}
+\label{tab:perf}
+\vspace{2pt}
+{\footnotesize
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Model & AUC & F1 & Prec. & Rec. \\
+\midrule
+\shortstack[l]{Ridge LR\\($C\!=\!0.01$)} & 0.820 & 0.610 & 0.667 & 0.563 \\
+\bottomrule
+\end{tabular}}
+\vspace{-4pt}
+\end{wraptable}
+
+On the held-out test set ($n=93$, 20\,\%) the model achieves
+AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753
+(Table~\ref{tab:perf}). CHD recall is 0.563 versus No-CHD recall of 0.871,
+a consequence of the 1.89:1 class imbalance (Figures~\ref{fig:roc}--\ref{fig:oc_roc},
+Tables~\ref{tab:cm}--\ref{tab:oc_cm}, Section~\ref{sec:oc}).
+
+% ── Figure 5: shrinkage chart ────────────────────────────────────────────────
 \begin{wrapfigure}{r}{0.48\linewidth}
-\vspace{-10pt}
+\vspace{-6pt}
 \captionsetup{width=\linewidth}
 \centering
 \includegraphics[width=\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_coefficient_shrinkage.png}
@@ -374,12 +399,6 @@ shrunk near zero, consistent with their non-significance in the MLE fit.
 \label{fig:shrinkage}
 \vspace{-6pt}
 \end{wrapfigure}
-
-On the held-out test set ($n=93$, 20\,\%) the model achieves
-AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753.
-CHD recall is 0.563 versus No-CHD recall of 0.871,
-a consequence of the 1.89:1 class imbalance (Figures~\ref{fig:roc}--\ref{fig:oc_roc},
-Tables~\ref{tab:cm}--\ref{tab:oc_cm}, Section~\ref{sec:oc}).
 Figure~\ref{fig:shrinkage} visualises the coefficient shrinkage: every
 unpenalised estimate (blue) is pulled toward zero by the ridge penalty
 (red), with the largest reductions on \texttt{age\_famhist} and \texttt{age}.
