@@ -267,8 +267,21 @@ without severity grading). The multiplicative form imposes a specific
 functional shape; a flexible non-parametric model may better approximate
 the true relationship.
 
-% ── Coefficient table: proper float so it fills gap at top of next page ───────
-\begin{table}[htbp]
+\textbf{Preprocessing.}
+\texttt{famhist} encoded as 0/1; skewed features (\texttt{sbp},
+\texttt{tobacco}, \texttt{ldl}, \texttt{alcohol})
+log\,\textsubscript{1p}-transformed; all eleven features standardised with
+\texttt{StandardScaler} (zero mean, unit variance).
+The regularisation strength $C$ (inverse of $\lambda$) was selected by
+stratified 5-fold cross-validation over the grid
+$\{0.001, 0.01, 0.1, 1, 10, 100\}$ maximising AUC-ROC on an 80\,\%
+training set. Table~\ref{tab:coef} lists the standardised coefficients of
+the best model ($C=0.01$).
+
+% ── Coefficient table: wraptable right, analysis text wraps left and below ────
+\begin{wraptable}{r}{0.50\linewidth}
+\vspace{-6pt}
+\captionsetup{width=0.95\linewidth}
 \centering
 \caption{\footnotesize Standardised coefficients of the ridge logistic
 regression ($C=0.01$), sorted by $|\hat{\beta}|$.}
@@ -287,18 +300,8 @@ famhist      &  0.130 & obesity     &  0.013 \\
 age\_tobacco &  0.125 &             &        \\
 \bottomrule
 \end{tabular}}
-\end{table}
-
-\textbf{Preprocessing.}
-\texttt{famhist} encoded as 0/1; skewed features (\texttt{sbp},
-\texttt{tobacco}, \texttt{ldl}, \texttt{alcohol})
-log\,\textsubscript{1p}-transformed; all eleven features standardised with
-\texttt{StandardScaler} (zero mean, unit variance).
-The regularisation strength $C$ (inverse of $\lambda$) was selected by
-stratified 5-fold cross-validation over the grid
-$\{0.001, 0.01, 0.1, 1, 10, 100\}$ maximising AUC-ROC on an 80\,\%
-training set. Table~\ref{tab:coef} lists the standardised coefficients of
-the best model ($C=0.01$).
+\vspace{-4pt}
+\end{wraptable}
 
 The optimal $C=0.01$ implies strong regularisation, consistent with
 multicollinear features reducing effective degrees of freedom.
