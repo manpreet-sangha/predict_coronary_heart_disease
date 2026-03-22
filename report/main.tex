@@ -368,19 +368,31 @@ shrunk near zero, consistent with their non-significance in the MLE fit.
 % ── ROC + confusion matrix ─────────────────────────────────────────────────
 \begin{figure}[htbp]
 \centering
-\begin{minipage}{0.48\linewidth}
+\begin{minipage}{0.54\linewidth}
 \centering
 \includegraphics[width=\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_roc_curve.png}
 \caption{\footnotesize ROC curve for the ridge logistic regression
 ($C=0.01$) on the 20\,\% held-out test set.}
 \label{fig:roc}
 \end{minipage}\hfill
-\begin{minipage}{0.48\linewidth}
+\begin{minipage}{0.42\linewidth}
 \centering
-\includegraphics[width=\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_confusion_matrix.png}
-\caption{\footnotesize Confusion matrix at the 0.5 decision threshold
-(test set, $n=93$).}
+\captionof{figure}{\footnotesize Confusion matrix at the 0.5 decision
+threshold (test set, $n=93$). Bold = correct classifications.}
 \label{fig:cm}
+\vspace{6pt}
+{\footnotesize
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}llrr@{}}
+\toprule
+& & \multicolumn{2}{c}{\textit{Predicted}} \\
+\cmidrule(l){3-4}
+\textit{Actual} & & No\,CHD & CHD \\
+\midrule
+& No\,CHD & \textbf{52} & 9 \\
+& CHD     & 14          & \textbf{18} \\
+\bottomrule
+\end{tabular}}
 \end{minipage}
 \end{figure}
 
@@ -474,19 +486,31 @@ The best configuration was \texttt{max\_depth=3}, \texttt{max\_features=sqrt},
 % ── ROC + confusion matrix ─────────────────────────────────────────────────
 \begin{figure}[htbp]
 \centering
-\begin{minipage}{0.48\linewidth}
+\begin{minipage}{0.54\linewidth}
 \centering
 \includegraphics[width=\linewidth]{../other_classifiers/oc_output/fig_oc_roc_curve.png}
 \caption{\footnotesize ROC curve for the tuned Random Forest on the 20\,\%
 held-out test set.}
 \label{fig:oc_roc}
 \end{minipage}\hfill
-\begin{minipage}{0.48\linewidth}
+\begin{minipage}{0.42\linewidth}
 \centering
-\includegraphics[width=\linewidth]{../other_classifiers/oc_output/fig_oc_confusion_matrix.png}
-\caption{\footnotesize Confusion matrix for the tuned Random Forest
-($n=93$, threshold\,=\,0.5).}
+\captionof{figure}{\footnotesize Confusion matrix for the tuned Random
+Forest ($n=93$, threshold\,=\,0.5). Bold = correct classifications.}
 \label{fig:oc_cm}
+\vspace{6pt}
+{\footnotesize
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}llrr@{}}
+\toprule
+& & \multicolumn{2}{c}{\textit{Predicted}} \\
+\cmidrule(l){3-4}
+\textit{Actual} & & No\,CHD & CHD \\
+\midrule
+& No\,CHD & \textbf{53} & 8 \\
+& CHD     & 16          & \textbf{16} \\
+\bottomrule
+\end{tabular}}
 \end{minipage}
 \end{figure}
 
