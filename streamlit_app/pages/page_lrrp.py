@@ -168,10 +168,12 @@ def render(df: pd.DataFrame) -> None:
             marker=dict(size=7),
             name="CV AUC"
         ))
-        fig_cv.add_vline(
-            x=str(best_C_auto), line_dash="dash", line_color="#E45756",
-            annotation_text=f"Best C={best_C_auto}", annotation_position="top right"
-        )
+        fig_cv.add_trace(go.Scatter(
+            x=[str(best_C_auto)], y=[cv_means[best_idx]],
+            mode="markers",
+            marker=dict(color="#E45756", size=12, symbol="diamond"),
+            name=f"Best C={best_C_auto}"
+        ))
         fig_cv.update_layout(
             xaxis_title="C (regularisation strength)",
             yaxis_title="5-fold CV AUC",
