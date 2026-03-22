@@ -272,8 +272,8 @@ slope i.e., positive for patients with family history and zero otherwise.
 \textbf{Preprocessing.}
 \texttt{famhist} encoded as 0/1; skewed features (\texttt{sbp},
 \texttt{tobacco}, \texttt{ldl}, \texttt{alcohol})
-log\,\textsubscript{1p}-transformed; all eleven features standardised with
-\texttt{StandardScaler} (zero mean, unit variance) prior to fitting ---
+log\,\textsubscript{1p}-transformed all eleven features standardised with
+\texttt{StandardScaler} (zero mean, unit variance) prior to fitting, which is 
 mandatory for ridge so the penalty treats all coefficients on the same scale
 \cite{hassan2022effectively}.
 The regularisation strength $C$ (inverse of $\lambda$) was selected by
