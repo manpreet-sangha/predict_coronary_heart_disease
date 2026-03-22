@@ -138,7 +138,25 @@ skewed features reduces their skewness markedly (Figure~\ref{fig:logtr}):
 These transformations are applied as a preprocessing option in the
 modelling stages (Sections~\ref{sec:lrrp}--\ref{sec:oc}).
 
-% ── Feature importance: wraptable right, text wraps left and below ────────────
+% ── Feature importance paragraph (plain — fills page 1 bottom) ───────────────
+Feature importance was assessed jointly using mutual information (MI) and
+the ANOVA F-test \cite{elsofany2024proposed, ullah2024machine}. Using two
+complementary criteria guards against misleading rankings from linear
+assumptions alone. Table~\ref{tab:fi} shows the normalised scores: \texttt{age}
+ranks first under both criteria, while \texttt{obesity} and \texttt{typea}
+score lowest. These rankings directly inform the variable selection strategy
+for the ridge logistic regression in Section~\ref{sec:lrrp}.
+
+% ── Distribution analysis + log-transform ────────────────────────────────────
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{../exploratory_data_analysis/eda_output/fig_log_transformed_features.png}
+\caption{\footnotesize Log\textsubscript{1p}-transformation of the
+four dynamically identified skewed features.}
+\label{fig:logtr}
+\end{figure}
+
+% ── Table 2 wraptable + PCA (table on right, PCA text wraps left and below) ──
 \begin{wraptable}{r}{0.46\linewidth}
 \vspace{-6pt}
 \captionsetup{width=0.9\linewidth}
@@ -165,24 +183,19 @@ obesity    & 0.00 & 0.04  & 0.02 \\
 \vspace{-4pt}
 \end{wraptable}
 
-Feature importance was assessed jointly using mutual information (MI) and
-the ANOVA F-test \cite{elsofany2024proposed, ullah2024machine}. Using two
-complementary criteria guards against misleading rankings from linear
-assumptions alone. Table~\ref{tab:fi} shows the normalised scores: \texttt{age}
-ranks first under both criteria, while \texttt{obesity} and \texttt{typea}
-score lowest. These rankings directly inform the variable selection strategy
-for the ridge logistic regression in Section~\ref{sec:lrrp}.
+PCA was applied to the standardised feature matrix
+\cite{banerjee2025systematic}. PC1 explains 32.1\% of variance and loads
+positively on \texttt{adiposity} (0.52), \texttt{age} (0.46), and
+\texttt{obesity} (0.40) --- a latent \emph{metabolic risk} axis. PC2 is
+driven by \texttt{alcohol} (0.54) and \texttt{tobacco} (0.46), reflecting a
+\emph{lifestyle} axis. Seven components are needed to reach 90\% cumulative
+variance, indicating moderate intrinsic dimensionality. The 2-D
+projection (Figure~\ref{fig:pca}) shows partial but incomplete class
+separation; the loadings heatmap (Figure~\ref{fig:pcaload}) confirms PC1
+captures metabolic risk while PC2 captures lifestyle behaviours, motivating
+non-linear classifiers in Section~\ref{sec:oc}.
 
-% ── Distribution analysis + log-transform ────────────────────────────────────
-\begin{figure}[t]
-\centering
-\includegraphics[width=\textwidth]{../exploratory_data_analysis/eda_output/fig_log_transformed_features.png}
-\caption{\footnotesize Log\textsubscript{1p}-transformation of the
-four dynamically identified skewed features.}
-\label{fig:logtr}
-\end{figure}
-
-% ── PCA ──────────────────────────────────────────────────────────────────────
+% ── PCA figures ──────────────────────────────────────────────────────────────
 \begin{figure}[h!]
 \centering
 \begin{minipage}{0.54\linewidth}
@@ -198,18 +211,6 @@ four dynamically identified skewed features.}
 \label{fig:pcaload}
 \end{minipage}
 \end{figure}
-
-PCA was applied to the standardised feature matrix
-\cite{banerjee2025systematic}. PC1 explains 32.1\% of variance and loads
-positively on \texttt{adiposity} (0.52), \texttt{age} (0.46), and
-\texttt{obesity} (0.40) --- a latent \emph{metabolic risk} axis. PC2 is
-driven by \texttt{alcohol} (0.54) and \texttt{tobacco} (0.46), reflecting a
-\emph{lifestyle} axis. Seven components are needed to reach 90\% cumulative
-variance, indicating moderate intrinsic dimensionality. The 2-D
-projection (Figure~\ref{fig:pca}) shows partial but incomplete class
-separation; the loadings heatmap (Figure~\ref{fig:pcaload}) confirms PC1
-captures metabolic risk while PC2 captures lifestyle behaviours, motivating
-non-linear classifiers in Section~\ref{sec:oc}.
 
 % =============================================================================
 \section{Logistic Regression with Ridge Penalty}
