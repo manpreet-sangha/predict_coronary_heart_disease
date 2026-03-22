@@ -317,15 +317,101 @@ Ridge LR ($C=0.01$) & 0.810 & 0.52 & 0.64 & 0.44 \\
 \label{sec:oc}
 % =============================================================================
 
-% TODO: Complete after implementing other_classifiers/oc.py
-%
-% Structure:
-%   - Classifier selection motivation (tree-based, kernel-based, ensemble)
-%   - Cross-validated comparison table (Accuracy, AUC, F1, Recall) — minipage
-%   - Best classifier: tuning procedure, final results, discussion
+\noindent
+\begin{minipage}[t]{0.50\linewidth}
+\raggedright
+The PCA 2-D projection (Section~\ref{sec:eda}) showed only partial linear
+class separation, motivating non-linear alternatives to ridge logistic
+regression. Five classifiers from the module were evaluated: a
+\textbf{Decision Tree} (interpretable baseline), \textbf{Random Forest}
+(bagged ensemble), \textbf{SVM with RBF kernel} (margin-based, non-linear),
+\textbf{KNN} (non-parametric, distance-based), and \textbf{Gradient
+Boosting} (sequential ensemble). Preprocessing was identical to
+Section~\ref{sec:lrrp}: \texttt{famhist} encoded, four skewed features
+log\,\textsubscript{1p}-transformed, all features standardised.
 
-\noindent\textit{This section will be completed upon implementation of
-\texttt{other\_classifiers/oc.py}.}
+All five were screened by stratified 5-fold cross-validation on AUC-ROC
+(Table~\ref{tab:cv}). Decision Tree performed worst (CV-AUC\,=\,0.557),
+confirming that a single tree overfits without pruning. Random Forest
+achieved the highest CV-AUC (0.715), marginally ahead of SVM (0.712) and
+Gradient Boosting (0.709). Random Forest was therefore selected for
+hyperparameter tuning.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.46\linewidth}
+\centering
+\captionof{table}{\footnotesize 5-fold CV screening of all classifiers
+(AUC-ROC, F1, accuracy).}
+\label{tab:cv}
+\vspace{2pt}
+{\footnotesize
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Classifier        & CV AUC & CV F1 & CV Acc \\
+\midrule
+Decision Tree     & 0.557  & 0.422 & 0.596 \\
+KNN               & 0.659  & 0.464 & 0.675 \\
+Gradient Boosting & 0.709  & 0.481 & 0.683 \\
+SVM (RBF)         & 0.712  & 0.508 & 0.721 \\
+\textbf{Random Forest} & \textbf{0.715} & \textbf{0.489} & \textbf{0.686} \\
+\bottomrule
+\end{tabular}}
+\end{minipage}
+
+\vspace{4pt}
+GridSearchCV with 5-fold CV optimised three hyperparameters simultaneously:
+\texttt{n\_estimators} $\in\{100, 300, 500\}$,
+\texttt{max\_depth} $\in\{3, 5, \text{None}\}$,
+\texttt{max\_features} $\in\{\text{sqrt}, \text{log2}\}$.
+The best configuration was \texttt{max\_depth=3}, \texttt{max\_features=sqrt},
+\texttt{n\_estimators=500} (tuned CV-AUC\,=\,0.748). Shallow trees
+(\texttt{max\_depth=3}) prevent overfitting on a dataset of 462 observations.
+
+% ── ROC + confusion matrix ─────────────────────────────────────────────────
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.48\linewidth}
+\centering
+\includegraphics[width=\linewidth]{../other_classifiers/oc_output/fig_oc_roc_curve.png}
+\caption{\footnotesize ROC curve for the tuned Random Forest on the 20\,\%
+held-out test set.}
+\label{fig:oc_roc}
+\end{minipage}\hfill
+\begin{minipage}{0.48\linewidth}
+\centering
+\includegraphics[width=\linewidth]{../other_classifiers/oc_output/fig_oc_confusion_matrix.png}
+\caption{\footnotesize Confusion matrix for the tuned Random Forest
+($n=93$, threshold\,=\,0.5).}
+\label{fig:oc_cm}
+\end{minipage}
+\end{figure}
+
+On the held-out test set ($n=93$) the tuned Random Forest achieves
+AUC\,=\,0.783, F1\,=\,0.597, and accuracy\,=\,0.753
+(Table~\ref{tab:final}).
+Ridge logistic regression attains a higher AUC (0.810) suggesting better
+overall discrimination, while Random Forest surpasses it on F1 (0.597
+vs.\ 0.519) and accuracy (0.753 vs.\ 0.720) by improving CHD recall from
+0.44 to 0.53. Feature importances confirm that \texttt{age} (0.275),
+\texttt{tobacco} (0.165), and \texttt{ldl} (0.150) are the dominant
+predictors, fully consistent with EDA rankings and ridge coefficients
+\cite{rehman2025predicting, ogunpola2024machine}.
+
+\begin{table}[h!]
+\centering
+\caption{\footnotesize Final test-set comparison: Ridge LR vs.\ best
+alternative classifier.}
+\label{tab:final}
+\vspace{2pt}
+{\footnotesize
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Model & AUC-ROC & F1 & Precision & Recall \\
+\midrule
+Ridge LR ($C=0.01$)          & \textbf{0.810} & 0.519 & 0.636 & 0.438 \\
+Random Forest (tuned) & 0.783 & \textbf{0.597} & \textbf{0.680} & \textbf{0.531} \\
+\bottomrule
+\end{tabular}}
+\end{table}
 
 % =============================================================================
 % References

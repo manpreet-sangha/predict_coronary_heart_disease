@@ -1,0 +1,10 @@
+Feature,Importance
+alcohol,0.0267
+obesity,0.0323
+sbp,0.0641
+adiposity,0.0901
+typea,0.0922
+famhist,0.1044
+ldl,0.1501
+tobacco,0.1647
+age,0.2754

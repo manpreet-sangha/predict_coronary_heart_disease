@@ -24,6 +24,7 @@ import pandas as pd
 from config import DATA_PATH
 from exploratory_data_analysis.eda import run_eda
 from logistic_regression_ridge_penalty.lrrp import run_lrrp
+from other_classifiers.oc import run_classifiers
 
 # ── Load Data ─────────────────────────────────────────────────────────────────
 print("Loading dataset...")
@@ -43,5 +44,4 @@ run_lrrp(df)
 # ═════════════════════════════════════════════════════════════════════════════
 # SECTION 3: Alternative Classifiers
 # ═════════════════════════════════════════════════════════════════════════════
-# from other_classifiers.oc import run_classifiers
-# run_classifiers(df)
+run_classifiers(df)
