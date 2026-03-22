@@ -339,7 +339,7 @@ $n=369$). $^{*}p<0.05$; $^{**}p<0.01$.}
 {\footnotesize
 \begin{tabular}{@{}lrrrr@{}}
 \toprule
-Feature & Coef & SE & $z$ & $p$ \\
+Feature & $\hat{\beta}_{\text{LR}}$ & SE & $z$ & $p$ \\
 \midrule
 Intercept    & $-$0.851 & 0.138 & $-$6.19 & $<$0.001$^{**}$ \\
 sbp          &    0.136 & 0.135 &    1.01 & 0.312 \\
@@ -364,16 +364,21 @@ sorted by $|\hat{\beta}|$.}
 \label{tab:coef}
 \vspace{2pt}
 {\footnotesize
-\begin{tabular}{@{}lr@{\quad}lr@{}}
+\begin{tabular}{@{}lr@{}}
 \toprule
-Feature & $\hat{\beta}$ & Feature & $\hat{\beta}$ \\
+Feature & $\hat{\beta}_{\text{ridge}}$ \\
 \midrule
-age          &  0.212 & typea       &  0.122 \\
-age\_famhist &  0.189 & sbp         &  0.079 \\
-ldl          &  0.174 & adiposity   &  0.073 \\
-tobacco      &  0.150 & alcohol     & $-$0.015 \\
-famhist      &  0.130 & obesity     &  0.013 \\
-age\_tobacco &  0.125 &             &        \\
+age          &  0.212 \\
+age\_famhist &  0.189 \\
+ldl          &  0.174 \\
+tobacco      &  0.150 \\
+famhist      &  0.130 \\
+age\_tobacco &  0.125 \\
+typea        &  0.122 \\
+sbp          &  0.079 \\
+adiposity    &  0.073 \\
+alcohol      & $-$0.015 \\
+obesity      &  0.013 \\
 \bottomrule
 \end{tabular}}
 \end{minipage}
@@ -390,6 +395,17 @@ implies strong regularisation: \texttt{age} retains the largest ridge
 effect ($\hat{\beta}=0.212$), followed by \texttt{age\_famhist} ($0.189$)
 and \texttt{ldl} ($0.174$). \texttt{obesity} and \texttt{alcohol} are
 shrunk near zero, consistent with their non-significance in the MLE fit.
+Figure~\ref{fig:shrinkage} visualises this shrinkage: every unpenalised
+coefficient (blue) is pulled toward zero by the ridge penalty (red), with
+the largest absolute reductions on \texttt{age\_famhist} and \texttt{age}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_coefficient_shrinkage.png}
+\caption{\footnotesize Coefficient shrinkage: unpenalised MLE
+($\hat{\beta}_{\text{LR}}$) vs.\ ridge ($\hat{\beta}_{\text{ridge}}$, $C\!=\!0.01$).}
+\label{fig:shrinkage}
+\end{figure}
 
 % ── ROC curves and confusion matrices moved to Section 3 for side-by-side comparison
 
@@ -519,8 +535,7 @@ test set ($n=93$, 20\,\%).
 \begin{table}[htbp]
 \centering
 \captionsetup{width=\linewidth}
-\caption{\footnotesize Performance of all classifiers on the SA Heart Disease dataset,
-sorted by test AUC-ROC. CV columns report 5-fold stratified means.}
+\caption{\footnotesize Classifier performance sorted by test AUC-ROC. CV columns report 5-fold stratified means.}
 \label{tab:final}
 \vspace{2pt}
 {\footnotesize
@@ -530,14 +545,14 @@ Classifier & CV AUC & CV F1 & CV Acc & Test AUC & Test F1 & Test Acc & Test Prec
 \midrule
 QDA               & 0.744 & 0.568 & 0.707 & \textbf{0.828} & \textbf{0.694} & \textbf{0.763} & 0.625 & \textbf{0.781} \\
 LDA               & 0.751 & 0.534 & 0.713 & 0.821 & 0.630 & 0.710 & 0.561 & 0.719 \\
-Ridge LR ($C\!=\!0.01$) & 0.764 & 0.458 & 0.732 & 0.820 & 0.610 & 0.753 & \textbf{0.667} & 0.562 \\
-Gaussian NB       & \textbf{0.765} & \textbf{0.591} & 0.686 & 0.811 & 0.649 & 0.720 & 0.571 & 0.750 \\
+\shortstack[l]{Ridge LR\\($C\!=\!0.01$)} & 0.764 & 0.458 & 0.732 & 0.820 & 0.610 & 0.753 & \textbf{0.667} & 0.562 \\[4pt]
+\shortstack[l]{Gaussian\\NB} & \textbf{0.765} & \textbf{0.591} & 0.686 & 0.811 & 0.649 & 0.720 & 0.571 & 0.750 \\[4pt]
 AdaBoost          & 0.717 & 0.518 & 0.694 & 0.799 & 0.576 & 0.731 & 0.630 & 0.531 \\
-Extra Trees       & 0.730 & 0.478 & 0.699 & 0.795 & 0.567 & 0.720 & 0.607 & 0.531 \\
-Decision Tree     & 0.618 & 0.504 & 0.642 & 0.795 & 0.536 & 0.720 & 0.625 & 0.469 \\
-Random Forest     & 0.718 & 0.485 & 0.694 & 0.788 & 0.571 & 0.742 & \textbf{0.667} & 0.500 \\
+\shortstack[l]{Extra\\Trees} & 0.730 & 0.478 & 0.699 & 0.795 & 0.567 & 0.720 & 0.607 & 0.531 \\[4pt]
+\shortstack[l]{Decision\\Tree} & 0.618 & 0.504 & 0.642 & 0.795 & 0.536 & 0.720 & 0.625 & 0.469 \\[4pt]
+\shortstack[l]{Random\\Forest} & 0.718 & 0.485 & 0.694 & 0.788 & 0.571 & 0.742 & \textbf{0.667} & 0.500 \\[4pt]
 Bagging           & 0.699 & 0.457 & 0.686 & 0.770 & 0.548 & 0.699 & 0.567 & 0.531 \\
-Gradient Boosting & 0.699 & 0.483 & 0.680 & 0.766 & 0.590 & 0.731 & 0.621 & 0.562 \\
+\shortstack[l]{Gradient\\Boosting} & 0.699 & 0.483 & 0.680 & 0.766 & 0.590 & 0.731 & 0.621 & 0.562 \\[4pt]
 SVM (RBF)         & 0.716 & 0.483 & \textbf{0.713} & 0.811 & --- & 0.656 & --- & --- \\
 LightGBM          & 0.708 & 0.540 & 0.702 & 0.724 & 0.537 & 0.667 & 0.514 & 0.562 \\
 KNN               & 0.659 & 0.423 & 0.667 & 0.714 & 0.433 & 0.634 & 0.464 & 0.406 \\
