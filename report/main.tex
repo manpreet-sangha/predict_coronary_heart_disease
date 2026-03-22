@@ -398,7 +398,13 @@ the 0.5 random baseline \cite{rehman2025predicting, ogunpola2024machine}.
 \section{Alternative Classifiers}
 \label{sec:oc}
 % =============================================================================
-
+The PCA 2-D projection (Section~\ref{sec:eda}) showed only partial linear
+class separation, motivating alternatives to ridge logistic regression.
+Twelve classifiers from the module were evaluated, spanning discriminative
+models, tree-based ensembles, and generative classifiers.
+Preprocessing was identical to Section~\ref{sec:lrrp}: \texttt{famhist}
+encoded, four skewed features log\,\textsubscript{1p}-transformed, all
+features standardised.
 % ── Figure 5: shrinkage chart (placed at top of Section 3 page) ──────────────
 \begin{wrapfigure}{r}{0.40\linewidth}
 \vspace{-6pt}
@@ -412,13 +418,7 @@ the 0.5 random baseline \cite{rehman2025predicting, ogunpola2024machine}.
 \vspace{-6pt}
 \end{wrapfigure}
 
-The PCA 2-D projection (Section~\ref{sec:eda}) showed only partial linear
-class separation, motivating alternatives to ridge logistic regression.
-Twelve classifiers from the module were evaluated, spanning discriminative
-models, tree-based ensembles, and generative classifiers.
-Preprocessing was identical to Section~\ref{sec:lrrp}: \texttt{famhist}
-encoded, four skewed features log\,\textsubscript{1p}-transformed, all
-features standardised.
+
 
 All twelve were screened by stratified 5-fold cross-validation on AUC-ROC
 (Table~\ref{tab:final}), using the same 11-feature set (including
