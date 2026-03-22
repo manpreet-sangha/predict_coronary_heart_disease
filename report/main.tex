@@ -280,14 +280,13 @@ The regularisation strength $C$ (inverse of $\lambda$) was selected by
 stratified 5-fold cross-validation over $\{0.001,0.01,0.1,1,10,100\}$
 maximising AUC-ROC on an 80\,\% training set.
 
-Two logistic regression models are fitted on the same standardised training
-set. (i)~An \textbf{unpenalised} model via maximum likelihood (statsmodels)
-provides the classical inference table --- coefficient, standard error,
-$z$-statistic, and $p$-value --- consistent with the lecture formulation
-(Equation~\ref{eq:logit}). (ii)~The \textbf{ridge} model ($C=0.01$)
-is used for prediction; its L2 penalty biases the coefficients towards zero,
-which invalidates classical $p$-values but stabilises estimates under
-multicollinearity.
+Two logistic regression models are fitted: 
+(i)~An unpenalised model via maximum likelihood that yields 
+table coefficient, standard error, $z$-statistic, and $p$-value 
+consistent with the lecture formulation
+(Equation~\ref{eq:logit}). (ii)~The ridge model ($C=0.01$)
+used for prediction uses L2 penalty that biases the coefficients towards zero,
+which stabilises estimates under multicollinearity.
 
 \begin{equation}
 \log\!\left(\frac{\Pr(Y\!=\!1\mid X)}{\Pr(Y\!=\!0\mid X)}\right)
@@ -355,10 +354,9 @@ obesity      &  0.013 \\
 The inference table (Table~\ref{tab:inference}) shows that \texttt{ldl}
 ($z=2.84$, $p=0.005$), \texttt{typea} ($z=2.82$, $p=0.005$), and
 \texttt{age} ($z=2.17$, $p=0.030$) are statistically significant predictors
-under MLE. \texttt{tobacco}, \texttt{famhist}, \texttt{obesity}, and
-\texttt{alcohol} do not reach significance individually, partly due to
-multicollinearity inflating their standard errors --- the precise reason
-ridge is preferred for prediction. The optimal $C=0.01$ (Table~\ref{tab:coef})
+under Maximum Likelihood Estimation (MLE). \texttt{tobacco}, \texttt{famhist}, \texttt{obesity}, and
+\texttt{alcohol} are not statistically significant individually, partly due to
+multicollinearity inflating their standard errors. The optimal $C=0.01$ (Table~\ref{tab:coef})
 implies strong regularisation: \texttt{age} retains the largest ridge
 effect ($\hat{\beta}=0.212$), followed by \texttt{age\_famhist} ($0.189$)
 and \texttt{ldl} ($0.174$). \texttt{obesity} and \texttt{alcohol} are
