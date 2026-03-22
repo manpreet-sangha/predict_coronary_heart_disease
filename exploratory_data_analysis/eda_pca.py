@@ -92,19 +92,25 @@ def run(df: pd.DataFrame) -> None:
     pca_2d = PCA(n_components=2)
     X_2d = pca_2d.fit_transform(X_scaled)
 
-    fig, ax = plt.subplots(figsize=(8, 6))
-    for cls, label, color in [(0, "No CHD", "steelblue"), (1, "CHD", "tomato")]:
+    fig, ax = plt.subplots(figsize=(4.0, 3.2))
+    for cls, label, color, marker in [
+        (0, "No CHD", "#2166ac", "o"),
+        (1, "CHD",    "#d6604d", "^")
+    ]:
         mask = y == cls
         ax.scatter(X_2d[mask, 0], X_2d[mask, 1],
-                   label=label, color=color, alpha=0.55, s=30)
+                   label=label, color=color, alpha=0.80, s=18,
+                   marker=marker, edgecolors="none")
 
-    ax.set_xlabel(f"PC1 ({pca_2d.explained_variance_ratio_[0]*100:.1f}% variance)")
-    ax.set_ylabel(f"PC2 ({pca_2d.explained_variance_ratio_[1]*100:.1f}% variance)")
-    ax.set_title("PCA 2-D Projection Coloured by CHD Status", fontweight="bold")
-    ax.legend()
+    ax.set_xlabel(f"PC1 ({pca_2d.explained_variance_ratio_[0]*100:.1f}% var.)",
+                  fontsize=8)
+    ax.set_ylabel(f"PC2 ({pca_2d.explained_variance_ratio_[1]*100:.1f}% var.)",
+                  fontsize=8)
+    ax.tick_params(labelsize=7)
+    ax.legend(fontsize=7, markerscale=1.2)
     plt.tight_layout()
     scatter_path = os.path.join(OUTPUT_DIR, "fig_pca_scatter.png")
-    plt.savefig(scatter_path, dpi=150)
+    plt.savefig(scatter_path, dpi=220)
     plt.close()
     print(f"[Saved] {scatter_path}")
 
@@ -122,20 +128,20 @@ def run(df: pd.DataFrame) -> None:
     print(f"[Saved] {load_path}")
 
     # ── 6. Loadings heatmap ───────────────────────────────────────────────
-    fig, ax = plt.subplots(figsize=(5, 7))
+    fig, ax = plt.subplots(figsize=(2.8, 4.2))
     sns.heatmap(
         loadings, annot=True, fmt=".3f",
         cmap="RdBu_r", center=0, vmin=-1, vmax=1,
-        linewidths=0.5, ax=ax,
-        cbar_kws={"label": "Loading value"}
+        linewidths=0.8, ax=ax,
+        annot_kws={"size": 7},
+        cbar_kws={"label": "Loading", "shrink": 0.8}
     )
-    ax.set_title("PCA Feature Loadings — PC1 & PC2",
-                 fontweight="bold", fontsize=12, pad=12)
-    ax.set_xlabel("Principal Component")
-    ax.set_ylabel("Feature")
+    ax.set_xlabel("PC", fontsize=8)
+    ax.set_ylabel("")
+    ax.tick_params(labelsize=7)
     plt.tight_layout()
     loadings_heatmap_path = os.path.join(OUTPUT_DIR, "fig_pca_loadings_heatmap.png")
-    plt.savefig(loadings_heatmap_path, dpi=150)
+    plt.savefig(loadings_heatmap_path, dpi=220)
     plt.close()
     print(f"[Saved] {loadings_heatmap_path}")
 

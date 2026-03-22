@@ -193,7 +193,7 @@ def run(df: pd.DataFrame) -> None:
         return
 
     n_skewed = len(skewed_feats)
-    fig, axes = plt.subplots(2, n_skewed, figsize=(5 * n_skewed, 8))
+    fig, axes = plt.subplots(2, n_skewed, figsize=(3.8 * n_skewed, 4.0))
     if n_skewed == 1:
         axes = axes.reshape(2, 1)
 
@@ -201,23 +201,25 @@ def run(df: pd.DataFrame) -> None:
         original = df[feat]
         log_transformed = np.log1p(original)
 
-        axes[0, j].hist(original, bins=30, color="steelblue",
-                        edgecolor="white", alpha=0.7, density=True)
-        original.plot.kde(ax=axes[0, j], color="darkblue", linewidth=1.5)
+        axes[0, j].hist(original, bins=30, color="#2166ac",
+                        edgecolor="white", alpha=0.85, density=True)
+        original.plot.kde(ax=axes[0, j], color="#053061", linewidth=2.0)
         axes[0, j].set_title(
-            f"{feat} — Original\n(skew={original.skew():.2f})", fontsize=10)
-        axes[0, j].set_ylabel("Density")
+            f"{feat}\nskew={original.skew():.2f}", fontsize=8, fontweight="bold")
+        axes[0, j].set_ylabel("Density", fontsize=7)
+        axes[0, j].tick_params(labelsize=6)
 
-        axes[1, j].hist(log_transformed, bins=30, color="tomato",
-                        edgecolor="white", alpha=0.7, density=True)
-        log_transformed.plot.kde(ax=axes[1, j], color="darkred", linewidth=1.5)
+        axes[1, j].hist(log_transformed, bins=30, color="#d6604d",
+                        edgecolor="white", alpha=0.85, density=True)
+        log_transformed.plot.kde(ax=axes[1, j], color="#67001f", linewidth=2.0)
         axes[1, j].set_title(
-            f"log1p({feat}) — Transformed\n(skew={log_transformed.skew():.2f})",
-            fontsize=10)
-        axes[1, j].set_ylabel("Density")
+            f"log1p({feat})\nskew={log_transformed.skew():.2f}",
+            fontsize=8, fontweight="bold")
+        axes[1, j].set_ylabel("Density", fontsize=7)
+        axes[1, j].tick_params(labelsize=6)
 
-    plt.tight_layout()
+    plt.tight_layout(pad=0.8)
     log_path = os.path.join(OUTPUT_DIR, "fig_log_transformed_features.png")
-    plt.savefig(log_path, dpi=150)
+    plt.savefig(log_path, dpi=220)
     plt.close()
     print(f"[Saved] {log_path}")
