@@ -125,6 +125,54 @@ def render(df: pd.DataFrame) -> None:
         f"- Log₁p-transformed features: {skewed}."
     )
 
+    # ── Feature engineering ────────────────────────────────────────────────
+    with st.expander("Feature Engineering — Derived Variables", expanded=False):
+        st.markdown(
+            "Two interaction features were created from the nine original clinical "
+            "variables. Both are **multiplicative interaction terms** designed to "
+            "capture joint effects that a linear model cannot express with the "
+            "base features alone."
+        )
+        st.markdown("#### `age_tobacco` = age × tobacco")
+        st.markdown(
+            "**Rationale.** The `tobacco` column records cumulative lifetime "
+            "consumption in kg, not a daily rate. EDA shows it has the highest "
+            "variance of all continuous predictors. A 30-year-old and a 60-year-old "
+            "may carry the same lifetime total, yet their cardiovascular trajectories "
+            "differ substantially: the older patient has sustained arterial exposure "
+            "for far longer. Multiplying age by tobacco creates a *lifetime smoking "
+            "burden* term that simultaneously encodes quantity and duration of "
+            "exposure, two dimensions a linear model cannot separate from `tobacco` "
+            "alone.\n\n"
+            "**Assumption.** The marginal CHD risk of each additional kg of tobacco "
+            "increases with age — i.e., the dose–risk relationship is multiplicative "
+            "with respect to age, not purely additive. This is consistent with "
+            "epidemiological evidence that cumulative smoking damage compounds over "
+            "decades \cite{rehman2025predicting}."
+        )
+        st.markdown("#### `age_famhist` = age × famhist")
+        st.markdown(
+            "**Rationale.** `famhist` is a binary genetic risk indicator (0 = absent, "
+            "1 = present). Genetic predisposition to CHD is not static: a 60-year-old "
+            "with family history represents a materially higher immediate risk than a "
+            "30-year-old with the same flag. The interaction term allows the model to "
+            "represent this compounding effect, which ridge regression cannot learn "
+            "from `age` and `famhist` separately under collinearity-reducing "
+            "regularisation.\n\n"
+            "**Assumption.** The effect of family history on CHD risk amplifies with "
+            "age rather than remaining constant throughout adult life. Because `famhist` "
+            "is binary, the interaction is equivalent to a piecewise age effect: "
+            "`age_famhist` equals `age` for patients with family history and 0 for "
+            "those without."
+        )
+        st.markdown(
+            "**Common limitations.** Both terms inherit the measurement limitations "
+            "of their parent variables (self-reported tobacco, binary family history "
+            "without severity grading). The multiplicative form imposes a specific "
+            "functional shape; a non-parametric model may capture the true relationship "
+            "more flexibly."
+        )
+
     # ── C value selector ───────────────────────────────────────────────────
     st.markdown("**Explore regularisation strength:**")
     c_labels = [str(c) for c in Cs]
