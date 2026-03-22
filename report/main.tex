@@ -385,14 +385,16 @@ The derived interaction features improve recall by 12.5 percentage points
 relative to the nine-feature baseline. AUC of 0.820 is substantially above
 the 0.5 random baseline \cite{rehman2025predicting, ogunpola2024machine}.
 
-\begin{figure}[htbp]
+\begin{wrapfigure}{r}{0.58\linewidth}
+\vspace{-6pt}
+\captionsetup{width=\linewidth}
 \centering
-\includegraphics[width=0.55\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_coefficient_shrinkage.png}
+\includegraphics[width=0.45\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_coefficient_shrinkage.png}
 \vspace{-4pt}
 \caption{\footnotesize Coefficient shrinkage: unpenalised MLE
 ($\hat{\beta}_{\text{LR}}$) vs.\ ridge ($\hat{\beta}_{\text{ridge}}$, $C\!=\!0.01$).}
 \label{fig:shrinkage}
-\end{figure}
+\end{wrapfigure}
 
 On the held-out test set ($n=93$, 20\,\%) the model achieves
 AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753
