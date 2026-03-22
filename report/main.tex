@@ -217,9 +217,6 @@ non-linear classifiers in Section~\ref{sec:oc}.
 \label{sec:lrrp}
 % =============================================================================
 
-\noindent
-\begin{minipage}[t]{0.50\linewidth}
-\raggedright
 Logistic regression with an L2 (ridge) penalty was chosen as the primary
 interpretable classifier. The multicollinearity between \texttt{adiposity}
 and \texttt{obesity} ($r=0.72$, Section~\ref{sec:eda}) motivates
@@ -260,6 +257,31 @@ without severity grading). The multiplicative form imposes a specific
 functional shape; a flexible non-parametric model may better approximate
 the true relationship.
 
+% ── Coefficient table: compact wraptable (two-column layout, half the height) ─
+\begin{wraptable}{r}{0.52\linewidth}
+\vspace{-6pt}
+\captionsetup{width=0.9\linewidth}
+\centering
+\caption{\footnotesize Standardised coefficients of the ridge logistic
+regression ($C=0.01$), sorted by $|\hat{\beta}|$.}
+\label{tab:coef}
+\vspace{2pt}
+{\footnotesize
+\begin{tabular}{@{}lr@{\quad}lr@{}}
+\toprule
+Feature & $\hat{\beta}$ & Feature & $\hat{\beta}$ \\
+\midrule
+age          &  0.212 & typea       &  0.122 \\
+age\_famhist &  0.189 & sbp         &  0.079 \\
+ldl          &  0.174 & adiposity   &  0.073 \\
+tobacco      &  0.150 & alcohol     & $-$0.015 \\
+famhist      &  0.130 & obesity     &  0.013 \\
+age\_tobacco &  0.125 &             &        \\
+\bottomrule
+\end{tabular}}
+\vspace{-4pt}
+\end{wraptable}
+
 \textbf{Preprocessing.}
 \texttt{famhist} encoded as 0/1; skewed features (\texttt{sbp},
 \texttt{tobacco}, \texttt{ldl}, \texttt{alcohol})
@@ -271,34 +293,7 @@ stratified 5-fold cross-validation over the grid
 $\{0.001, 0.01, 0.1, 1, 10, 100\}$ maximising AUC-ROC on an 80\,\%
 training set. Table~\ref{tab:coef} lists the standardised coefficients of
 the best model ($C=0.01$).
-\end{minipage}\hfill
-\begin{minipage}[t]{0.46\linewidth}
-\centering
-\captionof{table}{\footnotesize Standardised coefficients of the ridge
-logistic regression ($C=0.01$), sorted by $|\beta|$.}
-\label{tab:coef}
-\vspace{2pt}
-{\footnotesize
-\begin{tabular}{@{}lrr@{}}
-\toprule
-Feature          & $\hat{\beta}$ & $|\hat{\beta}|$ \\
-\midrule
-age              &  0.212 & 0.212 \\
-age\_famhist     &  0.189 & 0.189 \\
-ldl              &  0.174 & 0.174 \\
-tobacco          &  0.150 & 0.150 \\
-famhist          &  0.130 & 0.130 \\
-age\_tobacco     &  0.125 & 0.125 \\
-typea            &  0.122 & 0.122 \\
-sbp              &  0.079 & 0.079 \\
-adiposity        &  0.073 & 0.073 \\
-alcohol          & $-$0.015 & 0.015 \\
-obesity          &  0.013 & 0.013 \\
-\bottomrule
-\end{tabular}}
-\end{minipage}
 
-\vspace{4pt}
 The optimal $C=0.01$ implies strong regularisation, consistent with
 multicollinear features reducing effective degrees of freedom.
 \texttt{age} retains the largest effect ($\hat{\beta}=0.212$), now
@@ -357,9 +352,30 @@ Ridge LR ($C=0.01$) & 0.820 & 0.610 & 0.667 & 0.563 \\
 \label{sec:oc}
 % =============================================================================
 
-\noindent
-\begin{minipage}[t]{0.50\linewidth}
-\raggedright
+% ── CV screening: wraptable right, text wraps left and below ─────────────────
+\begin{wraptable}{r}{0.46\linewidth}
+\vspace{-6pt}
+\captionsetup{width=0.9\linewidth}
+\centering
+\caption{\footnotesize 5-fold CV screening of all classifiers
+(AUC-ROC, F1, accuracy).}
+\label{tab:cv}
+\vspace{2pt}
+{\footnotesize
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Classifier        & CV AUC & CV F1 & CV Acc \\
+\midrule
+Decision Tree     & 0.618  & 0.397 & 0.611 \\
+KNN               & 0.659  & 0.453 & 0.673 \\
+Gradient Boosting & 0.699  & 0.475 & 0.685 \\
+SVM (RBF)         & 0.716  & 0.511 & 0.722 \\
+\textbf{Random Forest} & \textbf{0.718} & \textbf{0.491} & \textbf{0.689} \\
+\bottomrule
+\end{tabular}}
+\vspace{-4pt}
+\end{wraptable}
+
 The PCA 2-D projection (Section~\ref{sec:eda}) showed only partial linear
 class separation, motivating non-linear alternatives to ridge logistic
 regression. Five classifiers from the module were evaluated: a
@@ -377,28 +393,7 @@ Decision Tree performed worst (CV-AUC\,=\,0.618), confirming that a single
 tree overfits without pruning. Random Forest achieved the highest CV-AUC
 (0.718), marginally ahead of SVM (0.716) and Gradient Boosting (0.699).
 Random Forest was therefore selected for hyperparameter tuning.
-\end{minipage}\hfill
-\begin{minipage}[t]{0.46\linewidth}
-\centering
-\captionof{table}{\footnotesize 5-fold CV screening of all classifiers
-(AUC-ROC, F1, accuracy).}
-\label{tab:cv}
-\vspace{2pt}
-{\footnotesize
-\begin{tabular}{@{}lrrr@{}}
-\toprule
-Classifier        & CV AUC & CV F1 & CV Acc \\
-\midrule
-Decision Tree     & 0.618  & 0.397 & 0.611 \\
-KNN               & 0.659  & 0.453 & 0.673 \\
-Gradient Boosting & 0.699  & 0.475 & 0.685 \\
-SVM (RBF)         & 0.716  & 0.511 & 0.722 \\
-\textbf{Random Forest} & \textbf{0.718} & \textbf{0.491} & \textbf{0.689} \\
-\bottomrule
-\end{tabular}}
-\end{minipage}
 
-\vspace{4pt}
 GridSearchCV with 5-fold CV optimised three hyperparameters simultaneously:
 \texttt{n\_estimators} $\in\{100, 300, 500\}$,
 \texttt{max\_depth} $\in\{3, 5, \text{None}\}$,
