@@ -585,6 +585,28 @@ patients while maintaining the highest overall F1 (0.694) and accuracy
 (0.763), making it the most clinically appropriate classifier in this
 evaluation.
 
+\begin{wrapfigure}{r}{0.46\linewidth}
+\vspace{-6pt}
+\captionsetup{width=\linewidth}
+\centering
+\includegraphics[width=\linewidth]{../other_classifiers/oc_output/fig_oc_repeated_splits_boxplot.png}
+\caption{\footnotesize Test AUC-ROC across 30 repeated stratified 80/20
+splits. Top 3 by median highlighted in red.}
+\label{fig:repeated}
+\vspace{-8pt}
+\end{wrapfigure}
+
+\textbf{Stability across repeated splits.}
+A single train/test split can yield optimistic or pessimistic estimates
+depending on which patients fall in the test set. Figure~\ref{fig:repeated}
+shows the distribution of test AUC-ROC across 30 repeated stratified
+80/20 splits. Ridge LR has the highest median AUC (0.778), followed by
+LDA (0.772) and Gaussian NB (0.764). QDA, despite achieving the best
+single-split AUC (0.828), drops to fourth (median 0.749) with wider
+spread, indicating greater sensitivity to the specific split. This
+confirms that the generative classifiers and Ridge LR are the most
+\emph{consistently} strong performers on this dataset.
+
 \textbf{Methods considered but excluded.}
 \textit{Factor Analysis} (FA) is an unsupervised latent-variable model
 designed for structure discovery, not prediction; PCA already fulfils this
