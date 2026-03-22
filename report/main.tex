@@ -388,15 +388,12 @@ a consequence of the 1.89:1 class imbalance (Figures~\ref{fig:roc}--\ref{fig:oc_
 Tables~\ref{tab:cm}--\ref{tab:oc_cm}, Section~\ref{sec:oc}).
 
 \begin{wrapfigure}{r}{0.40\linewidth}
-
 \captionsetup{width=\linewidth}
 \centering
 \includegraphics[width=\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_coefficient_shrinkage.png}
-
 \caption{\footnotesize Coefficient shrinkage: unpenalised MLE
 ($\hat{\beta}_{\text{LR}}$) vs.\ ridge ($\hat{\beta}_{\text{ridge}}$, $C\!=\!0.01$).}
 \label{fig:shrinkage}
-
 \end{wrapfigure}
 
 Figure~\ref{fig:shrinkage} visualises the coefficient shrinkage: every
@@ -416,11 +413,7 @@ Twelve classifiers from the module were evaluated, spanning discriminative
 models, tree-based ensembles, and generative classifiers.
 Preprocessing was identical to Section~\ref{sec:lrrp}: \texttt{famhist}
 encoded, four skewed features log\,\textsubscript{1p}-transformed, all
-features standardised.\newline
-% ── Figure 5: shrinkage chart (placed at top of Section 3 page) ──────────────
-
-
-
+features standardised.
 
 All twelve were screened by stratified 5-fold cross-validation on AUC-ROC
 (Table~\ref{tab:final}), using the same 11-feature set (including
