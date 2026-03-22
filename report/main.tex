@@ -415,8 +415,14 @@ Model & AUC & F1 & Prec. & Rec. \\
 \bottomrule
 \end{tabular}}
 
-\vspace{6pt}
+\vspace{10pt}
 \raggedright
+
+On the held-out test set ($n=93$, 20\,\%) the model achieves
+AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753
+(Table~\ref{tab:perf}). CHD recall is 0.563 versus No-CHD recall of 0.871,
+a consequence of the 1.89:1 class imbalance (Figures~\ref{fig:roc}--\ref{fig:oc_roc},
+Tables~\ref{tab:cm}--\ref{tab:oc_cm}, Section~\ref{sec:oc}).
 Figure~\ref{fig:shrinkage} visualises the coefficient shrinkage: every
 unpenalised estimate (blue) is pulled toward zero by the ridge penalty
 (red), with the largest reductions on \texttt{age\_famhist} and \texttt{age}.
@@ -426,19 +432,12 @@ unpenalised estimate (blue) is pulled toward zero by the ridge penalty
 \centering
 \captionsetup{width=\linewidth}
 \includegraphics[width=\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_coefficient_shrinkage.png}
-\vspace{-4pt}
 \captionof{figure}{\footnotesize Coefficient shrinkage: unpenalised MLE
 ($\hat{\beta}_{\text{LR}}$) vs.\ ridge ($\hat{\beta}_{\text{ridge}}$, $C\!=\!0.01$).}
 \label{fig:shrinkage}
 \end{minipage}
-
-\vspace{6pt}
-On the held-out test set ($n=93$, 20\,\%) the model achieves
-AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753
-(Table~\ref{tab:perf}). CHD recall is 0.563 versus No-CHD recall of 0.871,
-a consequence of the 1.89:1 class imbalance (Figures~\ref{fig:roc}--\ref{fig:oc_roc},
-Tables~\ref{tab:cm}--\ref{tab:oc_cm}, Section~\ref{sec:oc}).
-
+\newline
+\newline
 The derived interaction features improve recall by 12.5 percentage points
 relative to the nine-feature baseline. AUC of 0.820 is substantially above
 the 0.5 random baseline and competitive with published benchmarks on similar
@@ -480,11 +479,23 @@ covariance modelling benefits this dataset after log-transformation.
 \begin{minipage}{0.48\linewidth}
 \centering
 \includegraphics[width=\linewidth]{../other_classifiers/oc_output/fig_oc_roc_curve.png}
-\caption{\footnotesize Best alternative classifier: AUC on test set $n=93$.}
+\caption{\footnotesize Gaussian NB (best CV classifier): AUC\,=\,0.811, test set $n=93$.}
 \label{fig:oc_roc}
 \end{minipage}
 \end{figure}
-
+The ROC curves (Figures~\ref{fig:roc} and~\ref{fig:oc_roc}) confirm that all
+models lie well above the diagonal random-classifier baseline.
+Table~\ref{tab:final} summarises every classifier evaluated on the held-out
+test set ($n=93$, 20\,\%).
+QDA achieves the highest test AUC (0.828) and F1 (0.694), narrowly ahead
+of LDA (0.821) and Ridge LR (0.820). The generative classifiers (QDA, LDA,
+Gaussian NB) perform competitively despite the independence/normality
+assumptions, likely because log-transformation mitigated the original skew.
+Feature importances from tree-based models confirm that \texttt{age},
+\texttt{age\_famhist}, and \texttt{ldl} are the dominant predictors,
+consistent with EDA rankings and ridge coefficients
+\cite{rehman2025predicting, ogunpola2024machine}.
+\newline
 % ── Confusion matrices: Ridge LR vs Random Forest side by side ────────────
 \vspace{2pt}
 \noindent
@@ -529,11 +540,6 @@ Recall — No\,CHD\,70\%, CHD\,75\%.}
 
 % ── Full model comparison table ──────────────────────────────────────────────
 \vspace{4pt}
-The ROC curves (Figures~\ref{fig:roc} and~\ref{fig:oc_roc}) confirm that all
-models lie well above the diagonal random-classifier baseline.
-Table~\ref{tab:final} summarises every classifier evaluated on the held-out
-test set ($n=93$, 20\,\%).
-
 \begin{table}[htbp]
 \centering
 \captionsetup{width=\linewidth}
@@ -561,17 +567,7 @@ KNN               & 0.659 & 0.423 & 0.667 & 0.714 & 0.433 & 0.634 & 0.464 & 0.40
 \bottomrule
 \end{tabular}}
 \end{table}
-
 \vspace{2pt}
-QDA achieves the highest test AUC (0.828) and F1 (0.694), narrowly ahead
-of LDA (0.821) and Ridge LR (0.820). The generative classifiers (QDA, LDA,
-Gaussian NB) perform competitively despite the independence/normality
-assumptions, likely because log-transformation mitigated the original skew.
-Feature importances from tree-based models confirm that \texttt{age},
-\texttt{age\_famhist}, and \texttt{ldl} are the dominant predictors,
-consistent with EDA rankings and ridge coefficients
-\cite{rehman2025predicting, ogunpola2024machine}.
-
 \textbf{Methods considered but excluded.}
 \textit{Factor Analysis} (FA) is an unsupervised latent-variable model
 designed for structure discovery, not prediction; PCA already fulfils this
@@ -656,15 +652,15 @@ pip install -r requirements.txt
 python chd_main.py
 \end{lstlisting}
 \noindent Outputs (figures, CSVs) are saved to
-\texttt{exploratory\_data\_analysis/eda\_output/},
-\texttt{logistic\_regression\_ridge\_penalty/lrrp\_output/}, and
+\texttt{exploratory\_data\_analysis/eda\_output/},\newline
+\texttt{logistic\_regression\_ridge\_penalty/lrrp\_output/},\newline and
 \texttt{other\_classifiers/oc\_output/}.
 
 \subsection*{Step 5 — Launch the interactive dashboard}
 \begin{lstlisting}
 streamlit run streamlit_app/app.py
 \end{lstlisting}
-\noindent The dashboard opens automatically at \texttt{http://localhost:8501}.
+\noindent The dashboard opens automatically at \texttt{http://localhost:8501}.\newline
 Upload \texttt{input\_data/heart-disease.csv} to explore the results interactively.
 
 \end{appendices}
