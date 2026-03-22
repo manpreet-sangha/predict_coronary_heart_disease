@@ -138,7 +138,7 @@ These transformations are applied as a preprocessing option in the
 modelling stages (Sections~\ref{sec:lrrp}--\ref{sec:oc}).
 
 % ── Distribution analysis + log-transform ────────────────────────────────────
-\begin{figure}[h!]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{../exploratory_data_analysis/eda_output/fig_log_transformed_features.png}
 \caption{\footnotesize Log\textsubscript{1p}-transformation of the
@@ -146,12 +146,21 @@ four dynamically identified skewed features.}
 \label{fig:logtr}
 \end{figure}
 
-% ── Feature importance ────────────────────────────────────────────────────────
-\begin{wraptable}{r}{0.46\linewidth}
-\vspace{-6pt}
-\captionsetup{width=0.9\linewidth}
+% ── Feature importance: text left, table right (in-flow minipages) ────────────
+\noindent
+\begin{minipage}[t]{0.50\linewidth}
+\raggedright
+Feature importance was assessed jointly using mutual information (MI) and
+the ANOVA F-test \cite{elsofany2024proposed, ullah2024machine}. Using two
+complementary criteria guards against misleading rankings from linear
+assumptions alone. Table~\ref{tab:fi} shows the normalised scores: \texttt{age}
+ranks first under both criteria, while \texttt{obesity} and \texttt{typea}
+score lowest. These rankings directly inform the variable selection strategy
+for the ridge logistic regression in Section~\ref{sec:lrrp}.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.46\linewidth}
 \centering
-\caption{\footnotesize Normalised feature importance scores (ranked by mean).}
+\captionof{table}{\footnotesize Normalised feature importance scores (ranked by mean).}
 \label{tab:fi}
 \vspace{2pt}
 {\footnotesize
@@ -170,16 +179,7 @@ typea      & 0.07 & 0.04  & 0.06 \\
 obesity    & 0.00 & 0.04  & 0.02 \\
 \bottomrule
 \end{tabular}}
-\vspace{-4pt}
-\end{wraptable}
-
-Feature importance was assessed jointly using mutual information (MI) and
-the ANOVA F-test \cite{elsofany2024proposed, ullah2024machine}. Using two
-complementary criteria guards against misleading rankings from linear
-assumptions alone. Table~\ref{tab:fi} shows the normalised scores: \texttt{age}
-ranks first under both criteria, while \texttt{obesity} and \texttt{typea}
-score lowest. These rankings directly inform the variable selection strategy
-for the ridge logistic regression in Section~\ref{sec:lrrp}.
+\end{minipage}
 
 % ── PCA ──────────────────────────────────────────────────────────────────────
 \begin{figure}[h!]
