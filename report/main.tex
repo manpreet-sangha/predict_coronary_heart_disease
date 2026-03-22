@@ -131,8 +131,8 @@ exceed the $|\gamma_{1}|>1$ threshold, which suggests a log-transformation
 \cite{feng2014log} could help the model.
 
 Of the 462 patients, 160 (34.6\%) have CHD and 302 (65.4\%) do not, resulting in a
-class imbalance ratio of 1.89:1. Thus, instead of just using accuracy, I use AUC and F1-score
-as the main evaluation metrics \cite{olorunshola2023imbalanced, rehman2025predicting, banerjee2025systematic, dutta2019efficient, borges2025logistic}.
+class imbalance ratio of 1.89:1. Thus, instead of just using accuracy, I use AUC and F1-score 
+as the main evaluation metrics \cite{rehman2025predicting, banerjee2025systematic, dutta2019efficient, borges2025logistic}.
 In the Pearson correlation heatmap (Figure~\ref{fig:corr}), the feature most linearly associated with CHD is \texttt{age}
 ($r=0.37$), followed by \texttt{tobacco} ($r=0.30$), \texttt{famhist} ($r=0.27$), and \texttt{ldl}
 ($r=0.26$).
@@ -149,16 +149,12 @@ In the Pearson correlation heatmap (Figure~\ref{fig:corr}), the feature most lin
 \end{wrapfigure}
 
 On the other hand, \texttt{alcohol} ($r=0.06$) and \texttt{obesity} ($r=0.10$)
-show very little linear association with CHD. I also noticed a fairly strong
+show little linear association with CHD. I also noticed a fairly strong
 correlation between \texttt{adiposity} and \texttt{obesity} ($r=0.72$), which
-means these two features carry overlapping information. This kind of
+means these two features carry overlapping information. This observed 
 multicollinearity is one of the reasons I chose ridge regularisation in
 Section~\ref{sec:lrrp}
 \cite{hassan2022effectively, ogunpola2024machine}.
-Violin plots split by CHD class further confirm that \texttt{age},
-\texttt{tobacco}, and \texttt{ldl} separate the two groups most clearly,
-whereas \texttt{obesity} and \texttt{typea} distributions look very similar
-for both groups.
 
 Figure~\ref{fig:logtr} shows the effect of applying a
 log\textsubscript{1p}-transformation to the four skewed features.
