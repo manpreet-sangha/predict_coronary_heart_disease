@@ -19,6 +19,7 @@
 % ── Line spacing ──────────────────────────────────────────────────────────────
 \usepackage{setspace}
 \onehalfspacing
+\usepackage{amsmath}
 
 % ── PDF inclusion (submission form) ───────────────────────────────────────────
 \usepackage{pdfpages}
@@ -333,7 +334,7 @@ age\_famhist &    0.825 & 0.535 &    1.54 & 0.123 \\
 \end{tabular}}
 \vspace{4pt}
 \end{minipage}\hfill
-\begin{minipage}[t]{0.46\linewidth}
+\begin{minipage}[t]{0.45\linewidth}
 \centering
 \captionsetup{width=\linewidth}
 \captionof{table}{\footnotesize Ridge LR coefficients ($C\!=\!0.01$),
@@ -359,12 +360,14 @@ obesity      &  0.013 \\
 \bottomrule
 \end{tabular}}
 \end{minipage}
-% ── Table 5: test-set performance ─────────────────────────────────────────────
-\begin{wraptable}{r}{0.46\linewidth}
+% ── Table 5 (left) + Figure 5 (right): side by side ──────────────────────────
 \vspace{4pt}
-\captionsetup{width=\linewidth}
+\noindent
+\begin{minipage}[t]{0.46\linewidth}
+\vspace{0pt}
 \centering
-\caption{\footnotesize Test-set performance of the ridge logistic regression.}
+\captionsetup{width=\linewidth}
+\captionof{table}{\footnotesize Test-set performance of the ridge logistic regression.}
 \label{tab:perf}
 \vspace{2pt}
 {\footnotesize
@@ -375,26 +378,23 @@ Model & AUC & F1 & Prec. & Rec. \\
 \shortstack[l]{Ridge LR\\($C\!=\!0.01$)} & 0.820 & 0.610 & 0.667 & 0.563 \\
 \bottomrule
 \end{tabular}}
-\vspace{-4pt}
-\end{wraptable}
-
-Figure~\ref{fig:shrinkage} visualises the coefficient shrinkage: every
-unpenalised estimate (blue) is pulled toward zero by the ridge penalty
-(red), with the largest reductions on \texttt{age\_famhist} and \texttt{age}.
-The derived interaction features improve recall by 12.5 percentage points
-relative to the nine-feature baseline. AUC of 0.820 is substantially above
-the 0.5 random baseline \cite{rehman2025predicting, ogunpola2024machine}.
-
-\begin{wrapfigure}{r}{0.58\linewidth}
-\vspace{-6pt}
-\captionsetup{width=\linewidth}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.50\linewidth}
+\vspace{0pt}
 \centering
-\includegraphics[width=0.45\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_coefficient_shrinkage.png}
+\captionsetup{width=\linewidth}
+\includegraphics[width=\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_coefficient_shrinkage.png}
 \vspace{-4pt}
-\caption{\footnotesize Coefficient shrinkage: unpenalised MLE
-($\hat{\beta}_{\text{LR}}$) vs.\ ridge ($\hat{\beta}_{\text{ridge}}$, $C\!=\!0.01$).}
+\captionof{figure}{\footnotesize Coefficient shrinkage: ($\hat{\beta}_{\text{LR}}$) vs.\ ridge ($\hat{\beta}_{\text{ridge}}$).}
 \label{fig:shrinkage}
-\end{wrapfigure}
+\end{minipage}
+
+\vspace{4pt}
+Figure~\ref{fig:shrinkage} shows every unpenalised estimate (blue) is pulled toward zero by the ridge penalty
+(red), with the largest reductions on \texttt{age\_famhist} and \texttt{age}.
+The derived features improve recall by 12.5 percentage points
+relative to the original nine-features. AUC of 0.820 is substantially above
+the 0.5 random baseline \cite{rehman2025predicting, ogunpola2024machine}.
 
 On the held-out test set ($n=93$, 20\,\%) the model achieves
 AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753
@@ -402,6 +402,7 @@ AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753
 a consequence of the 1.89:1 class imbalance (Figures~\ref{fig:roc}--\ref{fig:oc_roc},
 Tables~\ref{tab:cm}--\ref{tab:oc_cm}, Section~\ref{sec:oc}).
 % =============================================================================
+\newpage
 \section{Alternative Classifiers}
 \label{sec:oc}
 % =============================================================================
