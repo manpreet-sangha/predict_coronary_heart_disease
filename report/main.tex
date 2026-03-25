@@ -38,6 +38,7 @@
 \usepackage{multirow}       % multirow cells in tables
 \usepackage{wrapfig}        % text wraps around figures/tables
 \usepackage{placeins} % use \FloatBarrier explicitly where needed
+\usepackage{rotating}       % sideways captions
 
 % ── Code listings ─────────────────────────────────────────────────────────────
 \usepackage{listings}
@@ -127,14 +128,15 @@ age       &  42.8 & 14.6 &  15 &  64 \\
 \bottomrule
 \end{tabular}}
 \end{minipage}\hfill
-\begin{minipage}[t]{0.58\linewidth}
+\begin{minipage}[t]{0.55\linewidth}
 \vspace{0pt}
 \centering
 \includegraphics[width=\linewidth]{../exploratory_data_analysis/eda_output/fig_correlation_heatmap.png}
-\vspace{-8pt}
-\captionof{figure}{\footnotesize Pearson correlation.}
-\label{fig:corr}
-\vspace{-6pt}
+\end{minipage}%
+\begin{minipage}[t]{0.04\linewidth}
+\vspace{12pt}
+\rotatebox{90}{\footnotesize\textbf{Fig.\,\ref{fig:corr}} Pearson correlation matrix.}
+\refstepcounter{figure}\label{fig:corr}
 \end{minipage}
 
 \vspace{6pt}
