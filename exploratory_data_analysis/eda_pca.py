@@ -127,21 +127,22 @@ def run(df: pd.DataFrame) -> None:
     loadings.to_csv(load_path)
     print(f"[Saved] {load_path}")
 
-    # ── 6. Loadings heatmap ───────────────────────────────────────────────
-    fig, ax = plt.subplots(figsize=(2.8, 4.2))
+    # ── 6. Loadings heatmap (horizontal: features on x-axis) ────────────
+    fig, ax = plt.subplots(figsize=(4.2, 1.8))
     sns.heatmap(
-        loadings, annot=True, fmt=".3f",
+        loadings.T, annot=True, fmt=".3f",
         cmap="RdBu_r", center=0, vmin=-1, vmax=1,
         linewidths=0.8, ax=ax,
         annot_kws={"size": 7},
         cbar_kws={"label": "Loading", "shrink": 0.8}
     )
-    ax.set_xlabel("PC", fontsize=8)
     ax.set_ylabel("")
+    ax.set_xlabel("")
     ax.tick_params(labelsize=7)
-    plt.tight_layout()
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
+    plt.tight_layout(pad=0.3)
     loadings_heatmap_path = os.path.join(OUTPUT_DIR, "fig_pca_loadings_heatmap.png")
-    plt.savefig(loadings_heatmap_path, dpi=220)
+    plt.savefig(loadings_heatmap_path, dpi=300)
     plt.close()
     print(f"[Saved] {loadings_heatmap_path}")
 
