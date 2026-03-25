@@ -369,6 +369,20 @@ and generative classifiers are evaluated in this section. Same preprocessed data
 as in Section~\ref{sec:lrrp}: \texttt{famhist} encoded, four skewed features
 log\,\textsubscript{1p}-transformed, all features standardised.
 
+All 12 classifiers were evaluated on the held-out test set ($n=93$, 20\,\%)
+using the same 11 features as Section~\ref{sec:lrrp}.
+Table~\ref{tab:final} shows \textbf{QDA achieved the highest test accuracy
+(0.763)}, followed by Ridge LR (0.753) and Random Forest (0.742).
+QDA also leads on F1 (0.694) and AUC (0.828). Its advantage comes from
+modelling each class with its own covariance matrix, which captures
+the different feature distributions between CHD and non-CHD patients.
+The log-transformation applied in preprocessing made the generative
+classifiers (QDA, LDA, Gaussian NB) more competitive, since they assume
+normally distributed features.
+The feature importances from the tree-based models agree with what I found
+in EDA: \texttt{age}, \texttt{age\_famhist}, and \texttt{ldl} are the most
+important predictors \cite{rehman2025predicting, ogunpola2024machine}.
+
 % ── Figures 5 and 6: shrinkage + SHAP side by side ───────────────────────────
 \vspace{4pt}
 \noindent
@@ -385,20 +399,6 @@ log\,\textsubscript{1p}-transformed, all features standardised.
 \label{fig:shap}
 \end{minipage}
 \vspace{4pt}
-
-All 12 classifiers were evaluated on the held-out test set ($n=93$, 20\,\%)
-using the same 11 features as Section~\ref{sec:lrrp}.
-Table~\ref{tab:final} shows \textbf{QDA achieved the highest test accuracy
-(0.763)}, followed by Ridge LR (0.753) and Random Forest (0.742).
-QDA also leads on F1 (0.694) and AUC (0.828). Its advantage comes from
-modelling each class with its own covariance matrix, which captures
-the different feature distributions between CHD and non-CHD patients.
-The log-transformation applied in preprocessing made the generative
-classifiers (QDA, LDA, Gaussian NB) more competitive, since they assume
-normally distributed features.
-The feature importances from the tree-based models agree with what I found
-in EDA: \texttt{age}, \texttt{age\_famhist}, and \texttt{ldl} are the most
-important predictors \cite{rehman2025predicting, ogunpola2024machine}.
 
 % ── Confusion matrices: Ridge LR vs Random Forest side by side ────────────
 \vspace{2pt}
