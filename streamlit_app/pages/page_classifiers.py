@@ -86,7 +86,7 @@ def _preprocess(df):
     return df[MODEL_FEATURES].values, df[TARGET].values
 
 
-_CACHE_VERSION = 3  # bump to invalidate stale cached results after feature changes
+_CACHE_VERSION = 4  # bump to invalidate stale cached results after feature changes
 
 
 @st.cache_data(show_spinner=False)
@@ -118,12 +118,12 @@ def _run_pipeline(data_hash: int, df_values, df_columns, _version: int = _CACHE_
             "CV Acc":  round(res["test_acc"].mean(), 3),
         }
 
-    best_name = max(screening, key=lambda k: screening[k]["CV AUC"])
+    best_name = max(screening, key=lambda k: screening[k]["CV Acc"])
 
     # Tune best
     grid = GridSearchCV(
         CLASSIFIERS[best_name], PARAM_GRIDS[best_name],
-        cv=cv, scoring="roc_auc", n_jobs=-1, refit=True
+        cv=cv, scoring="accuracy", n_jobs=-1, refit=True
     )
     grid.fit(X_train_s, y_train)
     best_model  = grid.best_estimator_
@@ -144,7 +144,7 @@ def render(df: pd.DataFrame) -> None:
     st.title("Alternative Classifiers")
     st.markdown(
         f"**{len(CLASSIFIERS)} classifiers** from the module are screened by "
-        "5-fold stratified cross-validation on AUC-ROC. The best performer is "
+        "5-fold stratified cross-validation on **accuracy**. The best performer is "
         "tuned with GridSearchCV and evaluated on the same 20% held-out test "
         "set used for the ridge logistic regression, enabling a direct comparison."
     )
@@ -177,40 +177,40 @@ def render(df: pd.DataFrame) -> None:
 
     st.info(
         f"**Alternative Classifiers — Key Results**\n\n"
-        f"- **Best classifier** (5-fold CV, AUC criterion): **{best_name}**\n"
+        f"- **Best classifier** (5-fold CV, accuracy criterion): **{best_name}**\n"
         f"- **Tuned parameters**: {params_str}\n"
-        f"- **Test AUC-ROC**: **{auc:.3f}** · "
-        f"**F1**: **{f1:.3f}** · **Accuracy**: **{acc:.3f}**\n"
+        f"- **Test Accuracy**: **{acc:.3f}** · "
+        f"**AUC-ROC**: **{auc:.3f}** · **F1**: **{f1:.3f}**\n"
         f"- **Top predictor** (importance): {top_feat}\n"
-        f"- {best_name} achieves AUC ({auc:.3f}) and CHD recall "
+        f"- {best_name} achieves accuracy ({acc:.3f}) and CHD recall "
         f"({rec:.3f}) on the held-out test set."
     )
 
     # ── CV Comparison ──────────────────────────────────────────────────────
     with st.expander("1 — Cross-validation Comparison", expanded=True):
         st.markdown(
-            f"5-fold stratified CV AUC for all {len(CLASSIFIERS)} classifiers. "
+            f"5-fold stratified CV accuracy for all {len(CLASSIFIERS)} classifiers. "
             "Error bars show ± 1 standard deviation across folds. "
             "The best model (highlighted) is selected for hyperparameter tuning."
         )
         names = list(screening.keys())
-        aucs  = [screening[n]["CV AUC"] for n in names]
+        accs  = [screening[n]["CV Acc"] for n in names]
         errs  = [screening[n]["±"] for n in names]
         colors = ["#E45756" if n == best_name else "#4C78A8" for n in names]
 
         fig_cmp = go.Figure(go.Bar(
-            x=aucs, y=names, orientation="h",
+            x=accs, y=names, orientation="h",
             error_x=dict(type="data", array=errs, visible=True),
             marker_color=colors,
-            text=[f"{v:.3f}" for v in aucs],
+            text=[f"{v:.3f}" for v in accs],
             textposition="outside",
-            hovertemplate="%{y}<br>CV AUC: %{x:.3f}<extra></extra>"
+            hovertemplate="%{y}<br>CV Acc: %{x:.3f}<extra></extra>"
         ))
         fig_cmp.add_vline(x=0.5, line_dash="dash", line_color="black",
                           line_width=1)
         fig_cmp.update_layout(
-            xaxis_title="5-fold CV AUC-ROC",
-            xaxis_range=[0.4, 0.85],
+            xaxis_title="5-fold CV Accuracy",
+            xaxis_range=[0.5, 0.80],
             height=max(320, len(names) * 32),
             margin=dict(l=10, r=40, t=20, b=10)
         )

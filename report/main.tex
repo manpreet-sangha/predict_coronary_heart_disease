@@ -423,14 +423,15 @@ have its own covariance structure helps after log-transformation.
 The ROC curves (Figures~\ref{fig:roc} and~\ref{fig:oc_roc}) show that
 all models sit well above the diagonal (random guessing) line.
 Table~\ref{tab:final} lists results for every classifier on the test set
-($n=93$, 20\,\%). QDA gets the highest test AUC (0.828) and F1 (0.694),
-just ahead of LDA (0.821) and Ridge LR (0.820). The log-transformation applied earlier 
-improved the performance of the generative classifiers (QDA, LDA, Gaussian NB), since they
-assume features are normally distributed, making those
-assumptions more reasonable. The feature importances from the tree-based
-models agree with what I found in EDA: \texttt{age},
-\texttt{age\_famhist}, and \texttt{ldl} are the most important predictors
-\cite{rehman2025predicting, ogunpola2024machine}.
+($n=93$, 20\,\%). \textbf{QDA achieves the highest test accuracy (0.763)},
+as well as the highest AUC (0.828) and F1 (0.694), just ahead of
+Ridge LR (accuracy 0.753, AUC 0.820) and LDA (accuracy 0.710, AUC 0.821).
+The log-transformation applied earlier improved the performance of the
+generative classifiers (QDA, LDA, Gaussian NB), since they assume features
+are normally distributed, making those assumptions more reasonable.
+The feature importances from the tree-based models agree with what I found
+in EDA: \texttt{age}, \texttt{age\_famhist}, and \texttt{ldl} are the most
+important predictors \cite{rehman2025predicting, ogunpola2024machine}.
 
 % ── Confusion matrices: Ridge LR vs Random Forest side by side ────────────
 \vspace{2pt}
@@ -494,7 +495,7 @@ evaluation.
 \begin{table}[htbp]
 \centering
 \captionsetup{width=\linewidth}
-\caption{\footnotesize Classifier performance sorted by test AUC-ROC. CV columns report 5-fold stratified means.}
+\caption{\footnotesize Classifier performance sorted by test accuracy. CV columns report 5-fold stratified means.}
 \label{tab:final}
 \vspace{2pt}
 {\footnotesize
@@ -503,17 +504,17 @@ evaluation.
 Classifier & CV AUC & CV F1 & CV Acc & Test AUC & Test F1 & Test Acc & Test Prec & Test Rec \\
 \midrule
 QDA               & 0.744 & 0.568 & 0.707 & \textbf{0.828} & \textbf{0.694} & \textbf{0.763} & 0.625 & \textbf{0.781} \\
-LDA               & 0.751 & 0.534 & 0.713 & 0.821 & 0.630 & 0.710 & 0.561 & 0.719 \\
-\shortstack[l]{Ridge LR\\($C\!=\!0.01$)} & 0.764 & 0.458 & 0.732 & 0.820 & 0.610 & 0.753 & \textbf{0.667} & 0.562 \\[4pt]
-\shortstack[l]{Gaussian\\NB} & \textbf{0.765} & \textbf{0.591} & 0.686 & 0.811 & 0.649 & 0.720 & 0.571 & 0.750 \\[4pt]
+\shortstack[l]{Ridge LR\\($C\!=\!0.01$)} & 0.764 & 0.458 & \textbf{0.732} & 0.820 & 0.610 & 0.753 & \textbf{0.667} & 0.562 \\[4pt]
+\shortstack[l]{Random\\Forest} & 0.718 & 0.485 & 0.694 & 0.788 & 0.571 & 0.742 & \textbf{0.667} & 0.500 \\[4pt]
 AdaBoost          & 0.717 & 0.518 & 0.694 & 0.799 & 0.576 & 0.731 & 0.630 & 0.531 \\
+\shortstack[l]{Gradient\\Boosting} & 0.699 & 0.483 & 0.680 & 0.766 & 0.590 & 0.731 & 0.621 & 0.562 \\[4pt]
 \shortstack[l]{Extra\\Trees} & 0.730 & 0.478 & 0.699 & 0.795 & 0.567 & 0.720 & 0.607 & 0.531 \\[4pt]
 \shortstack[l]{Decision\\Tree} & 0.618 & 0.504 & 0.642 & 0.795 & 0.536 & 0.720 & 0.625 & 0.469 \\[4pt]
-\shortstack[l]{Random\\Forest} & 0.718 & 0.485 & 0.694 & 0.788 & 0.571 & 0.742 & \textbf{0.667} & 0.500 \\[4pt]
+\shortstack[l]{Gaussian\\NB} & \textbf{0.765} & \textbf{0.591} & 0.686 & 0.811 & 0.649 & 0.720 & 0.571 & 0.750 \\[4pt]
+LDA               & 0.751 & 0.534 & 0.713 & 0.821 & 0.630 & 0.710 & 0.561 & 0.719 \\
 Bagging           & 0.699 & 0.457 & 0.686 & 0.770 & 0.548 & 0.699 & 0.567 & 0.531 \\
-\shortstack[l]{Gradient\\Boosting} & 0.699 & 0.483 & 0.680 & 0.766 & 0.590 & 0.731 & 0.621 & 0.562 \\[4pt]
-SVM (RBF)         & 0.716 & 0.483 & \textbf{0.713} & 0.811 & --- & 0.656 & --- & --- \\
 LightGBM          & 0.708 & 0.540 & 0.702 & 0.724 & 0.537 & 0.667 & 0.514 & 0.562 \\
+SVM (RBF)         & 0.716 & 0.483 & 0.713 & 0.811 & --- & 0.656 & --- & --- \\
 KNN               & 0.659 & 0.423 & 0.667 & 0.714 & 0.433 & 0.634 & 0.464 & 0.406 \\
 \bottomrule
 \end{tabular}}

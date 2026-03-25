@@ -20,6 +20,13 @@ from sklearn.metrics import (
     roc_auc_score, roc_curve, f1_score, accuracy_score,
     precision_score, recall_score, confusion_matrix, classification_report
 )
+import statsmodels.api as sm
+
+try:
+    import shap
+    _HAS_SHAP = True
+except ImportError:
+    _HAS_SHAP = False
 
 from config import (
     NUMERIC_FEATURES, TARGET, SKEWNESS_THRESHOLD, MODEL_FEATURES
@@ -323,3 +330,82 @@ def render(df: pd.DataFrame) -> None:
             pd.DataFrame(report).T.round(3),
             use_container_width=True
         )
+
+    # ── Coefficient shrinkage: MLE vs Ridge ──────────────────────────────
+    with st.expander("5 — Coefficient Shrinkage (MLE vs Ridge)", expanded=True):
+        st.markdown(
+            "Comparison of unpenalised MLE coefficients with ridge-penalised "
+            "coefficients. Ridge shrinks every coefficient toward zero, with "
+            "larger coefficients experiencing greater absolute shrinkage."
+        )
+        # Fit unpenalised MLE via statsmodels
+        X_train_sm = sm.add_constant(X_train_s)
+        sm_result = sm.Logit(y_train, X_train_sm).fit(
+            method="bfgs", maxiter=500, disp=False
+        )
+        coef_mle = sm_result.params[1:]  # exclude intercept
+        coef_ridge = model.coef_[0]
+
+        shrink_df = pd.DataFrame({
+            "Feature": MODEL_FEATURES,
+            "MLE": np.round(coef_mle, 4),
+            "Ridge": np.round(coef_ridge, 4),
+        }).sort_values("MLE", key=lambda s: s.abs(), ascending=True)
+
+        fig_shrink = go.Figure()
+        fig_shrink.add_trace(go.Bar(
+            y=shrink_df["Feature"], x=shrink_df["MLE"],
+            orientation="h", name="MLE (unpenalised)",
+            marker_color="#4C78A8"
+        ))
+        fig_shrink.add_trace(go.Bar(
+            y=shrink_df["Feature"], x=shrink_df["Ridge"],
+            orientation="h", name=f"Ridge (C={selected_C})",
+            marker_color="#E45756"
+        ))
+        fig_shrink.add_vline(x=0, line_color="black", line_width=1)
+        fig_shrink.update_layout(
+            barmode="group",
+            xaxis_title="Standardised Coefficient",
+            height=400,
+            margin=dict(l=10, r=10, t=20, b=10),
+            legend=dict(x=0.6, y=0.05)
+        )
+        st.plotly_chart(fig_shrink, use_container_width=True)
+
+    # ── SHAP Analysis ────────────────────────────────────────────────────
+    if _HAS_SHAP:
+        with st.expander("6 — SHAP Analysis", expanded=True):
+            st.markdown(
+                "SHAP (SHapley Additive exPlanations) shows how each feature "
+                "contributes to individual predictions. Each dot is one test-set "
+                "patient; colour encodes feature value (red = high, blue = low). "
+                "Features are sorted by mean absolute SHAP value."
+            )
+            X_test_df = pd.DataFrame(X_test_s, columns=MODEL_FEATURES)
+            explainer = shap.LinearExplainer(model, X_train_s)
+            shap_values = explainer.shap_values(X_test_df)
+
+            # Create a plotly bar chart of mean |SHAP| values
+            mean_abs_shap = np.abs(shap_values).mean(axis=0)
+            shap_df = pd.DataFrame({
+                "Feature": MODEL_FEATURES,
+                "Mean |SHAP|": mean_abs_shap
+            }).sort_values("Mean |SHAP|", ascending=True)
+
+            fig_shap = go.Figure(go.Bar(
+                y=shap_df["Feature"], x=shap_df["Mean |SHAP|"],
+                orientation="h", marker_color="#4C78A8",
+                hovertemplate="%{y}: %{x:.4f}<extra></extra>"
+            ))
+            fig_shap.update_layout(
+                xaxis_title="Mean |SHAP value|",
+                height=380,
+                margin=dict(l=10, r=10, t=20, b=10)
+            )
+            st.plotly_chart(fig_shap, use_container_width=True)
+
+            # Show raw SHAP values table
+            with st.expander("SHAP values table"):
+                shap_table = pd.DataFrame(shap_values, columns=MODEL_FEATURES)
+                st.dataframe(shap_table.round(4), use_container_width=True)
