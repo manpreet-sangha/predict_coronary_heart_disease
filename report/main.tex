@@ -303,14 +303,15 @@ and \texttt{ldl} ($0.174$). \texttt{obesity} and \texttt{alcohol} are
 shrunk near zero, consistent with their non-significance in the MLE fit.
 \vspace{2pt}
 \noindent
-\begin{minipage}[t]{0.50\linewidth}
+\begin{minipage}[t]{0.52\linewidth}
 \centering
 \captionsetup{width=\linewidth}
-\captionof{table}{\footnotesize Unpenalised LR inference table (training set,
-$n=369$). $^{*}p<0.05$; $^{**}p<0.01$.}
+\captionof{table}{\scriptsize Unpenalised LR inference ($n\!=\!369$).
+$^{*}p<0.05$; $^{**}p<0.01$.}
 \label{tab:inference}
-\vspace{2pt}
-{\footnotesize
+\vspace{1pt}
+{\scriptsize
+\renewcommand{\arraystretch}{0.85}
 \begin{tabular}{@{}lrrrr@{}}
 \toprule
 Feature & $\hat{\beta}_{\text{LR}}$ & SE & $z$ & $p$ \\
@@ -329,16 +330,16 @@ age\_tobacco &    0.088 & 0.243 &    0.36 & 0.718 \\
 age\_famhist &    0.825 & 0.535 &    1.54 & 0.123 \\
 \bottomrule
 \end{tabular}}
-\vspace{4pt}
 \end{minipage}\hfill
-\begin{minipage}[t]{0.45\linewidth}
+\begin{minipage}[t]{0.44\linewidth}
 \centering
 \captionsetup{width=\linewidth}
-\captionof{table}{\footnotesize Ridge LR coefficients ($C\!=\!0.01$),
-sorted by $|\hat{\beta}|$.}
+\captionof{table}{\scriptsize Ridge coefficients ($C\!=\!0.01$),
+by $|\hat{\beta}|$.}
 \label{tab:coef}
-\vspace{2pt}
-{\footnotesize
+\vspace{1pt}
+{\scriptsize
+\renewcommand{\arraystretch}{0.85}
 \begin{tabular}{@{}lr@{}}
 \toprule
 Feature & $\hat{\beta}_{\text{ridge}}$ \\
