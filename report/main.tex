@@ -233,19 +233,22 @@ matter most for each principal component.
 \label{sec:lrrp}
 % =============================================================================
 
-% ── PCA figures stacked on right, text wraps left and below ──────────────────
-\begin{wrapfigure}{r}{0.42\linewidth}
+% ── PCA figures stacked on right, captions vertical, text wraps left ──────────
+\begin{wrapfigure}{r}{0.48\linewidth}
 \vspace{-10pt}
 \centering
-\includegraphics[width=\linewidth,trim=0 0 0 10,clip]{../exploratory_data_analysis/eda_output/fig_pca_scatter.png}%
-\vspace{-14pt}
-\captionof{figure}{\scriptsize PCA 2-D projection by CHD class.}
-\label{fig:pca}
+\noindent
+\includegraphics[width=0.88\linewidth,trim=0 0 0 10,clip]{../exploratory_data_analysis/eda_output/fig_pca_scatter.png}%
+\hspace{-2pt}%
+\rotatebox{90}{\scriptsize\textbf{Fig.\,\ref{fig:pca}} PCA 2-D projection}%
+\refstepcounter{figure}\label{fig:pca}
+
 \vspace{2pt}
-\includegraphics[width=\linewidth,trim=0 0 0 10,clip]{../exploratory_data_analysis/eda_output/fig_pca_loadings_heatmap.png}%
-\vspace{-14pt}
-\captionof{figure}{\scriptsize PCA loadings (PC1 \& PC2).}
-\label{fig:pcaload}
+\noindent
+\includegraphics[width=0.88\linewidth,trim=0 0 0 10,clip]{../exploratory_data_analysis/eda_output/fig_pca_loadings_heatmap.png}%
+\hspace{-2pt}%
+\rotatebox{90}{\scriptsize\textbf{Fig.\,\ref{fig:pcaload}} PCA loadings}%
+\refstepcounter{figure}\label{fig:pcaload}
 \vspace{-10pt}
 \end{wrapfigure}
 
