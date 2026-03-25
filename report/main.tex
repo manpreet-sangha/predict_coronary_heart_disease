@@ -287,6 +287,7 @@ zero, consistent with their non-significance.
 \vspace{2pt}
 \noindent
 \begin{minipage}[t]{0.52\linewidth}
+\vspace{0pt}
 \centering
 \captionsetup{width=\linewidth}
 \captionof{table}{\scriptsize Unpenalised LR inference ($n\!=\!369$).
@@ -315,10 +316,10 @@ age\_famhist &    0.825 & 0.535 &    1.54 & 0.123 \\
 \end{tabular}}
 \end{minipage}\hfill
 \begin{minipage}[t]{0.44\linewidth}
+\vspace{0pt}
 \centering
-\captionsetup{width=\linewidth}
-\captionof{table}{\scriptsize Ridge coefficients ($C\!=\!0.01$),
-by $|\hat{\beta}|$.}
+\captionsetup{width=0.9\linewidth}
+\captionof{table}{\scriptsize Ridge coefficients ($C\!=\!0.01$).}
 \label{tab:coef}
 \vspace{1pt}
 {\scriptsize
@@ -341,27 +342,8 @@ obesity      &  0.013 \\
 \bottomrule
 \end{tabular}}
 \end{minipage}
-% ── Table 5 (left) + Figure 5 (right): side by side ──────────────────────────
-\vspace{4pt}
-\noindent
-\begin{minipage}[t]{0.46\linewidth}
-\vspace{0pt}
-\centering
-\captionsetup{width=\linewidth}
-\captionof{table}{\footnotesize Test-set performance of the ridge logistic regression.}
-\label{tab:perf}
-\vspace{2pt}
-{\footnotesize
-\begin{tabular}{@{}lrrrr@{}}
-\toprule
-Model & AUC & F1 & Prec. & Rec. \\
-\midrule
-\shortstack[l]{Ridge LR\\($C\!=\!0.01$)} & 0.820 & 0.610 & 0.667 & 0.563 \\
-\bottomrule
-\end{tabular}}
 
-\vspace{6pt}
-\raggedright
+\vspace{4pt}
 Figure~\ref{fig:shrinkage} shows every unpenalised estimate (blue) is
 pulled toward zero by the ridge penalty (red), with the largest
 reductions on \texttt{age\_famhist} and \texttt{age}. The derived
@@ -371,6 +353,26 @@ model achieves AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753
 (Table~\ref{tab:perf}). CHD recall is 0.563 versus No-CHD recall of
 0.871, a consequence of the 1.89:1 class imbalance
 \cite{rehman2025predicting, ogunpola2024machine}.
+
+% ── Table 5 (left) + Figure 5 (right): side by side ──────────────────────────
+\vspace{4pt}
+\noindent
+\begin{minipage}[t]{0.46\linewidth}
+\vspace{0pt}
+\centering
+\captionsetup{width=\linewidth}
+\captionof{table}{\scriptsize Test-set performance of ridge LR.}
+\label{tab:perf}
+\vspace{1pt}
+{\scriptsize
+\renewcommand{\arraystretch}{0.85}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Model & AUC & F1 & Prec. & Rec. \\
+\midrule
+Ridge LR & 0.820 & 0.610 & 0.667 & 0.563 \\
+\bottomrule
+\end{tabular}}
 \end{minipage}\hfill
 \begin{minipage}[t]{0.50\linewidth}
 \vspace{0pt}
@@ -378,7 +380,7 @@ model achieves AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753
 \captionsetup{width=\linewidth}
 \includegraphics[width=\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_coefficient_shrinkage.png}
 \vspace{-4pt}
-\captionof{figure}{\footnotesize Coefficient shrinkage: ($\hat{\beta}_{\text{LR}}$) vs.\ ridge ($\hat{\beta}_{\text{ridge}}$).}
+\captionof{figure}{\scriptsize Shrinkage: $\hat{\beta}_{\text{LR}}$ vs.\ $\hat{\beta}_{\text{ridge}}$.}
 \label{fig:shrinkage}
 \end{minipage}
 
