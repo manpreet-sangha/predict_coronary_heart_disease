@@ -82,7 +82,7 @@ def run_shrinkage_plot(df: pd.DataFrame) -> None:
     ).reset_index(drop=True)
 
     # ── Plot (compact for wrapfigure) ─────────────────────────────────
-    fig, ax = plt.subplots(figsize=(3.4, 3.6))
+    fig, ax = plt.subplots(figsize=(3.2, 3.0))
     y_pos = np.arange(len(coef_df))
     bar_h = 0.35
 

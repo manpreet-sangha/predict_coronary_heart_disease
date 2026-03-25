@@ -76,7 +76,7 @@ def run_shap_analysis(df: pd.DataFrame) -> None:
     shap_values = explainer.shap_values(X_test_s)
 
     # ── Summary plot ─────────────────────────────────────────────────────
-    fig, ax = plt.subplots(figsize=(4.5, 4.0))
+    fig, ax = plt.subplots(figsize=(3.2, 3.0))
     shap.summary_plot(
         shap_values, X_test_s,
         feature_names=MODEL_FEATURES,

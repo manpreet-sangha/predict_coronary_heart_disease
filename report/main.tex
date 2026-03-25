@@ -357,32 +357,26 @@ model achieves AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753
 0.871, a consequence of the 1.89:1 class imbalance
 \cite{rehman2025predicting, ogunpola2024machine}.
 
-% ── Figure 5: shrinkage chart ────────────────────────────────────────────────
-\begin{figure}[htbp]
+% ── Figures 5 and 6: shrinkage + SHAP side by side ───────────────────────────
+\vspace{4pt}
+\noindent
+\begin{minipage}[t]{0.48\linewidth}
 \centering
-\includegraphics[width=0.65\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_coefficient_shrinkage.png}
-\vspace{-4pt}
-\caption{\scriptsize Coefficient shrinkage: $\hat{\beta}_{\text{LR}}$ vs.\ $\hat{\beta}_{\text{ridge}}$.}
+\includegraphics[width=\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_coefficient_shrinkage.png}
+\captionof{figure}{\scriptsize Shrinkage: $\hat{\beta}_{\text{LR}}$ vs.\ $\hat{\beta}_{\text{ridge}}$.}
 \label{fig:shrinkage}
-\end{figure}
-
-\vspace{6pt}
-Figure~\ref{fig:shap} shows a SHAP summary plot for the ridge model.
-Each dot represents one test-set patient; the horizontal position shows
-how much that feature pushed the prediction towards (right) or away from
-(left) CHD. The colour indicates the feature value (red\,=\,high,
-blue\,=\,low). \texttt{age} and \texttt{age\_famhist} have the widest
-spread, confirming they are the strongest drivers of individual
-predictions --- consistent with the ridge coefficients and EDA rankings.
-
-\begin{figure}[htbp]
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\linewidth}
 \centering
-\includegraphics[width=0.75\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_shap_summary.png}
-\caption{\footnotesize SHAP summary plot for the ridge logistic regression
-($C\!=\!0.01$). Each dot is one test-set patient; colour encodes feature
-value (red\,=\,high, blue\,=\,low).}
+\includegraphics[width=\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_shap_summary.png}
+\captionof{figure}{\scriptsize SHAP summary for ridge LR ($C\!=\!0.01$).}
 \label{fig:shap}
-\end{figure}
+\end{minipage}
+
+\vspace{4pt}
+Figure~\ref{fig:shap} shows how each feature drives individual predictions.
+\texttt{age} and \texttt{age\_famhist} have the widest spread, confirming
+they are the strongest predictors --- consistent with the ridge coefficients.
 
 % =============================================================================
 \section{Alternative Classifiers}
