@@ -284,11 +284,12 @@ Table~\ref{tab:inference} shows \texttt{ldl} ($p=0.005$), \texttt{typea}
 ($p=0.005$), and \texttt{age} ($p=0.030$) are significant under MLE.
 Ridge ($C\!=\!0.01$) shrinks \texttt{obesity} and \texttt{alcohol} near
 zero, consistent with their non-significance.
+
 \vspace{2pt}
+{\setlength{\parindent}{0pt}%
 \noindent
 \begin{minipage}[t]{0.55\linewidth}
 \vspace{0pt}
-\raggedright
 \captionsetup{width=\linewidth,justification=raggedright,singlelinecheck=false}
 \captionof{table}{\scriptsize Unpenalised LR inference ($n\!=\!369$).
 $^{*}p<0.05$; $^{**}p<0.01$.}
@@ -341,7 +342,7 @@ alcohol      & $-$0.015 \\
 obesity      &  0.013 \\
 \bottomrule
 \end{tabular}}
-\end{minipage}
+\end{minipage}}% close \setlength group
 
 \vspace{4pt}
 Figure~\ref{fig:shrinkage} shows every unpenalised estimate (blue) is
