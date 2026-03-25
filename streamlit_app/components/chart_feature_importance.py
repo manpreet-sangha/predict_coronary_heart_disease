@@ -9,7 +9,7 @@ import streamlit as st
 from sklearn.feature_selection import mutual_info_classif, f_classif, chi2
 from sklearn.preprocessing import MinMaxScaler
 
-from config import ALL_FEATURES, CATEGORICAL_FEATURES, TARGET
+from config import ALL_FEATURES, CATEGORICAL_FEATURES, TARGET, RANDOM_STATE
 
 
 def render(df: pd.DataFrame) -> None:
@@ -27,7 +27,7 @@ def render(df: pd.DataFrame) -> None:
     X = df[ALL_FEATURES].values
     y = df[TARGET].values
 
-    mi_scores          = mutual_info_classif(X, y, random_state=42)
+    mi_scores          = mutual_info_classif(X, y, random_state=RANDOM_STATE)
     f_scores, p_values = f_classif(X, y)
     chi2_cols          = [c for c in CATEGORICAL_FEATURES if c in df.columns]
     chi2_stat, chi2_p  = chi2(df[chi2_cols].values, y)

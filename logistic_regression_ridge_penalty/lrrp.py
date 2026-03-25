@@ -46,7 +46,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import (
     ALL_FEATURES, NUMERIC_FEATURES, CATEGORICAL_FEATURES,
     TARGET, FAMHIST_ENCODING, SKEWNESS_THRESHOLD, LRRP_OUTPUT_DIR,
-    MODEL_FEATURES, DERIVED_FEATURES
+    MODEL_FEATURES, DERIVED_FEATURES,
+    RANDOM_STATE, TEST_SIZE, CV_FOLDS, MAX_ITER
 )
 from feature_engineering.fe import run_feature_engineering
 
@@ -108,7 +109,7 @@ def run_lrrp(df: pd.DataFrame) -> None:
 
     # ── 1. Train / test split (stratified, 80/20) ──────────────────────────
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.20, random_state=42, stratify=y
+        X, y, test_size=TEST_SIZE, random_state=RANDOM_STATE, stratify=y
     )
 
     # ── 2. Standardise ─────────────────────────────────────────────────────
@@ -118,13 +119,13 @@ def run_lrrp(df: pd.DataFrame) -> None:
 
     # ── 3. Cross-validate C over log-spaced grid ───────────────────────────
     Cs = [0.001, 0.01, 0.1, 1.0, 10.0, 100.0]
-    cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+    cv = StratifiedKFold(n_splits=CV_FOLDS, shuffle=True, random_state=RANDOM_STATE)
 
     print("\n--- Cross-validation: C selection (5-fold, AUC) ---")
     cv_means, cv_stds = [], []
     for C in Cs:
         model = LogisticRegression(
-            penalty="l2", C=C, solver="lbfgs", max_iter=1000, random_state=42
+            penalty="l2", C=C, solver="lbfgs", max_iter=MAX_ITER, random_state=RANDOM_STATE
         )
         scores = cross_val_score(model, X_train_s, y_train,
                                  cv=cv, scoring="roc_auc")
@@ -146,7 +147,7 @@ def run_lrrp(df: pd.DataFrame) -> None:
 
     # ── 4. Fit final model with best C ─────────────────────────────────────
     final_model = LogisticRegression(
-        penalty="l2", C=best_C, solver="lbfgs", max_iter=1000, random_state=42
+        penalty="l2", C=best_C, solver="lbfgs", max_iter=MAX_ITER, random_state=RANDOM_STATE
     )
     final_model.fit(X_train_s, y_train)
 

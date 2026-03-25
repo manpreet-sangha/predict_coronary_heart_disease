@@ -37,12 +37,12 @@ def render(df: pd.DataFrame) -> None:
 
     from sklearn.feature_selection import mutual_info_classif, f_classif
     from sklearn.preprocessing import MinMaxScaler
-    from config import ALL_FEATURES, NUMERIC_FEATURES
+    from config import ALL_FEATURES, NUMERIC_FEATURES, RANDOM_STATE
     import numpy as np
 
     X = df[ALL_FEATURES].values
     y = df["chd"].values
-    mi   = mutual_info_classif(X, y, random_state=42)
+    mi   = mutual_info_classif(X, y, random_state=RANDOM_STATE)
     f, _ = f_classif(X, y)
     scaler = MinMaxScaler()
     mean_imp = (scaler.fit_transform(mi.reshape(-1,1)).flatten() +

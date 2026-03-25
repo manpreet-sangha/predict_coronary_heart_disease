@@ -32,11 +32,11 @@ import os
 
 import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from config import MODEL_FEATURES
+from config import MODEL_FEATURES, RANDOM_STATE
 
 NAME = "LightGBM"
 
-CLASSIFIER = LGBMClassifier(random_state=42, verbosity=-1)
+CLASSIFIER = LGBMClassifier(random_state=RANDOM_STATE, verbosity=-1)
 
 PARAM_GRID = {
     "n_estimators":  [100, 200, 300],
@@ -84,7 +84,7 @@ def tune_and_evaluate(
                     accuracy, precision, recall
     """
     grid = GridSearchCV(
-        LGBMClassifier(random_state=42, verbosity=-1),
+        LGBMClassifier(random_state=RANDOM_STATE, verbosity=-1),
         PARAM_GRID, cv=cv, scoring="roc_auc", n_jobs=-1, refit=True
     )
     grid.fit(X_train_s, y_train)

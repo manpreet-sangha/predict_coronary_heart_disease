@@ -27,10 +27,13 @@ from sklearn.metrics import (
     precision_score, recall_score, confusion_matrix, classification_report
 )
 import os
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from config import RANDOM_STATE
 
 NAME = "Decision Tree"
 
-CLASSIFIER = DecisionTreeClassifier(random_state=42)
+CLASSIFIER = DecisionTreeClassifier(random_state=RANDOM_STATE)
 
 PARAM_GRID = {
     "max_depth":        [3, 5, 7, None],
@@ -77,7 +80,7 @@ def tune_and_evaluate(
                     accuracy, precision, recall
     """
     grid = GridSearchCV(
-        DecisionTreeClassifier(random_state=42),
+        DecisionTreeClassifier(random_state=RANDOM_STATE),
         PARAM_GRID, cv=cv, scoring="roc_auc", n_jobs=-1, refit=True
     )
     grid.fit(X_train_s, y_train)

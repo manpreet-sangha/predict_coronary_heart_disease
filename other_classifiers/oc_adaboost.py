@@ -29,10 +29,13 @@ from sklearn.metrics import (
     precision_score, recall_score, confusion_matrix, classification_report
 )
 import os
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from config import RANDOM_STATE
 
 NAME = "AdaBoost"
 
-CLASSIFIER = AdaBoostClassifier(random_state=42)
+CLASSIFIER = AdaBoostClassifier(random_state=RANDOM_STATE)
 
 PARAM_GRID = {
     "n_estimators":  [50, 100, 200, 300],
@@ -78,7 +81,7 @@ def tune_and_evaluate(
                     accuracy, precision, recall
     """
     grid = GridSearchCV(
-        AdaBoostClassifier(random_state=42),
+        AdaBoostClassifier(random_state=RANDOM_STATE),
         PARAM_GRID, cv=cv, scoring="roc_auc", n_jobs=-1, refit=True
     )
     grid.fit(X_train_s, y_train)

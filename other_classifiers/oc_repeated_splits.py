@@ -27,7 +27,8 @@ from sklearn.metrics import roc_auc_score
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import (
     DATA_PATH, NUMERIC_FEATURES, TARGET,
-    SKEWNESS_THRESHOLD, MODEL_FEATURES, OC_OUTPUT_DIR
+    SKEWNESS_THRESHOLD, MODEL_FEATURES, OC_OUTPUT_DIR,
+    RANDOM_STATE, TEST_SIZE, MAX_ITER
 )
 from feature_engineering.fe import run_feature_engineering
 
@@ -75,12 +76,12 @@ def run_repeated_splits(df: pd.DataFrame) -> None:
     classifiers = {m.NAME: m.CLASSIFIER for m in modules}
     # Add Ridge LR
     classifiers["Ridge LR"] = LogisticRegression(
-        penalty="l2", C=0.01, solver="lbfgs", max_iter=1000, random_state=42
+        penalty="l2", C=0.01, solver="lbfgs", max_iter=MAX_ITER, random_state=RANDOM_STATE
     )
 
     # ── Repeated splits ──────────────────────────────────────────────────
     splitter = StratifiedShuffleSplit(
-        n_splits=N_SPLITS, test_size=0.20, random_state=42
+        n_splits=N_SPLITS, test_size=TEST_SIZE, random_state=RANDOM_STATE
     )
 
     results = {name: [] for name in classifiers}

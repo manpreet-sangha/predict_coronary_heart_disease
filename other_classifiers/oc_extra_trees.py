@@ -32,11 +32,11 @@ import os
 
 import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from config import MODEL_FEATURES
+from config import MODEL_FEATURES, RANDOM_STATE
 
 NAME = "Extra Trees"
 
-CLASSIFIER = ExtraTreesClassifier(n_estimators=200, random_state=42)
+CLASSIFIER = ExtraTreesClassifier(n_estimators=200, random_state=RANDOM_STATE)
 
 PARAM_GRID = {
     "n_estimators": [100, 300, 500],
@@ -83,7 +83,7 @@ def tune_and_evaluate(
                     accuracy, precision, recall
     """
     grid = GridSearchCV(
-        ExtraTreesClassifier(random_state=42),
+        ExtraTreesClassifier(random_state=RANDOM_STATE),
         PARAM_GRID, cv=cv, scoring="roc_auc", n_jobs=-1, refit=True
     )
     grid.fit(X_train_s, y_train)

@@ -46,6 +46,12 @@ DERIVED_FEATURES = [
 # MODEL_FEATURES: full feature set passed to classifiers (original + derived)
 MODEL_FEATURES = ALL_FEATURES + DERIVED_FEATURES
 
+# ── Reproducibility & training ────────────────────────────────────────────────
+RANDOM_STATE = 42               # seed for all random operations
+TEST_SIZE    = 0.20             # held-out test fraction (80/20 split)
+CV_FOLDS     = 5                # number of stratified CV folds
+MAX_ITER     = 1000             # max iterations for logistic regression solver
+
 # ── Thresholds ────────────────────────────────────────────────────────────────
 # Features whose |skewness| exceeds this value are flagged for log-transformation.
 # The actual list of skewed features is computed dynamically from the data

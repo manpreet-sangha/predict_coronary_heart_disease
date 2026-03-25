@@ -26,7 +26,8 @@ from sklearn.preprocessing import StandardScaler
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import (
     DATA_PATH, NUMERIC_FEATURES, TARGET,
-    SKEWNESS_THRESHOLD, MODEL_FEATURES, LRRP_OUTPUT_DIR
+    SKEWNESS_THRESHOLD, MODEL_FEATURES, LRRP_OUTPUT_DIR,
+    RANDOM_STATE, TEST_SIZE, MAX_ITER
 )
 from feature_engineering.fe import run_feature_engineering
 
@@ -51,7 +52,7 @@ def run_shap_analysis(df: pd.DataFrame) -> None:
     y = df[TARGET].values
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.20, random_state=42, stratify=y
+        X, y, test_size=TEST_SIZE, random_state=RANDOM_STATE, stratify=y
     )
 
     scaler = StandardScaler()
@@ -66,7 +67,7 @@ def run_shap_analysis(df: pd.DataFrame) -> None:
 
     # ── Fit ridge model ──────────────────────────────────────────────────
     model = LogisticRegression(
-        penalty="l2", C=0.01, solver="lbfgs", max_iter=1000, random_state=42
+        penalty="l2", C=0.01, solver="lbfgs", max_iter=MAX_ITER, random_state=RANDOM_STATE
     )
     model.fit(X_train_s, y_train)
 

@@ -29,7 +29,8 @@ except ImportError:
     _HAS_SHAP = False
 
 from config import (
-    NUMERIC_FEATURES, TARGET, SKEWNESS_THRESHOLD, MODEL_FEATURES
+    NUMERIC_FEATURES, TARGET, SKEWNESS_THRESHOLD, MODEL_FEATURES,
+    RANDOM_STATE, TEST_SIZE, CV_FOLDS, MAX_ITER
 )
 from feature_engineering.fe import run_feature_engineering
 
@@ -58,18 +59,18 @@ def _run_cv(data_hash: int, df_values, df_columns, _version: int = _CACHE_VERSIO
     df = pd.DataFrame(df_values, columns=df_columns)
     X, y, skewed = _preprocess(df)
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.20, random_state=42, stratify=y
+        X, y, test_size=TEST_SIZE, random_state=RANDOM_STATE, stratify=y
     )
     scaler = StandardScaler()
     X_train_s = scaler.fit_transform(X_train)
     X_test_s  = scaler.transform(X_test)
 
     Cs = [0.001, 0.01, 0.1, 1.0, 10.0, 100.0]
-    cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+    cv = StratifiedKFold(n_splits=CV_FOLDS, shuffle=True, random_state=RANDOM_STATE)
     cv_means, cv_stds = [], []
     for C in Cs:
         m = LogisticRegression(penalty="l2", C=C, solver="lbfgs",
-                               max_iter=1000, random_state=42)
+                               max_iter=MAX_ITER, random_state=RANDOM_STATE)
         scores = cross_val_score(m, X_train_s, y_train,
                                  cv=cv, scoring="roc_auc")
         cv_means.append(scores.mean())
@@ -82,7 +83,7 @@ def _run_cv(data_hash: int, df_values, df_columns, _version: int = _CACHE_VERSIO
 
 def _fit_model(X_train_s, X_test_s, y_train, y_test, C):
     m = LogisticRegression(penalty="l2", C=C, solver="lbfgs",
-                           max_iter=1000, random_state=42)
+                           max_iter=MAX_ITER, random_state=RANDOM_STATE)
     m.fit(X_train_s, y_train)
     y_pred = m.predict(X_test_s)
     y_prob = m.predict_proba(X_test_s)[:, 1]

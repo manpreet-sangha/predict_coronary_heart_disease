@@ -32,11 +32,11 @@ import os
 
 import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from config import MODEL_FEATURES as ALL_FEATURES
+from config import MODEL_FEATURES as ALL_FEATURES, RANDOM_STATE
 
 NAME = "Random Forest"
 
-CLASSIFIER = RandomForestClassifier(n_estimators=200, random_state=42)
+CLASSIFIER = RandomForestClassifier(n_estimators=200, random_state=RANDOM_STATE)
 
 PARAM_GRID = {
     "n_estimators": [100, 300, 500],
@@ -83,7 +83,7 @@ def tune_and_evaluate(
                     accuracy, precision, recall
     """
     grid = GridSearchCV(
-        RandomForestClassifier(random_state=42),
+        RandomForestClassifier(random_state=RANDOM_STATE),
         PARAM_GRID, cv=cv, scoring="roc_auc", n_jobs=-1, refit=True
     )
     grid.fit(X_train_s, y_train)

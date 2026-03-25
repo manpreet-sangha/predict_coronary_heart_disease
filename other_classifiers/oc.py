@@ -40,7 +40,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import (
     ALL_FEATURES, NUMERIC_FEATURES, CATEGORICAL_FEATURES,
     TARGET, FAMHIST_ENCODING, SKEWNESS_THRESHOLD, OC_OUTPUT_DIR,
-    MODEL_FEATURES
+    MODEL_FEATURES, RANDOM_STATE, TEST_SIZE, CV_FOLDS
 )
 from feature_engineering.fe import run_feature_engineering
 
@@ -125,14 +125,14 @@ def run_classifiers(df: pd.DataFrame) -> None:
 
     # ── 1. Train / test split (same seed as lrrp.py) ───────────────────────
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.20, random_state=42, stratify=y
+        X, y, test_size=TEST_SIZE, random_state=RANDOM_STATE, stratify=y
     )
 
     scaler = StandardScaler()
     X_train_s = scaler.fit_transform(X_train)
     X_test_s  = scaler.transform(X_test)
 
-    cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+    cv = StratifiedKFold(n_splits=CV_FOLDS, shuffle=True, random_state=RANDOM_STATE)
 
     # ── 2. Screen all classifiers ──────────────────────────────────────────
     print("\n--- 5-fold CV screening (AUC) ---")

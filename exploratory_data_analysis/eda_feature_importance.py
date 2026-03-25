@@ -27,7 +27,7 @@ from sklearn.feature_selection import mutual_info_classif, f_classif, chi2
 from sklearn.preprocessing import MinMaxScaler
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from config import ALL_FEATURES, CATEGORICAL_FEATURES, TARGET, EDA_OUTPUT_DIR
+from config import ALL_FEATURES, CATEGORICAL_FEATURES, TARGET, EDA_OUTPUT_DIR, RANDOM_STATE
 
 OUTPUT_DIR = EDA_OUTPUT_DIR
 
@@ -51,7 +51,7 @@ def run(df: pd.DataFrame) -> None:
     y = df[TARGET].values
 
     # ── 1. Mutual Information ──────────────────────────────────────────────
-    mi_scores = mutual_info_classif(X, y, random_state=42)
+    mi_scores = mutual_info_classif(X, y, random_state=RANDOM_STATE)
     mi_series = pd.Series(mi_scores, index=ALL_FEATURES).sort_values(
         ascending=False).round(4)
     print("\n--- Mutual Information Scores ---")

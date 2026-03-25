@@ -23,7 +23,8 @@ from sklearn.metrics import (
 )
 
 from config import (
-    NUMERIC_FEATURES, TARGET, SKEWNESS_THRESHOLD, MODEL_FEATURES
+    NUMERIC_FEATURES, TARGET, SKEWNESS_THRESHOLD, MODEL_FEATURES,
+    RANDOM_STATE, TEST_SIZE, CV_FOLDS
 )
 from feature_engineering.fe import run_feature_engineering
 
@@ -95,13 +96,13 @@ def _run_pipeline(data_hash: int, df_values, df_columns, _version: int = _CACHE_
     X, y = _preprocess(df)
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.20, random_state=42, stratify=y
+        X, y, test_size=TEST_SIZE, random_state=RANDOM_STATE, stratify=y
     )
     scaler = StandardScaler()
     X_train_s = scaler.fit_transform(X_train)
     X_test_s  = scaler.transform(X_test)
 
-    cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+    cv = StratifiedKFold(n_splits=CV_FOLDS, shuffle=True, random_state=RANDOM_STATE)
 
     # Screening
     screening = {}
