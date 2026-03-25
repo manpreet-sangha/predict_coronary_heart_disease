@@ -268,39 +268,22 @@ smoking risk compounds with longer exposure \cite{rehman2025predicting};
 risk amplifies with age \cite{patel2023famhist}.
 
 \textbf{Preprocessing.}
-\texttt{famhist} encoded as 0/1; skewed features (\texttt{sbp},
-\texttt{tobacco}, \texttt{ldl}, \texttt{alcohol})
-log\,\textsubscript{1p}-transformed all eleven features standardised with
-\texttt{StandardScaler} (zero mean, unit variance) prior to fitting, which is 
-mandatory for ridge so the penalty treats all coefficients on the same scale
-\cite{hassan2022effectively}.
-The regularisation strength $C$ (inverse of $\lambda$) was selected by
-stratified 5-fold cross-validation over $\{0.001,0.01,0.1,1,10,100\}$
-maximising AUC-ROC on an 80\,\% training set.
-
-Two logistic regression models are fitted: 
-(i)~An unpenalised model via maximum likelihood that yields 
-table coefficient, standard error, $z$-statistic, and $p$-value 
-consistent with the lecture formulation
-(Equation~\ref{eq:logit}). (ii)~The ridge model ($C=0.01$)
-used for prediction uses L2 penalty that biases the coefficients towards zero,
-which stabilises estimates under multicollinearity.
-
+\texttt{famhist} encoded as 0/1; four skewed features
+log\,\textsubscript{1p}-transformed; all features standardised
+\cite{hassan2022effectively}. $C$ selected by 5-fold CV (AUC-ROC) over
+$\{0.001,\ldots,100\}$. Two models are fitted
+(Equation~\ref{eq:logit}): (i)~unpenalised MLE for inference
+(Table~\ref{tab:inference}); (ii)~ridge ($C\!=\!0.01$) for prediction
+(Table~\ref{tab:coef}).
 \begin{equation}
 \log\!\left(\frac{\Pr(Y\!=\!1\mid X)}{\Pr(Y\!=\!0\mid X)}\right)
 = \beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p
 \label{eq:logit}
 \end{equation}
-The inference table (Table~\ref{tab:inference}) shows that \texttt{ldl}
-($z=2.84$, $p=0.005$), \texttt{typea} ($z=2.82$, $p=0.005$), and
-\texttt{age} ($z=2.17$, $p=0.030$) are statistically significant predictors
-under Maximum Likelihood Estimation (MLE). \texttt{tobacco}, \texttt{famhist}, \texttt{obesity}, and
-\texttt{alcohol} are not statistically significant individually, partly due to
-multicollinearity inflating their standard errors. The optimal $C=0.01$ (Table~\ref{tab:coef})
-implies strong regularisation: \texttt{age} retains the largest ridge
-effect ($\hat{\beta}=0.212$), followed by \texttt{age\_famhist} ($0.189$)
-and \texttt{ldl} ($0.174$). \texttt{obesity} and \texttt{alcohol} are
-shrunk near zero, consistent with their non-significance in the MLE fit.
+Table~\ref{tab:inference} shows \texttt{ldl} ($p=0.005$), \texttt{typea}
+($p=0.005$), and \texttt{age} ($p=0.030$) are significant under MLE.
+Ridge ($C\!=\!0.01$) shrinks \texttt{obesity} and \texttt{alcohol} near
+zero, consistent with their non-significance.
 \vspace{2pt}
 \noindent
 \begin{minipage}[t]{0.52\linewidth}
