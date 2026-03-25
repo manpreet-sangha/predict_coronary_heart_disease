@@ -360,6 +360,15 @@ Figure~\ref{fig:shap} shows how each feature drives individual predictions.
 \texttt{age} and \texttt{age\_famhist} have the widest spread, confirming
 they are the strongest predictors --- consistent with the ridge coefficients.
 
+% =============================================================================
+\section{Alternative Classifiers}
+\label{sec:oc}
+% =============================================================================
+Other classifiers such as discriminative models, tree-based ensembles,
+and generative classifiers are evaluated in this section. Same preprocessed data is utilized
+as in Section~\ref{sec:lrrp}: \texttt{famhist} encoded, four skewed features
+log\,\textsubscript{1p}-transformed, all features standardised.
+
 % ── Figures 5 and 6: shrinkage + SHAP side by side ───────────────────────────
 \vspace{4pt}
 \noindent
@@ -375,15 +384,7 @@ they are the strongest predictors --- consistent with the ridge coefficients.
 \captionof{figure}{\scriptsize SHAP summary for ridge LR ($C\!=\!0.01$).}
 \label{fig:shap}
 \end{minipage}
-
-% =============================================================================
-\section{Alternative Classifiers}
-\label{sec:oc}
-% =============================================================================
-Other classifiers such as discriminative models, tree-based ensembles, 
-and generative classifiers are evaluated in this section. Same preprocessed data is utilized
-as in Section~\ref{sec:lrrp}: \texttt{famhist} encoded, four skewed features 
-log\,\textsubscript{1p}-transformed, all features standardised.
+\vspace{4pt}
 
 All 12 classifiers were evaluated on the held-out test set ($n=93$, 20\,\%)
 using the same 11 features as Section~\ref{sec:lrrp}.
