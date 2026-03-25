@@ -400,6 +400,25 @@ model achieves AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753
 \captionof{figure}{\footnotesize Coefficient shrinkage: ($\hat{\beta}_{\text{LR}}$) vs.\ ridge ($\hat{\beta}_{\text{ridge}}$).}
 \label{fig:shrinkage}
 \end{minipage}
+
+\vspace{6pt}
+Figure~\ref{fig:shap} shows a SHAP summary plot for the ridge model.
+Each dot represents one test-set patient; the horizontal position shows
+how much that feature pushed the prediction towards (right) or away from
+(left) CHD. The colour indicates the feature value (red\,=\,high,
+blue\,=\,low). \texttt{age} and \texttt{age\_famhist} have the widest
+spread, confirming they are the strongest drivers of individual
+predictions --- consistent with the ridge coefficients and EDA rankings.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.75\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_shap_summary.png}
+\caption{\footnotesize SHAP summary plot for the ridge logistic regression
+($C\!=\!0.01$). Each dot is one test-set patient; colour encodes feature
+value (red\,=\,high, blue\,=\,low).}
+\label{fig:shap}
+\end{figure}
+
 % =============================================================================
 \section{Alternative Classifiers}
 \label{sec:oc}
