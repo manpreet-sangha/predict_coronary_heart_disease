@@ -228,29 +228,28 @@ and non-CHD patients, meaning a straight (appropriate reference here) line canno
 the two groups. The heatmap (Figure~\ref{fig:pcaload}) shows which features
 matter most for each principal component.
 
+% ── PCA figures side by side above Section 2 ─────────────────────────────────
+\vspace{4pt}
+\noindent
+\begin{minipage}[t]{0.48\linewidth}
+\centering
+\includegraphics[width=\linewidth,trim=0 0 0 10,clip]{../exploratory_data_analysis/eda_output/fig_pca_scatter.png}
+\vspace{-6pt}
+\captionof{figure}{\scriptsize PCA 2-D projection by CHD class.}
+\label{fig:pca}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\linewidth}
+\centering
+\includegraphics[width=\linewidth,trim=0 0 0 10,clip]{../exploratory_data_analysis/eda_output/fig_pca_loadings_heatmap.png}
+\vspace{-6pt}
+\captionof{figure}{\scriptsize PCA loadings (PC1 \& PC2).}
+\label{fig:pcaload}
+\end{minipage}
+
 % =============================================================================
 \section{Logistic Regression with Ridge Penalty}
 \label{sec:lrrp}
 % =============================================================================
-
-% ── PCA figures stacked on right, captions vertical, text wraps left ──────────
-\begin{wrapfigure}{r}{0.48\linewidth}
-\vspace{-10pt}
-\centering
-\noindent
-\includegraphics[width=0.88\linewidth,trim=0 0 0 10,clip]{../exploratory_data_analysis/eda_output/fig_pca_scatter.png}%
-\hspace{-2pt}%
-\rotatebox{90}{\scriptsize\textbf{Fig.\,\ref{fig:pca}} PCA 2-D projection}%
-\refstepcounter{figure}\label{fig:pca}
-
-\vspace{8pt}
-\noindent
-\includegraphics[width=0.88\linewidth,trim=0 0 0 10,clip]{../exploratory_data_analysis/eda_output/fig_pca_loadings_heatmap.png}%
-\hspace{-2pt}%
-\rotatebox{90}{\scriptsize\textbf{Fig.\,\ref{fig:pcaload}} PCA loadings}%
-\refstepcounter{figure}\label{fig:pcaload}
-\vspace{-10pt}
-\end{wrapfigure}
 
 Logistic regression with an L2 (ridge) penalty
 \cite{borges2025logistic} is chosen as the primary classifier, as instructed. 
