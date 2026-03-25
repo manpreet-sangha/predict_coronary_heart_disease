@@ -356,6 +356,9 @@ model achieves AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753
 (Table~\ref{tab:perf}). CHD recall is 0.563 versus No-CHD recall of
 0.871, a consequence of the 1.89:1 class imbalance
 \cite{rehman2025predicting, ogunpola2024machine}.
+Figure~\ref{fig:shap} shows how each feature drives individual predictions.
+\texttt{age} and \texttt{age\_famhist} have the widest spread, confirming
+they are the strongest predictors --- consistent with the ridge coefficients.
 
 % ── Figures 5 and 6: shrinkage + SHAP side by side ───────────────────────────
 \vspace{4pt}
@@ -372,11 +375,6 @@ model achieves AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753
 \captionof{figure}{\scriptsize SHAP summary for ridge LR ($C\!=\!0.01$).}
 \label{fig:shap}
 \end{minipage}
-
-\vspace{4pt}
-Figure~\ref{fig:shap} shows how each feature drives individual predictions.
-\texttt{age} and \texttt{age\_famhist} have the widest spread, confirming
-they are the strongest predictors --- consistent with the ridge coefficients.
 
 % =============================================================================
 \section{Alternative Classifiers}
