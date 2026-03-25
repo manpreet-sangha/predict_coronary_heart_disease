@@ -188,14 +188,15 @@ four dynamically identified skewed features.}
 \end{figure}
 
 % ── Table 2 wraptable + PCA (table on right, PCA text wraps left and below) ──
-\begin{wraptable}{r}{0.46\linewidth}
-\vspace{-6pt}
+\begin{wraptable}{r}{0.36\linewidth}
+\vspace{-8pt}
 \captionsetup{width=\linewidth}
 \centering
-\caption{\footnotesize Normalised feature importance scores (ranked by mean).}
+\caption{\footnotesize Feature importance.}
 \label{tab:fi}
-\vspace{2pt}
-{\footnotesize
+\vspace{1pt}
+{\scriptsize
+\renewcommand{\arraystretch}{0.9}
 \begin{tabular}{@{}lrrr@{}}
 \toprule
 Feature    & MI   & ANOVA & Mean \\
@@ -211,7 +212,7 @@ typea      & 0.07 & 0.04  & 0.06 \\
 obesity    & 0.00 & 0.04  & 0.02 \\
 \bottomrule
 \end{tabular}}
-\vspace{-4pt}
+\vspace{-6pt}
 \end{wraptable}
 
 To determine the underlying structure, I ran PCA on the standardised features
