@@ -271,15 +271,9 @@ risk amplifies with age \cite{patel2023famhist}.
 \texttt{famhist} encoded as 0/1; four skewed features
 log\,\textsubscript{1p}-transformed; all features standardised
 \cite{hassan2022effectively}. $C$ selected by 5-fold CV (AUC-ROC) over
-$\{0.001,\ldots,100\}$. Two models are fitted
-(Equation~\ref{eq:logit}): (i)~unpenalised MLE for inference
-(Table~\ref{tab:inference}); (ii)~ridge ($C\!=\!0.01$) for prediction
-(Table~\ref{tab:coef}).
-\begin{equation}
-\log\!\left(\frac{\Pr(Y\!=\!1\mid X)}{\Pr(Y\!=\!0\mid X)}\right)
-= \beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p
-\label{eq:logit}
-\end{equation}
+$\{0.001,\ldots,100\}$. Two models are fitted:
+(i)~unpenalised MLE for inference (Table~\ref{tab:inference});
+(ii)~ridge ($C\!=\!0.01$) for prediction (Table~\ref{tab:coef}).
 % ── Table 3: right-aligned wraptable, text flows left and below ───────────────
 \begin{wraptable}{r}{0.52\linewidth}
 \vspace{-8pt}
