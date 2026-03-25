@@ -87,7 +87,7 @@ def _preprocess(df):
     return df[MODEL_FEATURES].values, df[TARGET].values
 
 
-_CACHE_VERSION = 4  # bump to invalidate stale cached results after feature changes
+_CACHE_VERSION = 5  # bump to invalidate stale cached results after feature changes
 
 
 @st.cache_data(show_spinner=False)
@@ -104,9 +104,11 @@ def _run_pipeline(data_hash: int, df_values, df_columns, _version: int = _CACHE_
 
     cv = StratifiedKFold(n_splits=CV_FOLDS, shuffle=True, random_state=RANDOM_STATE)
 
-    # Screening
+    # Screen all classifiers (CV + test set evaluation)
     screening = {}
+    test_results = {}
     for name, clf in CLASSIFIERS.items():
+        # CV screening
         res = cross_validate(
             clf, X_train_s, y_train, cv=cv,
             scoring={"auc": "roc_auc", "f1": "f1", "acc": "accuracy"},
@@ -118,22 +120,28 @@ def _run_pipeline(data_hash: int, df_values, df_columns, _version: int = _CACHE_
             "CV F1":   round(res["test_f1"].mean(),  3),
             "CV Acc":  round(res["test_acc"].mean(), 3),
         }
+        # Test set evaluation (fit on full training set)
+        model = clf.__class__(**clf.get_params())
+        model.fit(X_train_s, y_train)
+        pred = model.predict(X_test_s)
+        test_results[name] = {
+            "model": model,
+            "y_pred": pred,
+            "test_acc": round(accuracy_score(y_test, pred), 3),
+        }
+        # predict_proba if available
+        if hasattr(model, "predict_proba"):
+            test_results[name]["y_prob"] = model.predict_proba(X_test_s)[:, 1]
+        else:
+            test_results[name]["y_prob"] = None
 
-    best_name = max(screening, key=lambda k: screening[k]["CV Acc"])
+    # Select best by TEST accuracy
+    best_name = max(test_results, key=lambda k: test_results[k]["test_acc"])
+    best_model = test_results[best_name]["model"]
+    y_pred = test_results[best_name]["y_pred"]
+    y_prob = test_results[best_name]["y_prob"]
 
-    # Tune best
-    grid = GridSearchCV(
-        CLASSIFIERS[best_name], PARAM_GRIDS[best_name],
-        cv=cv, scoring="accuracy", n_jobs=-1, refit=True
-    )
-    grid.fit(X_train_s, y_train)
-    best_model  = grid.best_estimator_
-    best_params = grid.best_params_
-
-    y_pred = best_model.predict(X_test_s)
-    y_prob = best_model.predict_proba(X_test_s)[:, 1]
-
-    return (screening, best_name, best_params, best_model,
+    return (screening, best_name, best_model,
             y_train, y_test, y_pred, y_prob, X_train_s, X_test_s)
 
 
@@ -145,9 +153,9 @@ def render(df: pd.DataFrame) -> None:
     st.title("Alternative Classifiers")
     st.markdown(
         f"**{len(CLASSIFIERS)} classifiers** from the module are screened by "
-        "5-fold stratified cross-validation on **accuracy**. The best performer is "
-        "tuned with GridSearchCV and evaluated on the same 20% held-out test "
-        "set used for the ridge logistic regression, enabling a direct comparison."
+        "5-fold stratified cross-validation and evaluated on the same 20% "
+        "held-out test set used for ridge logistic regression. The classifier "
+        "with the **highest test accuracy** is reported as the best performer."
     )
 
     with st.spinner("Running CV screening and tuning — this may take a minute …"):
@@ -156,18 +164,16 @@ def render(df: pd.DataFrame) -> None:
             df.values.tolist(), list(df.columns)
         )
 
-    (screening, best_name, best_params, best_model,
+    (screening, best_name, best_model,
      y_train, y_test, y_pred, y_prob, X_train_s, X_test_s) = result
 
-    auc  = roc_auc_score(y_test, y_prob)
-    f1   = f1_score(y_test, y_pred)
     acc  = accuracy_score(y_test, y_pred)
+    f1   = f1_score(y_test, y_pred)
     prec = precision_score(y_test, y_pred)
     rec  = recall_score(y_test, y_pred)
+    auc  = roc_auc_score(y_test, y_prob) if y_prob is not None else float("nan")
 
     # ── Summary ────────────────────────────────────────────────────────────
-    params_str = ", ".join(f"{k}={v}" for k, v in best_params.items())
-
     # Top feature by importance (tree-based models only)
     if hasattr(best_model, "feature_importances_"):
         top_idx  = int(np.argmax(best_model.feature_importances_))
@@ -178,8 +184,7 @@ def render(df: pd.DataFrame) -> None:
 
     st.info(
         f"**Alternative Classifiers — Key Results**\n\n"
-        f"- **Best classifier** (5-fold CV, accuracy criterion): **{best_name}**\n"
-        f"- **Tuned parameters**: {params_str}\n"
+        f"- **Best classifier** (highest test accuracy): **{best_name}**\n"
         f"- **Test Accuracy**: **{acc:.3f}** · "
         f"**AUC-ROC**: **{auc:.3f}** · **F1**: **{f1:.3f}**\n"
         f"- **Top predictor** (importance): {top_feat}\n"
@@ -222,10 +227,9 @@ def render(df: pd.DataFrame) -> None:
         st.dataframe(screen_df.set_index("Classifier"), use_container_width=True)
 
     # ── Best model results ─────────────────────────────────────────────────
-    with st.expander(f"2 — {best_name} (Tuned): ROC Curve & Confusion Matrix",
+    with st.expander(f"2 — {best_name} (Best Test Accuracy): ROC Curve & Confusion Matrix",
                      expanded=True):
         st.markdown(
-            f"**Best parameters**: {params_str}  \n"
             "Results on the held-out 20% test set."
         )
         m1, m2, m3, m4, m5 = st.columns(5)
