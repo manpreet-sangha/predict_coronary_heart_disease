@@ -267,13 +267,6 @@ smoking risk compounds with longer exposure \cite{rehman2025predicting};
 (ii)~\texttt{age\_famhist} $=$ age $\times$ famhist --- family history
 risk amplifies with age \cite{patel2023famhist}.
 
-\textbf{Preprocessing.}
-\texttt{famhist} encoded as 0/1; four skewed features
-log\,\textsubscript{1p}-transformed; all features standardised
-\cite{hassan2022effectively}. $C$ selected by 5-fold CV (AUC-ROC) over
-$\{0.001,\ldots,100\}$. Two models are fitted:
-(i)~unpenalised MLE for inference (Table~\ref{tab:inference});
-(ii)~ridge ($C\!=\!0.01$) for prediction (Table~\ref{tab:coef}).
 % ── Tables 3, 4, 5 stacked on right; text flows left and below ────────────────
 \begin{wraptable}{r}{0.52\linewidth}
 \vspace{-6pt}
@@ -341,6 +334,14 @@ Ridge LR & 0.820 & 0.610 & 0.667 & 0.563 \\
 \end{tabular}}
 \vspace{-6pt}
 \end{wraptable}
+
+\textbf{Preprocessing.}
+\texttt{famhist} encoded as 0/1; four skewed features
+log\,\textsubscript{1p}-transformed; all features standardised
+\cite{hassan2022effectively}. $C$ selected by 5-fold CV (AUC-ROC) over
+$\{0.001,\ldots,100\}$. Two models are fitted:
+(i)~unpenalised MLE for inference (Table~\ref{tab:inference});
+(ii)~ridge ($C\!=\!0.01$) for prediction (Table~\ref{tab:coef}).
 
 Table~\ref{tab:inference} shows \texttt{ldl} ($p=0.005$), \texttt{typea}
 ($p=0.005$), and \texttt{age} ($p=0.030$) are significant under MLE.
