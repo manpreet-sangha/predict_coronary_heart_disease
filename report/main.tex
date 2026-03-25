@@ -393,41 +393,16 @@ and generative classifiers are evaluated in this section. Same preprocessed data
 as in Section~\ref{sec:lrrp}: \texttt{famhist} encoded, four skewed features 
 log\,\textsubscript{1p}-transformed, all features standardised.
 
-All classifiers were screened using stratified 5-fold cross-validation on
-accuracy (Table~\ref{tab:final}), with the same 11 features (including
-\texttt{age\_tobacco} and \texttt{age\_famhist}) as Section~\ref{sec:lrrp}.
-Ridge LR had the highest CV accuracy (0.732), followed by SVM (0.713)
-and LDA (0.713). I then tuned the top CV-accuracy performer via
-GridSearchCV. On the held-out test set, \textbf{QDA achieved the highest
-accuracy (0.763)}, as well as the highest AUC (0.828) and F1 (0.694),
-showing that allowing each class to have its own covariance structure
-helps after log-transformation.
-
-% ── ROC curves: Ridge LR vs Random Forest side by side ───────────────────
-\begin{figure}[htbp]
-\centering
-\begin{minipage}{0.48\linewidth}
-\centering
-\includegraphics[width=\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_roc_curve.png}
-\caption{\footnotesize Ridge LR ($C\!=\!0.01$): AUC\,=\,0.820, test set $n=93$.}
-\label{fig:roc}
-\end{minipage}\hfill
-\begin{minipage}{0.48\linewidth}
-\centering
-\includegraphics[width=\linewidth]{../other_classifiers/oc_output/fig_oc_roc_curve.png}
-\caption{\footnotesize SVM RBF (best CV-accuracy): AUC\,=\,0.777, test set $n=93$.}
-\label{fig:oc_roc}
-\end{minipage}
-\end{figure}
-The ROC curves (Figures~\ref{fig:roc} and~\ref{fig:oc_roc}) show that
-all models sit well above the diagonal (random guessing) line.
-Table~\ref{tab:final} lists results for every classifier on the test set
-($n=93$, 20\,\%). \textbf{QDA achieves the highest test accuracy (0.763)},
-as well as the highest AUC (0.828) and F1 (0.694), just ahead of
-Ridge LR (accuracy 0.753, AUC 0.820) and LDA (accuracy 0.710, AUC 0.821).
-The log-transformation applied earlier improved the performance of the
-generative classifiers (QDA, LDA, Gaussian NB), since they assume features
-are normally distributed, making those assumptions more reasonable.
+All 12 classifiers were evaluated on the held-out test set ($n=93$, 20\,\%)
+using the same 11 features as Section~\ref{sec:lrrp}.
+Table~\ref{tab:final} shows \textbf{QDA achieved the highest test accuracy
+(0.763)}, followed by Ridge LR (0.753) and Random Forest (0.742).
+QDA also leads on F1 (0.694) and AUC (0.828). Its advantage comes from
+modelling each class with its own covariance matrix, which captures
+the different feature distributions between CHD and non-CHD patients.
+The log-transformation applied in preprocessing made the generative
+classifiers (QDA, LDA, Gaussian NB) more competitive, since they assume
+normally distributed features.
 The feature importances from the tree-based models agree with what I found
 in EDA: \texttt{age}, \texttt{age\_famhist}, and \texttt{ldl} are the most
 important predictors \cite{rehman2025predicting, ogunpola2024machine}.
