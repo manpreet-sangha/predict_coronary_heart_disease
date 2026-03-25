@@ -96,13 +96,18 @@
 \label{sec:eda}
 % =============================================================================
 
+The dataset (\texttt{heart-disease.csv}, nine features, one binary label \texttt{chd}
+(1\,=\,CHD present), no missing values) contains 462 male patients from the
+Western Cape, South Africa.
+
 % ── Table 1 (left) + Figure 1 (right): side by side ──────────────────────────
+\vspace{4pt}
 \noindent
 \begin{minipage}[t]{0.38\linewidth}
 \vspace{0pt}
 \centering
 \captionsetup{width=\linewidth}
-\captionof{table}{\footnotesize Descriptive statistics for all features.}
+\captionof{table}{\footnotesize Descriptive statistics.}
 \label{tab:desc}
 \vspace{2pt}
 {\footnotesize
@@ -125,17 +130,15 @@ age       &  42.8 & 14.6 &  15 &  64 \\
 \begin{minipage}[t]{0.58\linewidth}
 \vspace{0pt}
 \centering
-\captionsetup{width=\linewidth}
 \includegraphics[width=\linewidth]{../exploratory_data_analysis/eda_output/fig_correlation_heatmap.png}
 \vspace{-6pt}
+\captionsetup{width=0.7\linewidth}
 \captionof{figure}{\footnotesize Pearson correlation matrix.}
 \label{fig:corr}
 \end{minipage}
 
 \vspace{6pt}
-The dataset (\texttt{heart-disease.csv}, nine features, one binary label \texttt{chd}
-(1\,=\,CHD present), no missing values) contains 462 male patients from the
-Western Cape, South Africa. Table~\ref{tab:desc} shows that four features are right-skewed
+Table~\ref{tab:desc} shows that four features are right-skewed
 \cite{rimal2025comparative} i.e.,
 \texttt{alcohol} ($\gamma_{1}=2.31$), \texttt{tobacco} ($\gamma_{1}=2.08$),
 \texttt{ldl} ($\gamma_{1}=1.31$), and \texttt{sbp} ($\gamma_{1}=1.18$) all
