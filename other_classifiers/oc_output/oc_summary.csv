@@ -1,10 +1,10 @@
-best_classifier,Gaussian NB
-best_params,{'var_smoothing': 1e-12}
-tuned_cv_auc,0.7651
-test_auc,0.8115
-test_f1,0.6486
-test_accuracy,0.7204
-test_precision,0.5714
-test_recall,0.75
+best_classifier,SVM (RBF)
+best_params,"{'C': 10, 'gamma': 0.01}"
+tuned_cv_auc,0.7344
+test_auc,0.7772
+test_f1,0.625
+test_accuracy,0.7419
+test_precision,0.625
+test_recall,0.625
 n_train,369
 n_test,93

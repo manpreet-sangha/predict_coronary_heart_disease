@@ -81,7 +81,7 @@ def tune_and_evaluate(
     """
     grid = GridSearchCV(
         DecisionTreeClassifier(random_state=RANDOM_STATE),
-        PARAM_GRID, cv=cv, scoring="roc_auc", n_jobs=-1, refit=True
+        PARAM_GRID, cv=cv, scoring="accuracy", n_jobs=-1, refit=True
     )
     grid.fit(X_train_s, y_train)
 

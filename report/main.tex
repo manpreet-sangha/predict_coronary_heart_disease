@@ -393,16 +393,15 @@ and generative classifiers are evaluated in this section. Same preprocessed data
 as in Section~\ref{sec:lrrp}: \texttt{famhist} encoded, four skewed features 
 log\,\textsubscript{1p}-transformed, all features standardised.
 
-All classifiers were screened using stratified 5-fold cross-validation on AUC-ROC
-(Table~\ref{tab:final}), with the same 11 features (including
+All classifiers were screened using stratified 5-fold cross-validation on
+accuracy (Table~\ref{tab:final}), with the same 11 features (including
 \texttt{age\_tobacco} and \texttt{age\_famhist}) as Section~\ref{sec:lrrp}.
-Gaussian NB came out on top in CV (AUC\,=\,0.765), followed by LDA (0.751)
-and QDA (0.744). Among tree-based models, Extra Trees (0.730) and Random
-Forest (0.718) did best. I then tuned the top CV performer (Gaussian NB)
-using GridSearchCV; the best \texttt{var\_smoothing} was $10^{-12}$
-(tuned CV-AUC\,=\,0.765). On the test set, however, QDA achieved the
-highest AUC (0.828) and F1 (0.694), showing that allowing each class to
-have its own covariance structure helps after log-transformation.
+Ridge LR had the highest CV accuracy (0.732), followed by SVM (0.713)
+and LDA (0.713). I then tuned the top CV-accuracy performer via
+GridSearchCV. On the held-out test set, \textbf{QDA achieved the highest
+accuracy (0.763)}, as well as the highest AUC (0.828) and F1 (0.694),
+showing that allowing each class to have its own covariance structure
+helps after log-transformation.
 
 % ── ROC curves: Ridge LR vs Random Forest side by side ───────────────────
 \begin{figure}[htbp]
@@ -416,7 +415,7 @@ have its own covariance structure helps after log-transformation.
 \begin{minipage}{0.48\linewidth}
 \centering
 \includegraphics[width=\linewidth]{../other_classifiers/oc_output/fig_oc_roc_curve.png}
-\caption{\footnotesize Gaussian NB (best CV classifier): AUC\,=\,0.811, test set $n=93$.}
+\caption{\footnotesize SVM RBF (best CV-accuracy): AUC\,=\,0.777, test set $n=93$.}
 \label{fig:oc_roc}
 \end{minipage}
 \end{figure}
@@ -458,8 +457,8 @@ Recall — No\,CHD\,85\%, CHD\,56\%.}
 \begin{minipage}[t]{0.46\linewidth}
 \centering
 \captionsetup{width=\linewidth}
-\captionof{table}{\footnotesize Gaussian NB: confusion matrix (threshold\,=\,0.5).
-Recall — No\,CHD\,70\%, CHD\,75\%.}
+\captionof{table}{\footnotesize SVM RBF (tuned): confusion matrix (threshold\,=\,0.5).
+Recall — No\,CHD\,80\%, CHD\,63\%.}
 \label{tab:oc_cm}
 \vspace{2pt}
 {\footnotesize
@@ -469,8 +468,8 @@ Recall — No\,CHD\,70\%, CHD\,75\%.}
 \cmidrule(l){3-4}
 & & No\,CHD & CHD \\
 \midrule
-\multirow{2}{*}{\textit{True Label}} & No\,CHD & \textbf{43} & 18 \\
-                                     & CHD     & 8           & \textbf{24} \\
+\multirow{2}{*}{\textit{True Label}} & No\,CHD & \textbf{49} & 12 \\
+                                     & CHD     & 12          & \textbf{20} \\
 \bottomrule
 \end{tabular}}
 \end{minipage}

@@ -135,35 +135,35 @@ def run_classifiers(df: pd.DataFrame) -> None:
     cv = StratifiedKFold(n_splits=CV_FOLDS, shuffle=True, random_state=RANDOM_STATE)
 
     # ── 2. Screen all classifiers ──────────────────────────────────────────
-    print("\n--- 5-fold CV screening (AUC) ---")
+    print("\n--- 5-fold CV screening (Accuracy) ---")
     screening = {}
     for module in CLASSIFIER_MODULES:
         result = module.screen(X_train_s, y_train, cv)
         screening[module.NAME] = result
         print(f"  {module.NAME:<22}"
+              f"  Acc={result['CV_Acc_mean']:.4f}"
               f"  AUC={result['CV_AUC_mean']:.4f} ± {result['CV_AUC_std']:.4f}"
-              f"  F1={result['CV_F1_mean']:.4f}"
-              f"  Acc={result['CV_Acc_mean']:.4f}")
+              f"  F1={result['CV_F1_mean']:.4f}")
 
     screen_df = pd.DataFrame(screening).T.reset_index()
     screen_df.columns = ["Classifier", "CV_AUC_mean", "CV_AUC_std",
                          "CV_F1_mean", "CV_Acc_mean"]
     screen_df.to_csv(os.path.join(OUTPUT_DIR, "oc_cv_screening.csv"), index=False)
 
-    # ── 3. Identify best classifier ────────────────────────────────────────
-    best_name = max(screening, key=lambda k: screening[k]["CV_AUC_mean"])
+    # ── 3. Identify best classifier by CV accuracy ────────────────────────
+    best_name = max(screening, key=lambda k: screening[k]["CV_Acc_mean"])
     best_module = next(m for m in CLASSIFIER_MODULES if m.NAME == best_name)
     print(f"\n  Best classifier: {best_name} "
-          f"(CV-AUC = {screening[best_name]['CV_AUC_mean']:.4f})")
+          f"(CV-Acc = {screening[best_name]['CV_Acc_mean']:.4f})")
 
     # ── 4. Tune and evaluate best classifier ──────────────────────────────
-    print(f"\n--- Tuning {best_name} via GridSearchCV (5-fold, AUC) ---")
+    print(f"\n--- Tuning {best_name} via GridSearchCV (5-fold, Accuracy) ---")
     result = best_module.tune_and_evaluate(
         X_train_s, X_test_s, y_train, y_test, cv, OUTPUT_DIR
     )
 
     print(f"  Best params  : {result['best_params']}")
-    print(f"  Tuned CV-AUC : {result['best_cv_auc']}")
+    print(f"  Tuned CV-Acc : {result['accuracy']}")
     print(f"\n--- Test-set performance ({best_name}, tuned) ---")
     print(f"  AUC-ROC   : {result['auc']}")
     print(f"  F1        : {result['f1']}")
