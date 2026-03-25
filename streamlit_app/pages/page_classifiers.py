@@ -87,7 +87,7 @@ def _preprocess(df):
     return df[MODEL_FEATURES].values, df[TARGET].values
 
 
-_CACHE_VERSION = 5  # bump to invalidate stale cached results after feature changes
+_CACHE_VERSION = 6  # bump to invalidate stale cached results after feature changes
 
 
 @st.cache_data(show_spinner=False)
@@ -104,7 +104,8 @@ def _run_pipeline(data_hash: int, df_values, df_columns, _version: int = _CACHE_
 
     cv = StratifiedKFold(n_splits=CV_FOLDS, shuffle=True, random_state=RANDOM_STATE)
 
-    # Screen all classifiers (CV + test set evaluation)
+    # Screen all classifiers via CV, tune each with GridSearchCV,
+    # then evaluate tuned models on test set
     screening = {}
     test_results = {}
     for name, clf in CLASSIFIERS.items():
@@ -120,18 +121,22 @@ def _run_pipeline(data_hash: int, df_values, df_columns, _version: int = _CACHE_
             "CV F1":   round(res["test_f1"].mean(),  3),
             "CV Acc":  round(res["test_acc"].mean(), 3),
         }
-        # Test set evaluation (fit on full training set)
-        model = clf.__class__(**clf.get_params())
-        model.fit(X_train_s, y_train)
-        pred = model.predict(X_test_s)
+        # Tune with GridSearchCV then evaluate on test set
+        grid = GridSearchCV(
+            clf.__class__(**clf.get_params()),
+            PARAM_GRIDS[name],
+            cv=cv, scoring="accuracy", n_jobs=-1, refit=True
+        )
+        grid.fit(X_train_s, y_train)
+        tuned_model = grid.best_estimator_
+        pred = tuned_model.predict(X_test_s)
         test_results[name] = {
-            "model": model,
+            "model": tuned_model,
             "y_pred": pred,
             "test_acc": round(accuracy_score(y_test, pred), 3),
         }
-        # predict_proba if available
-        if hasattr(model, "predict_proba"):
-            test_results[name]["y_prob"] = model.predict_proba(X_test_s)[:, 1]
+        if hasattr(tuned_model, "predict_proba"):
+            test_results[name]["y_prob"] = tuned_model.predict_proba(X_test_s)[:, 1]
         else:
             test_results[name]["y_prob"] = None
 
