@@ -369,15 +369,29 @@ and generative classifiers are evaluated in this section. Same preprocessed data
 as in Section~\ref{sec:lrrp}: \texttt{famhist} encoded, four skewed features
 log\,\textsubscript{1p}-transformed, all features standardised.
 
+% ── Figure: preprocessing comparison (right-aligned) ─────────────────────────
+\begin{wrapfigure}{r}{0.48\linewidth}
+\vspace{-8pt}
+\centering
+\includegraphics[width=\linewidth]{../other_classifiers/oc_output/fig_oc_preprocessing_comparison.png}
+\vspace{-10pt}
+\caption{\scriptsize Test accuracy: log\textsubscript{1p}+Scaler vs.\ Scaler only.}
+\label{fig:preproc}
+\vspace{-8pt}
+\end{wrapfigure}
+
 All 12 classifiers were tuned via GridSearchCV (accuracy scoring) and
 evaluated on the held-out test set ($n=93$, 20\,\%).
 Table~\ref{tab:final} shows \textbf{Ridge LR achieved the highest test
 accuracy (0.753)}, followed by AdaBoost, QDA, and SVM (all 0.742).
-Ridge LR's strong performance despite its simplicity confirms that
-the feature engineering and log-transformation in Section~\ref{sec:lrrp}
-were effective. The feature importances from tree-based models agree
-with EDA: \texttt{age}, \texttt{age\_famhist}, and \texttt{ldl} are the
-most important predictors \cite{rehman2025predicting, ogunpola2024machine}.
+To test whether log\textsubscript{1p} biased the comparison, I re-ran
+all classifiers under two pipelines: (A)~log\textsubscript{1p}+Scaler
+and (B)~Scaler only (Figure~\ref{fig:preproc}). Ridge LR achieves
+0.753 in both. QDA benefits most from log\textsubscript{1p} (+3.2\%),
+while SVM performs better without it (0.753 vs 0.742). Tree-based
+models are unaffected. This confirms log\textsubscript{1p} primarily
+aids classifiers with normality assumptions and does not inflate
+Ridge LR's result \cite{rehman2025predicting, ogunpola2024machine}.
 
 % ── Figures 5 and 6: shrinkage + SHAP side by side ───────────────────────────
 \vspace{4pt}
