@@ -352,7 +352,7 @@ Ridge LR & 0.820 & 0.610 & 0.667 & 0.563 \\
 \end{tabular}}
 \vspace{-6pt}
 \end{wraptable}
-
+\vspace{4pt}
 On the test set ($n\!=\!93$, 20\,\%) the model achieves accuracy\,=\,0.753,
 AUC\,=\,0.820, and F1\,=\,0.610 (Table~\ref{tab:perf}).
 CHD recall is 0.563 versus No-CHD recall of 0.871.
@@ -499,9 +499,9 @@ models (Gaussian NB, LDA, QDA). Log-transformation of skewed features
 mitigates the normality concerns, allowing generative classifiers to compete
 effectively. Ridge logistic regression addresses the multicollinearity
 identified in EDA without zeroing any predictor
-\cite{hassan2022effectively}. This breadth ensures the partial non-linear
-class separation visible in the PCA projection (Figure~\ref{fig:pca})
-is captured across fundamentally different modelling paradigms.
+\cite{hassan2022effectively}. Using this range of classifiers means the overlap between
+CHD and non-CHD groups seen in the PCA plot (Figure~\ref{fig:pca})
+is tested from multiple angles.
 
 % =============================================================================
 % References
