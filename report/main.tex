@@ -352,11 +352,7 @@ CHD recall is 0.563 versus No-CHD recall of 0.871.
 Figure~\ref{fig:shap} confirms \texttt{age} and \texttt{age\_famhist}
 are the strongest individual predictors.
 
-% =============================================================================
-\section{Alternative Classifiers}
-\label{sec:oc}
-% =============================================================================
-
+\par\vspace{0pt plus 1fil}
 % ── Figures 5 and 6: shrinkage + SHAP side by side ───────────────────────────
 \noindent
 \begin{minipage}[t]{0.48\linewidth}
@@ -371,7 +367,11 @@ are the strongest individual predictors.
 \captionof{figure}{\scriptsize SHAP summary for ridge LR ($C\!=\!0.01$).}
 \label{fig:shap}
 \end{minipage}
-\vspace{4pt}
+
+% =============================================================================
+\section{Alternative Classifiers}
+\label{sec:oc}
+% =============================================================================
 
 Other classifiers such as discriminative models, tree-based ensembles,
 and generative classifiers are evaluated in this section. Same preprocessed data is utilized
