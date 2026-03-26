@@ -169,12 +169,6 @@ All universal constants are defined in `config.py`:
 
 ---
 
-## AI Usage Disclaimer
-
-Parts of this codebase were developed with the assistance of Claude (Anthropic), a generative AI tool. AI was used in a stepwise, supervised manner for Python code implementation. All code has been reviewed, tested, and validated by the author. Analytical decisions (choice of classifiers, feature engineering, preprocessing, interpretation) were made by the author.
-
----
-
 ## Academic Integrity Notice
 
 > **This repository is shared for reference and transparency purposes only.**
