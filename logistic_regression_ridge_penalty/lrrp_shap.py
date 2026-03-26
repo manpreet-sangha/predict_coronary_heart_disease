@@ -75,19 +75,38 @@ def run_shap_analysis(df: pd.DataFrame) -> None:
     explainer = shap.LinearExplainer(model, X_train_s)
     shap_values = explainer.shap_values(X_test_s)
 
-    # ── Summary plot ─────────────────────────────────────────────────────
+    # ── Summary plot (consistent font with other figures) ────────────────
+    plt.rcParams.update({
+        "font.size": 7,
+        "axes.labelsize": 8,
+        "axes.titlesize": 8,
+        "xtick.labelsize": 7,
+        "ytick.labelsize": 7,
+    })
     fig, ax = plt.subplots(figsize=(3.2, 3.0))
     shap.summary_plot(
         shap_values, X_test_s,
         feature_names=MODEL_FEATURES,
         show=False, plot_size=None,
     )
-    plt.tight_layout(pad=0.5)
+    # Override SHAP's font sizes after plotting
+    ax = plt.gca()
+    ax.set_xlabel("SHAP value", fontsize=8)
+    ax.tick_params(axis="both", labelsize=7)
+    for label in ax.get_yticklabels():
+        label.set_fontsize(7)
+    # Fix colorbar font
+    for child in fig.get_children():
+        if hasattr(child, "ax"):
+            child.ax.tick_params(labelsize=6)
+            child.ax.set_ylabel(child.ax.get_ylabel(), fontsize=7)
+    plt.tight_layout(pad=0.3)
 
     os.makedirs(LRRP_OUTPUT_DIR, exist_ok=True)
     out_path = os.path.join(LRRP_OUTPUT_DIR, "fig_lrrp_shap_summary.png")
     plt.savefig(out_path, dpi=300, bbox_inches="tight")
     plt.close()
+    plt.rcdefaults()  # reset to defaults
     print(f"[Saved] {out_path}")
 
 
