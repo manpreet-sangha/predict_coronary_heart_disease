@@ -265,12 +265,11 @@ smoking risk compounds with longer exposure;
 (ii)~\texttt{age\_famhist} $=$ age $\times$ famhist --- family history
 risk amplifies with age \cite{patel2023famhist}.
 
-% ── Tables 3, 4, 5 stacked on right; text flows left and below ────────────────
-\begin{wraptable}{r}{0.52\linewidth}
-\vspace{-6pt}
+% ── Tables 3 and 4 side by side ──────────────────────────────────────────────
+\noindent
+\begin{minipage}[t]{0.55\linewidth}
 \captionsetup{width=\linewidth}
-\centering
-\caption{\scriptsize Unpenalised LR inference ($n\!=\!369$).
+\captionof{table}{\scriptsize Unpenalised LR inference ($n\!=\!369$).
 $^{*}p<0.05$; $^{**}p<0.01$.}
 \label{tab:inference}
 \vspace{1pt}
@@ -294,8 +293,10 @@ age\_tobacco &    0.088 & 0.243 &    0.36 & 0.718 \\
 age\_famhist &    0.825 & 0.535 &    1.54 & 0.123 \\
 \bottomrule
 \end{tabular}}
-\vspace{4pt}
-\caption{\scriptsize Ridge coefficients ($C\!=\!0.01$).}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.42\linewidth}
+\captionsetup{width=\linewidth}
+\captionof{table}{\scriptsize Ridge coefficients ($C\!=\!0.01$).}
 \label{tab:coef}
 \vspace{1pt}
 {\scriptsize
@@ -317,8 +318,9 @@ alcohol      & $-$0.015 \\
 obesity      &  0.013 \\
 \bottomrule
 \end{tabular}}
+
 \vspace{4pt}
-\caption{\scriptsize Test-set performance of ridge LR.}
+\captionof{table}{\scriptsize Test-set performance of ridge LR.}
 \label{tab:perf}
 \vspace{1pt}
 {\scriptsize
@@ -330,9 +332,9 @@ Model & AUC & F1 & Prec. & Rec. \\
 Ridge LR & 0.820 & 0.610 & 0.667 & 0.563 \\
 \bottomrule
 \end{tabular}}
-\vspace{-6pt}
-\end{wraptable}
+\end{minipage}
 
+\vspace{4pt}
 \textbf{Preprocessing.}
 \texttt{famhist} encoded as 0/1; four skewed features
 log\,\textsubscript{1p}-transformed; all features standardised
