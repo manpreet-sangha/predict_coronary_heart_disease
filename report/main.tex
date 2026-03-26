@@ -352,6 +352,23 @@ CHD recall is 0.563 versus No-CHD recall of 0.871.
 Figure~\ref{fig:shap} confirms \texttt{age} and \texttt{age\_famhist}
 are the strongest individual predictors.
 
+% ── Figures 6 and 7: shrinkage + SHAP side by side ───────────────────────────
+\vspace{4pt}
+\noindent
+\begin{minipage}[t]{0.48\linewidth}
+\centering
+\includegraphics[width=\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_coefficient_shrinkage.png}
+\captionof{figure}{\scriptsize Shrinkage: $\hat{\beta}_{\text{LR}}$ vs.\ $\hat{\beta}_{\text{ridge}}$.}
+\label{fig:shrinkage}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\linewidth}
+\centering
+\includegraphics[width=\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_shap_summary.png}
+\captionof{figure}{\scriptsize SHAP summary for ridge LR ($C\!=\!0.01$).}
+\label{fig:shap}
+\end{minipage}
+\vspace{4pt}
+
 % =============================================================================
 \section{Alternative Classifiers}
 \label{sec:oc}
@@ -384,23 +401,6 @@ while SVM performs better without it (0.753 vs 0.742). Tree-based
 models are unaffected. This confirms log\textsubscript{1p} primarily
 aids classifiers with normality assumptions and does not inflate
 Ridge LR's result.
-
-% ── Figures 5 and 6: shrinkage + SHAP side by side ───────────────────────────
-\vspace{4pt}
-\noindent
-\begin{minipage}[t]{0.48\linewidth}
-\centering
-\includegraphics[width=\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_coefficient_shrinkage.png}
-\captionof{figure}{\scriptsize Shrinkage: $\hat{\beta}_{\text{LR}}$ vs.\ $\hat{\beta}_{\text{ridge}}$.}
-\label{fig:shrinkage}
-\end{minipage}\hfill
-\begin{minipage}[t]{0.48\linewidth}
-\centering
-\includegraphics[width=\linewidth]{../logistic_regression_ridge_penalty/lrrp_output/fig_lrrp_shap_summary.png}
-\captionof{figure}{\scriptsize SHAP summary for ridge LR ($C\!=\!0.01$).}
-\label{fig:shap}
-\end{minipage}
-\vspace{4pt}
 
 % ── Confusion matrices: Ridge LR vs Random Forest side by side ────────────
 \vspace{2pt}
