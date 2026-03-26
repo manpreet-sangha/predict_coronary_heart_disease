@@ -19,5 +19,8 @@ Thumbs.db
 # Jupyter
 .ipynb_checkpoints/
 
-# Lecture notes (local only)
+# Excluded from repo
+.claude/
 lecture_notes/
+report/
+output_data/

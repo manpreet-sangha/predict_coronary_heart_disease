@@ -4,6 +4,8 @@ A machine learning pipeline to predict coronary heart disease (CHD) in males fro
 
 **Module:** SMM748 Machine Learning For Quantitative Professionals — Individual Coursework
 
+**Live App:** [https://predict-coronary-heart-disease.streamlit.app/](https://predict-coronary-heart-disease.streamlit.app/)
+
 ## Dataset
 
 **Source:** `input_data/heart-disease.csv` — 462 patients, 9 clinical features, binary target (`chd`: 1 = disease, 0 = no disease).
@@ -84,9 +86,6 @@ predict_coronary_heart_disease/
 │   ├── components/                          # Reusable chart components
 │   └── utils/
 │       └── data_loader.py                   # Data loading and validation
-└── report/
-    ├── main.tex                             # LaTeX report
-    └── references.bib                       # BibTeX citations (6 papers)
 ```
 
 ---
