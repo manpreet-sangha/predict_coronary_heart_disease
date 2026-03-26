@@ -343,20 +343,14 @@ $\{0.001,\ldots,100\}$. Two models are fitted:
 
 Table~\ref{tab:inference} shows \texttt{ldl} ($p=0.005$), \texttt{typea}
 ($p=0.005$), and \texttt{age} ($p=0.030$) are significant under MLE.
-Ridge ($C\!=\!0.01$) shrinks \texttt{obesity} and \texttt{alcohol} near
-zero, consistent with their non-significance.
-Figure~\ref{fig:shrinkage} shows every unpenalised estimate (blue) is
-pulled toward zero by the ridge penalty (red), with the largest
-reductions on \texttt{age\_famhist} and \texttt{age}. The derived
-features improve recall by 12.5 percentage points relative to the
-original nine features. On the held-out test set ($n=93$, 20\,\%) the
-model achieves AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753
-(Table~\ref{tab:perf}). CHD recall is 0.563 versus No-CHD recall of
-0.871, a consequence of the 1.89:1 class imbalance
-(Section~\ref{sec:eda}).
-Figure~\ref{fig:shap} shows how each feature drives individual predictions.
-\texttt{age} and \texttt{age\_famhist} have the widest spread, confirming
-they are the strongest predictors --- consistent with the ridge coefficients.
+Ridge shrinks \texttt{obesity} and \texttt{alcohol} near zero
+(Figure~\ref{fig:shrinkage}), with the largest reductions on
+\texttt{age\_famhist} and \texttt{age}. On the test set
+($n\!=\!93$, 20\,\%) the model achieves accuracy\,=\,0.753,
+AUC\,=\,0.820, and F1\,=\,0.610 (Table~\ref{tab:perf}).
+CHD recall is 0.563 versus No-CHD recall of 0.871.
+Figure~\ref{fig:shap} confirms \texttt{age} and \texttt{age\_famhist}
+are the strongest individual predictors.
 
 % =============================================================================
 \section{Alternative Classifiers}
