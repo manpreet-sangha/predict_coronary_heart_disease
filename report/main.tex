@@ -369,6 +369,8 @@ and generative classifiers are evaluated in this section. Same preprocessed data
 as in Section~\ref{sec:lrrp}: \texttt{famhist} encoded, four skewed features
 log\,\textsubscript{1p}-transformed, all features standardised.
 
+All 12 classifiers were tuned via GridSearchCV (accuracy scoring) and
+evaluated on the held-out test set ($n=93$, 20\,\%).
 % ── Figure: preprocessing comparison (right-aligned) ─────────────────────────
 \begin{wrapfigure}{r}{0.48\linewidth}
 \vspace{-8pt}
@@ -379,9 +381,6 @@ log\,\textsubscript{1p}-transformed, all features standardised.
 \label{fig:preproc}
 \vspace{-8pt}
 \end{wrapfigure}
-
-All 12 classifiers were tuned via GridSearchCV (accuracy scoring) and
-evaluated on the held-out test set ($n=93$, 20\,\%).
 Table~\ref{tab:final} shows \textbf{Ridge LR achieved the highest test
 accuracy (0.753)}, followed by AdaBoost, QDA, and SVM (all 0.742).
 To test whether log\textsubscript{1p} biased the comparison, I re-ran
