@@ -149,8 +149,9 @@ exceed the $|\gamma_{1}|>1$ threshold, which suggests a log-transformation
 could help the model.
 
 Of the 462 patients, 160 (34.6\%) have CHD and 302 (65.4\%) do not, resulting in a
-class imbalance ratio of 1.89:1. Thus, instead of just using accuracy, I use AUC and F1-score
-as the main evaluation metrics \cite{rehman2025predicting, banerjee2025systematic}.
+class imbalance ratio of 1.89:1. Accuracy is the primary evaluation metric.
+AUC and F1 are also reported since accuracy alone can be misleading under
+class imbalance \cite{rehman2025predicting, banerjee2025systematic}.
 In the Pearson correlation heatmap (Figure~\ref{fig:corr}), the feature most linearly associated with CHD is \texttt{age}
 ($r=0.37$), followed by \texttt{tobacco} ($r=0.30$), \texttt{famhist} ($r=0.27$), and \texttt{ldl}
 ($r=0.26$).
@@ -255,8 +256,8 @@ Logistic regression with an L2 (ridge) penalty
 is chosen as the primary classifier. 
 Ridge penalty is preferred over lasso \cite{hassan2022effectively}
 because lasso can force some coefficients to exactly zero, effectively
-dropping features from the model. Ridge, on the other hand, shrinks all
-coefficients towards zero but never removes any completely. Ridge also handles correlated features well by shrinking
+dropping features from the model. Ridge, shrinks all
+coefficients towards zero but do not remove completely. Ridge handles correlated features well by shrinking
 them together, which is important given the multicollinearity observed between
 \texttt{adiposity} and \texttt{obesity} ($r=0.72$, Section~\ref{sec:eda}).
 
