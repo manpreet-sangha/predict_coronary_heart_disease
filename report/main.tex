@@ -146,11 +146,11 @@ Table~\ref{tab:desc} shows that four features are right-skewed
 \texttt{alcohol} ($\gamma_{1}=2.31$), \texttt{tobacco} ($\gamma_{1}=2.08$),
 \texttt{ldl} ($\gamma_{1}=1.31$), and \texttt{sbp} ($\gamma_{1}=1.18$) all
 exceed the $|\gamma_{1}|>1$ threshold, which suggests a log-transformation
-\cite{feng2014log} could help the model.
+could help the model.
 
 Of the 462 patients, 160 (34.6\%) have CHD and 302 (65.4\%) do not, resulting in a
 class imbalance ratio of 1.89:1. Thus, instead of just using accuracy, I use AUC and F1-score
-as the main evaluation metrics \cite{rehman2025predicting, banerjee2025systematic, dutta2019efficient, borges2025logistic}.
+as the main evaluation metrics \cite{rehman2025predicting, banerjee2025systematic}.
 In the Pearson correlation heatmap (Figure~\ref{fig:corr}), the feature most linearly associated with CHD is \texttt{age}
 ($r=0.37$), followed by \texttt{tobacco} ($r=0.30$), \texttt{famhist} ($r=0.27$), and \texttt{ldl}
 ($r=0.26$).
@@ -252,7 +252,7 @@ matter most for each principal component.
 % =============================================================================
 
 Logistic regression with an L2 (ridge) penalty
-\cite{borges2025logistic} is chosen as the primary classifier, as instructed. 
+is chosen as the primary classifier. 
 Ridge penalty is preferred over lasso \cite{hassan2022effectively}
 because lasso can force some coefficients to exactly zero, effectively
 dropping features from the model. Ridge, on the other hand, shrinks all
