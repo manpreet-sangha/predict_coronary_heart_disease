@@ -127,7 +127,7 @@ def run_comparison(df: pd.DataFrame) -> None:
     print(pivot.to_string())
 
     # Plot
-    fig, ax = plt.subplots(figsize=(5, 3.5))
+    fig, ax = plt.subplots(figsize=(3.5, 2.8))
     y_pos = np.arange(len(pivot))
     bar_h = 0.35
 

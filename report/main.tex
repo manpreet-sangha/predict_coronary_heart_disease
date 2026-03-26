@@ -490,28 +490,6 @@ LightGBM          & 0.708 & 0.540 & 0.702 & 0.708 & 0.492 & 0.645 & 0.485 & 0.50
 \bottomrule
 \end{tabular}}
 \end{table}
-\newline
-\textbf{Stability across repeated splits.}
-A single train/test split can yield optimistic or pessimistic estimates
-depending on which patients fall in the test set. Figure~\ref{fig:repeated}
-shows the distribution of test AUC-ROC across 30 repeated stratified
-80/20 splits. Ridge LR has the highest median AUC (0.778), followed by
-LDA (0.772) and Gaussian NB (0.764). QDA, despite achieving the best
-single-split AUC (0.828), drops to fourth (median 0.749) with wider
-spread, indicating greater sensitivity to the specific split. This
-confirms that the Ridge LR is the consistently a strong performer for the dataset.
-
-\begin{wrapfigure}{r}{0.46\linewidth}
-\vspace{-6pt}
-\captionsetup{width=\linewidth}
-\centering
-\includegraphics[width=\linewidth]{../other_classifiers/oc_output/fig_oc_repeated_splits_boxplot.png}
-\caption{\footnotesize Test AUC-ROC across 30 repeated stratified 80/20
-splits. Top 3 by median highlighted in red.}
-\label{fig:repeated}
-\vspace{-8pt}
-\end{wrapfigure}
-
 \textbf{Why the chosen methods are appropriate.}
 The 12 classifiers in Table~\ref{tab:final} span discriminative models
 (Ridge LR, SVM, KNN), tree ensembles (Random Forest, Extra Trees, Gradient
