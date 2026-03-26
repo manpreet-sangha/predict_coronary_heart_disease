@@ -2,6 +2,8 @@
 
 A machine learning pipeline to predict coronary heart disease (CHD) in males from a high-risk region of the Western Cape, South Africa.
 
+**Module:** SMM748 Machine Learning For Quantitative Professionals — Individual Coursework
+
 ## Dataset
 
 **Source:** `input_data/heart-disease.csv` — 462 patients, 9 clinical features, binary target (`chd`: 1 = disease, 0 = no disease).
@@ -20,44 +22,71 @@ A machine learning pipeline to predict coronary heart disease (CHD) in males fro
 
 ---
 
+## Key Results
+
+- **Ridge Logistic Regression** achieves the highest test accuracy (**0.753**) across all 12 classifiers.
+- AdaBoost, QDA, and SVM (RBF) tie at 0.742.
+- Log1p preprocessing benefits generative classifiers (QDA +3.2%) but does not affect Ridge LR's result.
+- `age`, `age_famhist`, and `ldl` are consistently the strongest CHD predictors (confirmed by ridge coefficients, feature importance, and SHAP analysis).
+
+---
+
 ## Project Structure
 
 ```
 predict_coronary_heart_disease/
-├── chd_main.py                              # Main entry point — runs all sections
+├── chd_main.py                              # Main entry point — runs full pipeline
+├── config.py                                # Project-wide constants (features, paths, seeds)
 ├── requirements.txt                         # Python dependencies
 ├── input_data/
 │   └── heart-disease.csv
+├── feature_engineering/                     # Derived interaction features
+│   ├── fe.py                                # age_tobacco, age_famhist
+│   ├── fe_age_tobacco.py
+│   └── fe_age_famhist.py
 ├── exploratory_data_analysis/               # Section 1: EDA
 │   ├── eda.py                               # Orchestrator
 │   ├── eda_descriptive.py                   # Descriptive statistics
 │   ├── eda_correlation.py                   # Pearson correlation analysis
-│   ├── eda_distribution.py                  # Histograms, boxplots, KDE
+│   ├── eda_distribution.py                  # Histograms, boxplots, KDE, log1p
 │   ├── eda_pca.py                           # Principal Component Analysis
 │   ├── eda_feature_importance.py            # Mutual Info, ANOVA, Chi-square
 │   ├── eda_class_imbalance.py               # Class imbalance & outlier audit
 │   └── eda_output/                          # Generated figures and CSVs
 ├── logistic_regression_ridge_penalty/       # Section 2: Ridge Logistic Regression
-│   └── lrrp_output/
+│   ├── lrrp.py                              # Main ridge LR pipeline
+│   ├── lrrp_coefficient_shrinkage.py        # MLE vs ridge coefficient comparison
+│   ├── lrrp_shap.py                         # SHAP analysis for ridge model
+│   └── lrrp_output/                         # Figures, CSVs, classification reports
 ├── other_classifiers/                       # Section 3: Alternative Classifiers
-│   └── oc_output/
+│   ├── oc.py                                # Orchestrator (screens + tunes best)
+│   ├── oc_decision_tree.py                  # Decision Tree
+│   ├── oc_random_forest.py                  # Random Forest
+│   ├── oc_svm.py                            # SVM (RBF kernel)
+│   ├── oc_knn.py                            # K-Nearest Neighbours
+│   ├── oc_gradient_boosting.py              # Gradient Boosting
+│   ├── oc_gaussian_nb.py                    # Gaussian Naive Bayes
+│   ├── oc_lda.py                            # Linear Discriminant Analysis
+│   ├── oc_qda.py                            # Quadratic Discriminant Analysis
+│   ├── oc_adaboost.py                       # AdaBoost
+│   ├── oc_extra_trees.py                    # Extra Trees
+│   ├── oc_bagging.py                        # Bagging
+│   ├── oc_lgbm.py                           # LightGBM
+│   ├── oc_preprocessing_comparison.py       # log1p+Scaler vs Scaler-only comparison
+│   ├── oc_repeated_splits.py                # Repeated random split stability
+│   └── oc_output/                           # Figures, CSVs, comparison tables
 ├── streamlit_app/                           # Interactive dashboard
 │   ├── app.py                               # Streamlit entry point
 │   ├── pages/
-│   │   ├── page_eda.py
-│   │   ├── page_lrrp.py
-│   │   └── page_classifiers.py
-│   ├── components/
-│   │   ├── chart_descriptive.py
-│   │   ├── chart_correlation.py
-│   │   ├── chart_distribution.py
-│   │   ├── chart_pca.py
-│   │   ├── chart_feature_importance.py
-│   │   └── chart_class_imbalance.py
+│   │   ├── page_eda.py                      # EDA tab (6 interactive sections)
+│   │   ├── page_lrrp.py                     # Ridge LR tab (CV, coefficients, SHAP)
+│   │   └── page_classifiers.py              # Alt classifiers tab (all 12, tuned)
+│   ├── components/                          # Reusable chart components
 │   └── utils/
-│       └── data_loader.py
+│       └── data_loader.py                   # Data loading and validation
 └── report/
-    └── references.bib                       # BibTeX citations (10 papers)
+    ├── main.tex                             # LaTeX report
+    └── references.bib                       # BibTeX citations (6 papers)
 ```
 
 ---
@@ -92,7 +121,7 @@ pip install -r requirements.txt
 python chd_main.py
 ```
 
-Executes all EDA modules in sequence. Outputs (figures + CSV tables) are saved to `exploratory_data_analysis/eda_output/`.
+Executes EDA, Ridge LR, and Alternative Classifiers in sequence. Outputs (figures + CSVs) are saved to `eda_output/`, `lrrp_output/`, and `oc_output/`.
 
 ### Launch the interactive dashboard
 
@@ -102,25 +131,24 @@ streamlit run streamlit_app/app.py
 
 Opens a browser dashboard with three tabs:
 - **Exploratory Data Analysis** — 6 interactive Plotly sections
-- **Logistic Regression + Ridge** — *(coming soon)*
-- **Other Classifiers** — *(coming soon)*
+- **Logistic Regression + Ridge** — CV tuning, coefficients, shrinkage, SHAP
+- **Other Classifiers** — All 12 classifiers tuned, best by test accuracy
 
 Upload a different CSV (same format) via the sidebar — all charts update automatically.
 
 ---
 
-## EDA Techniques
+## Configuration
 
-The following techniques are implemented, each justified by peer-reviewed literature:
+All universal constants are defined in `config.py`:
 
-| Module | Technique |
-|---|---|
-| `eda_descriptive` | Summary statistics, missing values, crosstab |
-| `eda_correlation` | Pearson correlation heatmap |
-| `eda_distribution` | Histograms, boxplots, KDE by class |
-| `eda_pca` | PCA scree plot, 2D projection, loadings |
-| `eda_feature_importance` | Mutual Information, ANOVA F-test, Chi-square |
-| `eda_class_imbalance` | Class counts, feature means, outlier audit |
+| Constant | Value | Description |
+|---|---|---|
+| `RANDOM_STATE` | 42 | Seed for reproducibility |
+| `TEST_SIZE` | 0.20 | 80/20 train/test split |
+| `CV_FOLDS` | 5 | Stratified cross-validation folds |
+| `MAX_ITER` | 1000 | Logistic regression solver iterations |
+| `SKEWNESS_THRESHOLD` | 1.0 | Features with \|skew\| > 1.0 are log1p-transformed |
 
 ---
 
@@ -133,14 +161,17 @@ The following techniques are implemented, each justified by peer-reviewed litera
 | matplotlib | ≥ 3.8 |
 | seaborn | ≥ 0.13 |
 | scikit-learn | ≥ 1.4 |
+| statsmodels | ≥ 0.14 |
 | streamlit | ≥ 1.35 |
 | plotly | ≥ 5.20 |
+| lightgbm | ≥ 4.0 |
+| shap | ≥ 0.43 |
 
 ---
 
 ## AI Usage Disclaimer
 
-Parts of this codebase were developed with the assistance of Claude (Anthropic), an AI coding assistant. AI assistance was used for code structure, module design, and implementation guidance. All code has been reviewed, tested, and is understood by the author.
+Parts of this codebase were developed with the assistance of Claude (Anthropic), a generative AI tool. AI was used in a stepwise, supervised manner for Python code implementation. All code has been reviewed, tested, and validated by the author. Analytical decisions (choice of classifiers, feature engineering, preprocessing, interpretation) were made by the author.
 
 ---
 
