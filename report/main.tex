@@ -356,8 +356,10 @@ Ridge LR & 0.820 & 0.610 & 0.667 & 0.563 \\
 On the test set ($n\!=\!93$, 20\,\%) the model achieves accuracy\,=\,0.753,
 AUC\,=\,0.820, and F1\,=\,0.610 (Table~\ref{tab:perf}).
 CHD recall is 0.563 versus No-CHD recall of 0.871.
+SHAP (SHapley Additive exPlanations) \cite{lundberg2017shap} measures
+each feature's contribution to individual predictions.
 Figure~\ref{fig:shap} confirms \texttt{age} and \texttt{age\_famhist}
-are the strongest individual predictors.
+are the strongest drivers of CHD risk.
 
 \par\vspace{0pt plus 1fil}
 % ── Figures 5 and 6: shrinkage + SHAP side by side ───────────────────────────
