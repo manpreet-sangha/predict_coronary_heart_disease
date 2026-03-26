@@ -369,19 +369,15 @@ and generative classifiers are evaluated in this section. Same preprocessed data
 as in Section~\ref{sec:lrrp}: \texttt{famhist} encoded, four skewed features
 log\,\textsubscript{1p}-transformed, all features standardised.
 
-All 12 classifiers were evaluated on the held-out test set ($n=93$, 20\,\%)
-using the same 11 features as Section~\ref{sec:lrrp}.
-Table~\ref{tab:final} shows \textbf{QDA achieved the highest test accuracy
-(0.763)}, followed by Ridge LR (0.753) and Random Forest (0.742).
-QDA also leads on F1 (0.694) and AUC (0.828). Its advantage comes from
-modelling each class with its own covariance matrix, which captures
-the different feature distributions between CHD and non-CHD patients.
-The log-transformation applied in preprocessing made the generative
-classifiers (QDA, LDA, Gaussian NB) more competitive, since they assume
-normally distributed features.
-The feature importances from the tree-based models agree with what I found
-in EDA: \texttt{age}, \texttt{age\_famhist}, and \texttt{ldl} are the most
-important predictors \cite{rehman2025predicting, ogunpola2024machine}.
+All 12 classifiers were tuned via GridSearchCV (accuracy scoring) and
+evaluated on the held-out test set ($n=93$, 20\,\%).
+Table~\ref{tab:final} shows \textbf{Ridge LR achieved the highest test
+accuracy (0.753)}, followed by AdaBoost, QDA, and SVM (all 0.742).
+Ridge LR's strong performance despite its simplicity confirms that
+the feature engineering and log-transformation in Section~\ref{sec:lrrp}
+were effective. The feature importances from tree-based models agree
+with EDA: \texttt{age}, \texttt{age\_famhist}, and \texttt{ldl} are the
+most important predictors \cite{rehman2025predicting, ogunpola2024machine}.
 
 % ── Figures 5 and 6: shrinkage + SHAP side by side ───────────────────────────
 \vspace{4pt}
@@ -445,19 +441,13 @@ Recall — No\,CHD\,80\%, CHD\,63\%.}
 \vspace{2pt}
 \textbf{Clinical relevance of recall.}
 In CHD prediction, sensitivity (recall $= \text{TP}/(\text{TP}+\text{FN})$)
-is the most clinically important metric i.e., missing a patient who truly has
-heart disease (false negative) risks delayed treatment and potentially a
-fatal cardiac event, whereas a false positive leads only to further
-diagnostic testing. Ridge LR achieves the highest precision (0.667) but
-its CHD recall is only 0.563 i.e., it misses 44\% of CHD patients, which is
-clinically unacceptable for a screening tool. Gaussian NB flips this
-trade-off: recall rises to 0.750 (catches 75\% of CHD cases) at the cost
-of lower precision (0.571), producing more false alarms but fewer missed
-diagnoses. This may be acceptable in a screening context.
-QDA achieves the best recall (0.781) correctly identifying 78\% of CHD
-patients while maintaining the highest overall F1 (0.694) and accuracy
-(0.763), making it the most clinically appropriate classifier in this
-evaluation.
+is clinically important: missing a true CHD case risks delayed treatment.
+Ridge LR achieves the highest accuracy (0.753) and precision (0.667) but
+CHD recall is only 0.562, missing 44\% of CHD patients.
+QDA and Gaussian NB both achieve recall of 0.750, catching 75\% of CHD
+cases at the cost of lower precision. For a screening tool where missed
+diagnoses are more costly than false alarms, QDA (accuracy 0.742,
+recall 0.750) may be clinically preferable despite its lower accuracy.
 \vspace{4pt}
 \begin{table}[htbp]
 \centering
@@ -470,19 +460,19 @@ evaluation.
 \toprule
 Classifier & CV AUC & CV F1 & CV Acc & Test AUC & Test F1 & Test Acc & Test Prec & Test Rec \\
 \midrule
-QDA               & 0.744 & 0.568 & 0.707 & \textbf{0.828} & \textbf{0.694} & \textbf{0.763} & 0.625 & \textbf{0.781} \\
-\shortstack[l]{Ridge LR\\($C\!=\!0.01$)} & 0.764 & 0.458 & \textbf{0.732} & 0.820 & 0.610 & 0.753 & \textbf{0.667} & 0.562 \\[4pt]
-\shortstack[l]{Random\\Forest} & 0.718 & 0.485 & 0.694 & 0.788 & 0.571 & 0.742 & \textbf{0.667} & 0.500 \\[4pt]
-AdaBoost          & 0.717 & 0.518 & 0.694 & 0.799 & 0.576 & 0.731 & 0.630 & 0.531 \\
+\shortstack[l]{Ridge LR\\($C\!=\!0.01$)} & 0.764 & 0.458 & \textbf{0.732} & 0.820 & 0.610 & \textbf{0.753} & \textbf{0.667} & 0.562 \\[4pt]
+AdaBoost          & 0.717 & 0.518 & 0.694 & 0.798 & 0.600 & 0.742 & 0.643 & 0.562 \\
+QDA               & 0.744 & 0.568 & 0.707 & 0.820 & \textbf{0.667} & 0.742 & 0.600 & \textbf{0.750} \\
+SVM (RBF)         & 0.716 & 0.483 & 0.713 & 0.777 & 0.625 & 0.742 & 0.625 & 0.625 \\
 \shortstack[l]{Gradient\\Boosting} & 0.699 & 0.483 & 0.680 & 0.766 & 0.590 & 0.731 & 0.621 & 0.562 \\[4pt]
-\shortstack[l]{Extra\\Trees} & 0.730 & 0.478 & 0.699 & 0.795 & 0.567 & 0.720 & 0.607 & 0.531 \\[4pt]
-\shortstack[l]{Decision\\Tree} & 0.618 & 0.504 & 0.642 & 0.795 & 0.536 & 0.720 & 0.625 & 0.469 \\[4pt]
+\shortstack[l]{Extra\\Trees} & 0.730 & 0.478 & 0.699 & 0.789 & 0.567 & 0.720 & 0.607 & 0.531 \\[4pt]
 \shortstack[l]{Gaussian\\NB} & \textbf{0.765} & \textbf{0.591} & 0.686 & 0.811 & 0.649 & 0.720 & 0.571 & 0.750 \\[4pt]
+\shortstack[l]{Decision\\Tree} & 0.618 & 0.504 & 0.642 & 0.640 & 0.542 & 0.710 & 0.593 & 0.500 \\[4pt]
 LDA               & 0.751 & 0.534 & 0.713 & 0.821 & 0.630 & 0.710 & 0.561 & 0.719 \\
-Bagging           & 0.699 & 0.457 & 0.686 & 0.770 & 0.548 & 0.699 & 0.567 & 0.531 \\
-LightGBM          & 0.708 & 0.540 & 0.702 & 0.724 & 0.537 & 0.667 & 0.514 & 0.562 \\
-SVM (RBF)         & 0.716 & 0.483 & 0.713 & 0.811 & --- & 0.656 & --- & --- \\
-KNN               & 0.659 & 0.423 & 0.667 & 0.714 & 0.433 & 0.634 & 0.464 & 0.406 \\
+\shortstack[l]{Random\\Forest} & 0.718 & 0.485 & 0.694 & 0.761 & 0.500 & 0.699 & 0.583 & 0.438 \\[4pt]
+KNN               & 0.659 & 0.423 & 0.667 & 0.724 & 0.508 & 0.688 & 0.556 & 0.469 \\
+Bagging           & 0.699 & 0.457 & 0.686 & 0.733 & 0.531 & 0.677 & 0.531 & 0.531 \\
+LightGBM          & 0.708 & 0.540 & 0.702 & 0.708 & 0.492 & 0.645 & 0.485 & 0.500 \\
 \bottomrule
 \end{tabular}}
 \end{table}
