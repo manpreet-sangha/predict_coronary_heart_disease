@@ -151,7 +151,7 @@ could help the model.
 Of the 462 patients, 160 (34.6\%) have CHD and 302 (65.4\%) do not, resulting in a
 class imbalance ratio of 1.89:1. Accuracy is the primary evaluation metric.
 AUC and F1 are also reported since accuracy alone can be misleading under
-class imbalance \cite{rehman2025predicting}.
+class imbalance.
 In the Pearson correlation heatmap (Figure~\ref{fig:corr}), the feature most linearly associated with CHD is \texttt{age}
 ($r=0.37$), followed by \texttt{tobacco} ($r=0.30$), \texttt{famhist} ($r=0.27$), and \texttt{ldl}
 ($r=0.26$).
@@ -160,7 +160,7 @@ In the Pearson correlation heatmap (Figure~\ref{fig:corr}), the feature most lin
 show weak linear association with CHD. Strong
 correlation is observed between \texttt{adiposity} and \texttt{obesity} ($r=0.72$), 
 meaning these two features may carry overlapping information. Ridge regularisation 
-in Section~\ref{sec:lrrp} \cite{hassan2022effectively, ogunpola2024machine} is used to tackle
+in Section~\ref{sec:lrrp} \cite{hassan2022effectively} is used to tackle
 multicollenarity.
 
 Figure~\ref{fig:logtr} shows log\textsubscript{1p}-transformation
@@ -261,7 +261,7 @@ them together, which is important given the multicollinearity observed between
 \textbf{Feature engineering.}
 Two interaction terms were added:
 (i)~\texttt{age\_tobacco} $=$ age $\times$ tobacco --- captures how
-smoking risk compounds with longer exposure \cite{rehman2025predicting};
+smoking risk compounds with longer exposure;
 (ii)~\texttt{age\_famhist} $=$ age $\times$ famhist --- family history
 risk amplifies with age \cite{patel2023famhist}.
 
@@ -353,7 +353,7 @@ original nine features. On the held-out test set ($n=93$, 20\,\%) the
 model achieves AUC\,=\,0.820, F1\,=\,0.610, and accuracy\,=\,0.753
 (Table~\ref{tab:perf}). CHD recall is 0.563 versus No-CHD recall of
 0.871, a consequence of the 1.89:1 class imbalance
-\cite{rehman2025predicting, ogunpola2024machine}.
+(Section~\ref{sec:eda}).
 Figure~\ref{fig:shap} shows how each feature drives individual predictions.
 \texttt{age} and \texttt{age\_famhist} have the widest spread, confirming
 they are the strongest predictors --- consistent with the ridge coefficients.
@@ -389,7 +389,7 @@ and (B)~Scaler only (Figure~\ref{fig:preproc}). Ridge LR achieves
 while SVM performs better without it (0.753 vs 0.742). Tree-based
 models are unaffected. This confirms log\textsubscript{1p} primarily
 aids classifiers with normality assumptions and does not inflate
-Ridge LR's result \cite{rehman2025predicting, ogunpola2024machine}.
+Ridge LR's result.
 
 % ── Figures 5 and 6: shrinkage + SHAP side by side ───────────────────────────
 \vspace{4pt}
