@@ -318,20 +318,6 @@ alcohol      & $-$0.015 \\
 obesity      &  0.013 \\
 \bottomrule
 \end{tabular}}
-
-\vspace{4pt}
-\captionof{table}{\scriptsize Test-set performance of ridge LR.}
-\label{tab:perf}
-\vspace{1pt}
-{\scriptsize
-\renewcommand{\arraystretch}{0.85}
-\begin{tabular}{@{}lrrrr@{}}
-\toprule
-Model & AUC & F1 & Prec. & Rec. \\
-\midrule
-Ridge LR & 0.820 & 0.610 & 0.667 & 0.563 \\
-\bottomrule
-\end{tabular}}
 \end{minipage}
 
 \vspace{4pt}
@@ -346,8 +332,27 @@ Table~\ref{tab:inference} shows \texttt{ldl} ($p=0.005$), \texttt{typea}
 ($p=0.005$), and \texttt{age} ($p=0.030$) are significant under MLE.
 Ridge shrinks \texttt{obesity} and \texttt{alcohol} near zero
 (Figure~\ref{fig:shrinkage}), with the largest reductions on
-\texttt{age\_famhist} and \texttt{age}. 
-\newline 
+\texttt{age\_famhist} and \texttt{age}.
+
+\begin{wraptable}{r}{0.38\linewidth}
+\vspace{-6pt}
+\captionsetup{width=\linewidth}
+\centering
+\caption{\scriptsize Test-set performance of ridge LR.}
+\label{tab:perf}
+\vspace{1pt}
+{\scriptsize
+\renewcommand{\arraystretch}{0.85}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Model & AUC & F1 & Prec. & Rec. \\
+\midrule
+Ridge LR & 0.820 & 0.610 & 0.667 & 0.563 \\
+\bottomrule
+\end{tabular}}
+\vspace{-6pt}
+\end{wraptable}
+
 On the test set ($n\!=\!93$, 20\,\%) the model achieves accuracy\,=\,0.753,
 AUC\,=\,0.820, and F1\,=\,0.610 (Table~\ref{tab:perf}).
 CHD recall is 0.563 versus No-CHD recall of 0.871.
