@@ -33,6 +33,7 @@ from config import (
     RANDOM_STATE, TEST_SIZE, CV_FOLDS, MAX_ITER
 )
 from feature_engineering.fe import run_feature_engineering
+from utils.cache_utils import is_original_dataset, load_lrrp_cache
 
 
 # =============================================================================
@@ -103,11 +104,36 @@ def render(df: pd.DataFrame) -> None:
         "due to the 1.89:1 class imbalance identified in EDA."
     )
 
-    # ── Run CV (cached) ────────────────────────────────────────────────────
-    with st.spinner("Running cross-validation …"):
-        result = _run_cv(df)
-    (X_train_s, X_test_s, y_train, y_test,
-     Cs, cv_means, cv_stds, best_idx, skewed) = result
+    # ── Check if original dataset and load from cache ──────────────────────
+    if is_original_dataset(df):
+        cached_result = load_lrrp_cache()
+        if cached_result is not None:
+            st.info("💾 Using pre-computed cache for original dataset (instant load).")
+            (X_train_s, X_test_s, y_train, y_test,
+             Cs, cv_means, cv_stds, best_idx, skewed) = (
+                cached_result['X_train_s'],
+                cached_result['X_test_s'],
+                cached_result['y_train'],
+                cached_result['y_test'],
+                cached_result['Cs'],
+                cached_result['cv_means'],
+                cached_result['cv_stds'],
+                cached_result['best_idx'],
+                cached_result['skewed'],
+            )
+        else:
+            # Fallback: compute if cache missing
+            st.warning("Cache not found, computing on-the-fly...")
+            with st.spinner("Running cross-validation …"):
+                result = _run_cv(df)
+            (X_train_s, X_test_s, y_train, y_test,
+             Cs, cv_means, cv_stds, best_idx, skewed) = result
+    else:
+        # New dataset: compute normally
+        with st.spinner("Running cross-validation …"):
+            result = _run_cv(df)
+        (X_train_s, X_test_s, y_train, y_test,
+         Cs, cv_means, cv_stds, best_idx, skewed) = result
 
     best_C_auto = Cs[best_idx]
 

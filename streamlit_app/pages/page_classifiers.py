@@ -27,6 +27,7 @@ from config import (
     RANDOM_STATE, TEST_SIZE, CV_FOLDS
 )
 from feature_engineering.fe import run_feature_engineering
+from utils.cache_utils import is_original_dataset, load_classifiers_cache
 
 from other_classifiers import (
     oc_decision_tree,
@@ -163,11 +164,33 @@ def render(df: pd.DataFrame) -> None:
         "with the **highest test accuracy** is reported as the best performer."
     )
 
-    with st.spinner("Running CV screening and tuning — this may take a minute …"):
-        result = _run_pipeline(df)
-
-    (screening, best_name, best_model,
-     y_train, y_test, y_pred, y_prob, X_train_s, X_test_s) = result
+    # ── Check if original dataset and load from cache ──────────────────────
+    if is_original_dataset(df):
+        cached_result = load_classifiers_cache()
+        if cached_result is not None:
+            st.info("💾 Using pre-computed cache for original dataset (instant load).")
+            screening = cached_result['screening']
+            best_name = cached_result['best_name']
+            best_model = cached_result['best_model']
+            y_train = cached_result['y_train']
+            y_test = cached_result['y_test']
+            y_pred = cached_result['y_pred']
+            y_prob = cached_result['y_prob']
+            X_train_s = cached_result['X_train_s']
+            X_test_s = cached_result['X_test_s']
+        else:
+            # Fallback: compute if cache missing
+            st.warning("Cache not found, computing on-the-fly...")
+            with st.spinner("Running CV screening and tuning — this may take a minute …"):
+                result = _run_pipeline(df)
+            (screening, best_name, best_model,
+             y_train, y_test, y_pred, y_prob, X_train_s, X_test_s) = result
+    else:
+        # New dataset: compute normally
+        with st.spinner("Running CV screening and tuning — this may take a minute …"):
+            result = _run_pipeline(df)
+        (screening, best_name, best_model,
+         y_train, y_test, y_pred, y_prob, X_train_s, X_test_s) = result
 
     acc  = accuracy_score(y_test, y_pred)
     f1   = f1_score(y_test, y_pred)
