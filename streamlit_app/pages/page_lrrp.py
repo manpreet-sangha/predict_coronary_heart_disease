@@ -54,9 +54,9 @@ _CACHE_VERSION = 2  # bump to invalidate stale cached results after feature chan
 
 
 @st.cache_data(show_spinner=False)
-def _run_cv(data_hash: int, df_values, df_columns, _version: int = _CACHE_VERSION):
+def _run_cv(df: pd.DataFrame, _version: int = _CACHE_VERSION):
     """Cache CV results so they don't recompute on every widget interaction."""
-    df = pd.DataFrame(df_values, columns=df_columns)
+    df = df.copy()
     X, y, skewed = _preprocess(df)
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=TEST_SIZE, random_state=RANDOM_STATE, stratify=y
@@ -105,10 +105,7 @@ def render(df: pd.DataFrame) -> None:
 
     # ── Run CV (cached) ────────────────────────────────────────────────────
     with st.spinner("Running cross-validation …"):
-        result = _run_cv(
-            int(pd.util.hash_pandas_object(df).sum()),
-            df.values.tolist(), list(df.columns)
-        )
+        result = _run_cv(df)
     (X_train_s, X_test_s, y_train, y_test,
      Cs, cv_means, cv_stds, best_idx, skewed) = result
 

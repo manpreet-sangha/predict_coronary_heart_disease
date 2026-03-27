@@ -91,8 +91,8 @@ _CACHE_VERSION = 6  # bump to invalidate stale cached results after feature chan
 
 
 @st.cache_data(show_spinner=False)
-def _run_pipeline(data_hash: int, df_values, df_columns, _version: int = _CACHE_VERSION):
-    df = pd.DataFrame(df_values, columns=df_columns)
+def _run_pipeline(df: pd.DataFrame, _version: int = _CACHE_VERSION):
+    df = df.copy()
     X, y = _preprocess(df)
 
     X_train, X_test, y_train, y_test = train_test_split(
@@ -164,10 +164,7 @@ def render(df: pd.DataFrame) -> None:
     )
 
     with st.spinner("Running CV screening and tuning — this may take a minute …"):
-        result = _run_pipeline(
-            int(pd.util.hash_pandas_object(df).sum()),
-            df.values.tolist(), list(df.columns)
-        )
+        result = _run_pipeline(df)
 
     (screening, best_name, best_model,
      y_train, y_test, y_pred, y_prob, X_train_s, X_test_s) = result
